@@ -1,0 +1,9 @@
+[package]
+name = "twin-engine"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Model layer of the 3D process twin: scene format and checks, geometry, machine model engine, workpieces, plant. No OS call, no PLC code."
+
+[dependencies]
+serde_json = "1"

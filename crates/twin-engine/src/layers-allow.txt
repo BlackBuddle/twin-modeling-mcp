@@ -1,0 +1,9 @@
+# Back edges inside the crate twin-engine (a unit uses a unit in a row below it in layers.txt). Ratchet: the test
+# layers_follow_the_table (of the root package) fails for a back edge that is not listed, and for a listed one that is gone.
+# Format: <id> <from unit> -> <to unit>  # the move of openspec/changes/module-layers/proposal.md that removes it (4.2 = the twin model lines).
+# The ids are the ids of src/layers-allow.txt before the move of the model group (reusable-parts 3.1a, doc 46 section 4.6); no id is new.
+LB14 geom -> work  # 4.2
+LB18 scene -> geom  # 4.2
+LB19 scene -> layout  # 4.2
+LB21 scene -> work  # 4.2
+LB23 work -> plant  # 4.2

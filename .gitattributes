@@ -1,0 +1,4 @@
+# 모델링 스킬 폴더는 LF로 둔다 (서버가 싣는 guide.modeling과 스킬 글의 바이트가 같아야 한다)
+skills/twin-modeling/SKILL.md text eol=lf
+skills/twin-modeling/references/*.md text eol=lf
+skills/twin-modeling/references/catalog.json text eol=lf

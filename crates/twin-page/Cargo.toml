@@ -1,0 +1,10 @@
+[package]
+name = "twin-page"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "The 3D page of the process twin: scene store, render hub, routes, page files, vendor libraries, web checks, Korean page texts. No PLC code."
+
+[dependencies]
+serde_json = "1"
+twin-engine = { path = "../twin-engine" }

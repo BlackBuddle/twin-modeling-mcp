@@ -1,0 +1,7 @@
+[workspace]
+members = ["crates/twin-engine", "crates/twin-page", "crates/twin-modeling-mcp"]
+resolver = "2"
+
+[profile.release]
+panic = "abort"
+strip = true

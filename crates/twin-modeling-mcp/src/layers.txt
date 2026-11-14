@@ -1,0 +1,10 @@
+# Module layers of the crate twin-modeling-mcp (reusable-parts 3.1d-2, doc 46 section 4.6; same rules as src/layers.txt).
+# Rule: a unit may use only the units in the rows above it. The rows are ordered, so this also forbids every cycle.
+# A unit is a file of src/. Layers: 2 model (the program-less simulation and its page routes), 3 service (the tools), 4 entrance (stdio loop, HTTP), 5 program root.
+# Row format: <unit> <layer> <role>. A new source file needs its row first (the test layers_follow_the_table of the root package fails without it).
+# A back edge that exists today is listed in layers-allow.txt; that list can only get shorter.
+sim 2 the model run for model_sim and the page simulation (pins, no program)
+serve 2 the HTTP listener, the token and the shared state of the server
+tools 3 the five MCP tools
+rpc 4 the stdio JSON-RPC loop
+main 5 program root: arguments and start

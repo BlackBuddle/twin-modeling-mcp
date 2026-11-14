@@ -1,0 +1,3151 @@
+{
+  "catalog": {
+    "ask_params": [
+      "bore_mm",
+      "stroke_mm",
+      "series",
+      "length_mm",
+      "width_mm",
+      "stations"
+    ],
+    "box_params": {
+      "x_mm": {
+        "derive": true,
+        "max": 10000,
+        "min": 1,
+        "type": "number"
+      },
+      "y_mm": {
+        "derive": true,
+        "max": 10000,
+        "min": 1,
+        "type": "number"
+      },
+      "z_mm": {
+        "derive": true,
+        "max": 10000,
+        "min": 1,
+        "type": "number"
+      }
+    },
+    "kinds": {
+      "button": {
+        "behaviors": [
+          "switch"
+        ],
+        "class": "control",
+        "io": {
+          "contact": {
+            "dir": "in"
+          }
+        },
+        "label": "Push button",
+        "params": {
+          "action": {
+            "default": "momentary",
+            "type": "enum",
+            "values": [
+              "momentary",
+              "latching"
+            ]
+          },
+          "color": {
+            "default": "green",
+            "type": "enum",
+            "values": [
+              "red",
+              "green",
+              "yellow",
+              "blue",
+              "black",
+              "white"
+            ]
+          },
+          "contact": {
+            "default": "no",
+            "type": "enum",
+            "values": [
+              "no",
+              "nc"
+            ]
+          }
+        },
+        "simulated": true
+      },
+      "buzzer": {
+        "behaviors": [
+          "light"
+        ],
+        "class": "indicator",
+        "io": {
+          "coil": {
+            "dir": "out"
+          }
+        },
+        "label": "Buzzer",
+        "params": {},
+        "simulated": true
+      },
+      "conveyor": {
+        "behaviors": [
+          "belt"
+        ],
+        "class": "electric",
+        "form": "belt",
+        "io": {
+          "run_back": {
+            "dir": "out"
+          },
+          "run_fwd": {
+            "dir": "out"
+          }
+        },
+        "label": "Belt conveyor",
+        "params": {
+          "speed_mm_s": {
+            "default": 100,
+            "max": 5000,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "params2": {
+          "height_mm": {
+            "default": 80,
+            "max": 5000,
+            "min": 10,
+            "type": "number"
+          },
+          "length_mm": {
+            "default": 1000,
+            "max": 20000,
+            "min": 50,
+            "type": "number"
+          },
+          "motor_at": {
+            "default": "end",
+            "type": "enum",
+            "values": [
+              "end",
+              "none"
+            ]
+          },
+          "width_mm": {
+            "default": 200,
+            "max": 5000,
+            "min": 20,
+            "type": "number"
+          }
+        },
+        "simulated": true
+      },
+      "cylinder_double": {
+        "behaviors": [
+          "valve",
+          "linear"
+        ],
+        "class": "pneumatic",
+        "form": "cyl",
+        "io": {
+          "coil_back": {
+            "dir": "out"
+          },
+          "coil_fwd": {
+            "dir": "out"
+          },
+          "sensor_back": {
+            "dir": "in"
+          },
+          "sensor_fwd": {
+            "dir": "in"
+          }
+        },
+        "label": "Double-acting cylinder",
+        "params": {
+          "bore_mm": {
+            "default": 20,
+            "max": 500,
+            "min": 1,
+            "type": "number"
+          },
+          "off_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "on_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "stroke_mm": {
+            "default": 100,
+            "max": 5000,
+            "min": 1,
+            "type": "number"
+          },
+          "valve": {
+            "default": "5/2-double",
+            "type": "enum",
+            "values": [
+              "5/2-double",
+              "5/2-single",
+              "5/3-closed",
+              "5/3-exhaust"
+            ]
+          },
+          "window_mm": {
+            "default": 2,
+            "max": 50,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "params2": {
+          "axis_h_mm": {
+            "derive": true,
+            "max": 1000,
+            "min": 0,
+            "type": "number"
+          },
+          "body_dia_mm": {
+            "derive": true,
+            "max": 600,
+            "min": 4,
+            "type": "number"
+          },
+          "body_len_mm": {
+            "derive": true,
+            "max": 6000,
+            "min": 10,
+            "type": "number"
+          },
+          "pivot_back_mm": {
+            "derive": true,
+            "max": 1000,
+            "min": 0,
+            "type": "number"
+          },
+          "rod_dia_mm": {
+            "derive": true,
+            "max": 300,
+            "min": 1,
+            "type": "number"
+          },
+          "rod_end_mm": {
+            "default": 0,
+            "max": 500,
+            "min": 0,
+            "type": "number"
+          },
+          "rod_out_mm": {
+            "derive": true,
+            "max": 2000,
+            "min": 0,
+            "type": "number"
+          },
+          "series": {
+            "default": "generic",
+            "type": "enum",
+            "values": [
+              "generic",
+              "smc_cm2"
+            ]
+          }
+        },
+        "simulated": true,
+        "timing": true
+      },
+      "cylinder_single": {
+        "behaviors": [
+          "valve",
+          "linear"
+        ],
+        "class": "pneumatic",
+        "form": "cyl",
+        "io": {
+          "coil_fwd": {
+            "dir": "out"
+          },
+          "sensor_back": {
+            "dir": "in"
+          },
+          "sensor_fwd": {
+            "dir": "in"
+          }
+        },
+        "label": "Single-acting spring return cylinder",
+        "params": {
+          "bore_mm": {
+            "default": 16,
+            "max": 500,
+            "min": 1,
+            "type": "number"
+          },
+          "off_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "on_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "stroke_mm": {
+            "default": 50,
+            "max": 5000,
+            "min": 1,
+            "type": "number"
+          },
+          "valve": {
+            "default": "5/2-single",
+            "type": "enum",
+            "values": [
+              "5/2-single",
+              "3/2-single"
+            ]
+          },
+          "window_mm": {
+            "default": 2,
+            "max": 50,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "params2": {
+          "axis_h_mm": {
+            "derive": true,
+            "max": 1000,
+            "min": 0,
+            "type": "number"
+          },
+          "body_dia_mm": {
+            "derive": true,
+            "max": 600,
+            "min": 4,
+            "type": "number"
+          },
+          "body_len_mm": {
+            "derive": true,
+            "max": 6000,
+            "min": 10,
+            "type": "number"
+          },
+          "pivot_back_mm": {
+            "derive": true,
+            "max": 1000,
+            "min": 0,
+            "type": "number"
+          },
+          "rod_dia_mm": {
+            "derive": true,
+            "max": 300,
+            "min": 1,
+            "type": "number"
+          },
+          "rod_end_mm": {
+            "default": 0,
+            "max": 500,
+            "min": 0,
+            "type": "number"
+          },
+          "rod_out_mm": {
+            "derive": true,
+            "max": 2000,
+            "min": 0,
+            "type": "number"
+          },
+          "series": {
+            "default": "generic",
+            "type": "enum",
+            "values": [
+              "generic",
+              "smc_cm2"
+            ]
+          }
+        },
+        "simulated": true,
+        "timing": true
+      },
+      "estop": {
+        "behaviors": [
+          "switch"
+        ],
+        "class": "control",
+        "io": {
+          "contact": {
+            "dir": "in"
+          }
+        },
+        "label": "Emergency stop (NC contact)",
+        "params": {
+          "contact": {
+            "default": "nc",
+            "type": "enum",
+            "values": [
+              "no",
+              "nc"
+            ]
+          }
+        },
+        "simulated": true
+      },
+      "gripper": {
+        "behaviors": [
+          "valve",
+          "linear",
+          "hold"
+        ],
+        "class": "pneumatic",
+        "form": "jaw",
+        "io": {
+          "coil_back": {
+            "dir": "out"
+          },
+          "coil_fwd": {
+            "dir": "out"
+          },
+          "sensor_back": {
+            "dir": "in"
+          },
+          "sensor_fwd": {
+            "dir": "in"
+          }
+        },
+        "label": "Pneumatic gripper (fwd = close)",
+        "params": {
+          "off_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "on_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "reach_mm": {
+            "default": 40,
+            "max": 500,
+            "min": 1,
+            "type": "number"
+          },
+          "stroke_mm": {
+            "default": 20,
+            "max": 500,
+            "min": 1,
+            "type": "number"
+          },
+          "valve": {
+            "default": "5/2-double",
+            "type": "enum",
+            "values": [
+              "5/2-double",
+              "5/2-single",
+              "5/3-closed",
+              "5/3-exhaust"
+            ]
+          },
+          "window_mm": {
+            "default": 1,
+            "max": 50,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "simulated": true,
+        "timing": true
+      },
+      "index_table": {
+        "behaviors": [
+          "rotary"
+        ],
+        "class": "electric",
+        "form": "table",
+        "io": {
+          "home": {
+            "dir": "in"
+          },
+          "in_pos": {
+            "dir": "in"
+          },
+          "run": {
+            "dir": "out"
+          }
+        },
+        "label": "Index table (moves with mech; drawn only without it)",
+        "mech": true,
+        "params": {
+          "stations": {
+            "default": 6,
+            "max": 36,
+            "min": 2,
+            "type": "number"
+          }
+        },
+        "presets": [
+          "index_table"
+        ],
+        "simulated": false
+      },
+      "lamp": {
+        "behaviors": [
+          "light"
+        ],
+        "class": "indicator",
+        "io": {
+          "coil": {
+            "dir": "out"
+          }
+        },
+        "label": "Pilot lamp",
+        "params": {
+          "color": {
+            "default": "green",
+            "type": "enum",
+            "values": [
+              "red",
+              "green",
+              "yellow",
+              "blue",
+              "white"
+            ]
+          }
+        },
+        "simulated": true
+      },
+      "level_sensor": {
+        "behaviors": [
+          "sensor"
+        ],
+        "class": "process",
+        "io": {
+          "output": {
+            "dir": "in"
+          }
+        },
+        "label": "Level sensor (standalone, settable input)",
+        "params": {},
+        "simulated": true
+      },
+      "machine": {
+        "behaviors": [],
+        "class": "machine",
+        "form": "mech",
+        "io": {},
+        "label": "Machine of primitives (moves by joints, couplings and drivers of mech; schema 2 only, needs mech)",
+        "mech": true,
+        "params": {},
+        "presets": [
+          "wheeled_base"
+        ],
+        "signals": true,
+        "simulated": false
+      },
+      "motor": {
+        "behaviors": [
+          "rotary"
+        ],
+        "class": "electric",
+        "io": {
+          "run_back": {
+            "dir": "out"
+          },
+          "run_fwd": {
+            "dir": "out"
+          }
+        },
+        "label": "Motor (run forward / backward)",
+        "params": {
+          "speed_deg_s": {
+            "default": 360,
+            "max": 100000,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "simulated": true
+      },
+      "part_sink": {
+        "behaviors": [
+          "sink"
+        ],
+        "class": "workpiece",
+        "io": {},
+        "label": "Workpiece sink (removes a part in its zone)",
+        "params": {
+          "zone_mm": {
+            "default": 60,
+            "max": 1000,
+            "min": 1,
+            "type": "number"
+          }
+        },
+        "simulated": true
+      },
+      "part_source": {
+        "behaviors": [
+          "source"
+        ],
+        "class": "workpiece",
+        "io": {
+          "make": {
+            "dir": "in"
+          }
+        },
+        "label": "Workpiece source (a part appears on the make bit or a click)",
+        "params": {
+          "part_mm": {
+            "default": 40,
+            "max": 500,
+            "min": 5,
+            "type": "number"
+          }
+        },
+        "simulated": true
+      },
+      "photo_sensor": {
+        "behaviors": [
+          "sensor"
+        ],
+        "class": "sensor",
+        "io": {
+          "output": {
+            "dir": "in"
+          }
+        },
+        "label": "Photoelectric sensor (standalone, settable input)",
+        "params": {},
+        "simulated": true
+      },
+      "prox_sensor": {
+        "behaviors": [
+          "sensor"
+        ],
+        "class": "sensor",
+        "io": {
+          "output": {
+            "dir": "in"
+          }
+        },
+        "label": "Proximity sensor (standalone, settable input)",
+        "params": {},
+        "simulated": true
+      },
+      "pump": {
+        "behaviors": [
+          "light"
+        ],
+        "class": "process",
+        "io": {
+          "run": {
+            "dir": "out"
+          }
+        },
+        "label": "Pump (state only)",
+        "params": {},
+        "simulated": true
+      },
+      "reed_sensor": {
+        "behaviors": [
+          "sensor"
+        ],
+        "class": "sensor",
+        "io": {
+          "output": {
+            "dir": "in"
+          }
+        },
+        "label": "Reed sensor (standalone, settable input)",
+        "params": {},
+        "simulated": true
+      },
+      "robot_arm": {
+        "behaviors": [
+          "robot"
+        ],
+        "class": "robot",
+        "io": {},
+        "label": "Robot arm (signals by the shared schema) (moves with mech; drawn only without it)",
+        "mech": true,
+        "params": {
+          "axes": {
+            "default": 6,
+            "max": 7,
+            "min": 1,
+            "type": "number"
+          }
+        },
+        "presets": [
+          "robot_6r"
+        ],
+        "signals": true,
+        "simulated": false
+      },
+      "rotary_actuator": {
+        "behaviors": [
+          "valve",
+          "rotary"
+        ],
+        "class": "pneumatic",
+        "io": {
+          "coil_back": {
+            "dir": "out"
+          },
+          "coil_fwd": {
+            "dir": "out"
+          },
+          "sensor_back": {
+            "dir": "in"
+          },
+          "sensor_fwd": {
+            "dir": "in"
+          }
+        },
+        "label": "Rotary actuator",
+        "params": {
+          "angle_deg": {
+            "default": 90,
+            "max": 360,
+            "min": 1,
+            "type": "number"
+          },
+          "off_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "on_delay_ms": {
+            "default": 0,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "valve": {
+            "default": "5/2-double",
+            "type": "enum",
+            "values": [
+              "5/2-double",
+              "5/2-single",
+              "5/3-closed",
+              "5/3-exhaust"
+            ]
+          },
+          "window_mm": {
+            "default": 2,
+            "max": 50,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "simulated": true,
+        "timing": true
+      },
+      "selector": {
+        "behaviors": [
+          "switch"
+        ],
+        "class": "control",
+        "io": {
+          "contact_1": {
+            "dir": "in"
+          },
+          "contact_2": {
+            "dir": "in"
+          }
+        },
+        "label": "Selector switch",
+        "params": {
+          "contact": {
+            "default": "no",
+            "type": "enum",
+            "values": [
+              "no",
+              "nc"
+            ]
+          }
+        },
+        "simulated": true
+      },
+      "servo_axis": {
+        "behaviors": [
+          "linear"
+        ],
+        "class": "electric",
+        "form": "linear",
+        "io": {},
+        "label": "Servo axis (signals by the shared schema) (moves with mech; drawn only without it)",
+        "mech": true,
+        "params": {
+          "stroke_mm": {
+            "default": 200,
+            "max": 5000,
+            "min": 1,
+            "type": "number"
+          }
+        },
+        "params2": {
+          "addr_grows": {
+            "default": "away",
+            "type": "enum",
+            "values": [
+              "away",
+              "toward"
+            ]
+          },
+          "body_h_mm": {
+            "default": 60,
+            "max": 1000,
+            "min": 5,
+            "type": "number"
+          },
+          "body_len_mm": {
+            "derive": true,
+            "max": 10000,
+            "min": 20,
+            "type": "number"
+          },
+          "body_w_mm": {
+            "default": 80,
+            "max": 1000,
+            "min": 5,
+            "type": "number"
+          },
+          "carriage_h_mm": {
+            "default": 20,
+            "max": 500,
+            "min": 1,
+            "type": "number"
+          },
+          "carriage_len_mm": {
+            "default": 80,
+            "max": 2000,
+            "min": 10,
+            "type": "number"
+          },
+          "home_at": {
+            "default": "-x",
+            "type": "enum",
+            "values": [
+              "-x",
+              "+x"
+            ]
+          },
+          "home_mm": {
+            "default": 0,
+            "max": 100000,
+            "min": -100000,
+            "type": "number"
+          },
+          "lead_mm": {
+            "max": 1000,
+            "min": 0.01,
+            "optional": true,
+            "type": "number"
+          }
+        },
+        "presets": [
+          "servo_screw"
+        ],
+        "signals": true,
+        "simulated": false
+      },
+      "solid": {
+        "behaviors": [],
+        "class": "structure",
+        "form": "solid",
+        "io": {},
+        "label": "Free solid (schema 2: needs `shape`, optional `frames`)",
+        "params": {},
+        "simulated": true
+      },
+      "tank": {
+        "behaviors": [
+          "level"
+        ],
+        "class": "process",
+        "io": {
+          "drain": {
+            "dir": "out"
+          },
+          "fill": {
+            "dir": "out"
+          },
+          "sensor_high": {
+            "dir": "in"
+          },
+          "sensor_low": {
+            "dir": "in"
+          },
+          "value_word": {
+            "dir": "in",
+            "type": "word"
+          }
+        },
+        "label": "Tank with fill and drain",
+        "params": {
+          "capacity": {
+            "default": 100,
+            "max": 1000000,
+            "min": 1,
+            "type": "number"
+          },
+          "drain_rate": {
+            "default": 10,
+            "max": 100000,
+            "min": 0,
+            "type": "number"
+          },
+          "fill_rate": {
+            "default": 10,
+            "max": 100000,
+            "min": 0,
+            "type": "number"
+          },
+          "high_at": {
+            "default": 90,
+            "max": 1000000,
+            "min": 0,
+            "type": "number"
+          },
+          "initial": {
+            "default": 0,
+            "max": 1000000,
+            "min": 0,
+            "type": "number"
+          },
+          "low_at": {
+            "default": 10,
+            "max": 1000000,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "simulated": true
+      },
+      "tower_light": {
+        "behaviors": [
+          "light"
+        ],
+        "class": "indicator",
+        "io": {
+          "coil_buzzer": {
+            "dir": "out"
+          },
+          "coil_green": {
+            "dir": "out"
+          },
+          "coil_red": {
+            "dir": "out"
+          },
+          "coil_yellow": {
+            "dir": "out"
+          }
+        },
+        "label": "Tower light",
+        "params": {},
+        "simulated": true
+      },
+      "vacuum_pad": {
+        "behaviors": [
+          "light",
+          "hold"
+        ],
+        "class": "pneumatic",
+        "io": {
+          "coil": {
+            "dir": "out"
+          }
+        },
+        "label": "Vacuum pad",
+        "params": {
+          "reach_mm": {
+            "default": 40,
+            "max": 500,
+            "min": 1,
+            "type": "number"
+          }
+        },
+        "simulated": true
+      },
+      "zone_sensor": {
+        "behaviors": [
+          "zone"
+        ],
+        "class": "sensor",
+        "io": {
+          "output": {
+            "dir": "in"
+          }
+        },
+        "label": "Presence sensor (ON while a workpiece is in its zone)",
+        "params": {
+          "zone_mm": {
+            "default": 60,
+            "max": 1000,
+            "min": 1,
+            "type": "number"
+          }
+        },
+        "simulated": true
+      }
+    },
+    "layout": {
+      "button": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              40,
+              50,
+              40
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "contact",
+            "part": "body"
+          }
+        ]
+      },
+      "buzzer": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              40,
+              30,
+              40
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil",
+            "part": "body"
+          }
+        ]
+      },
+      "conveyor": {
+        "parts": [
+          {
+            "name": "frame",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              1000,
+              80,
+              200
+            ]
+          },
+          {
+            "name": "motor",
+            "pos": [
+              550,
+              0,
+              0
+            ],
+            "size": [
+              100,
+              80,
+              80
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              80,
+              0
+            ],
+            "kind": "wire",
+            "name": "run_fwd",
+            "part": "motor"
+          },
+          {
+            "at": [
+              20,
+              80,
+              0
+            ],
+            "kind": "wire",
+            "name": "run_back",
+            "part": "motor"
+          }
+        ]
+      },
+      "cylinder_double": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              200,
+              50,
+              50
+            ]
+          },
+          {
+            "name": "rod",
+            "pos": [
+              130,
+              19,
+              0
+            ],
+            "size": [
+              60,
+              12,
+              12
+            ]
+          },
+          {
+            "name": "valve",
+            "pos": [
+              0,
+              50,
+              0
+            ],
+            "size": [
+              60,
+              40,
+              40
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -100,
+              25,
+              0
+            ],
+            "kind": "air",
+            "name": "cap",
+            "part": "body"
+          },
+          {
+            "at": [
+              100,
+              25,
+              0
+            ],
+            "kind": "air",
+            "name": "rod",
+            "part": "body"
+          },
+          {
+            "at": [
+              -20,
+              20,
+              20
+            ],
+            "kind": "air",
+            "name": "valve_a",
+            "part": "valve"
+          },
+          {
+            "at": [
+              20,
+              20,
+              20
+            ],
+            "kind": "air",
+            "name": "valve_b",
+            "part": "valve"
+          },
+          {
+            "at": [
+              0,
+              20,
+              -20
+            ],
+            "kind": "air",
+            "name": "valve_p",
+            "part": "valve"
+          },
+          {
+            "at": [
+              0,
+              40,
+              0
+            ],
+            "kind": "air",
+            "name": "valve_r",
+            "part": "valve"
+          },
+          {
+            "at": [
+              -25,
+              40,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_fwd",
+            "part": "valve"
+          },
+          {
+            "at": [
+              25,
+              40,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_back",
+            "part": "valve"
+          }
+        ]
+      },
+      "cylinder_single": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              160,
+              40,
+              40
+            ]
+          },
+          {
+            "name": "rod",
+            "pos": [
+              100,
+              15,
+              0
+            ],
+            "size": [
+              40,
+              10,
+              10
+            ]
+          },
+          {
+            "name": "valve",
+            "pos": [
+              0,
+              40,
+              0
+            ],
+            "size": [
+              50,
+              35,
+              35
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -80,
+              20,
+              0
+            ],
+            "kind": "air",
+            "name": "cap",
+            "part": "body"
+          },
+          {
+            "at": [
+              0,
+              17,
+              18
+            ],
+            "kind": "air",
+            "name": "valve_a",
+            "part": "valve"
+          },
+          {
+            "at": [
+              -15,
+              17,
+              -18
+            ],
+            "kind": "air",
+            "name": "valve_p",
+            "part": "valve"
+          },
+          {
+            "at": [
+              15,
+              35,
+              0
+            ],
+            "kind": "air",
+            "name": "valve_r",
+            "part": "valve"
+          },
+          {
+            "at": [
+              0,
+              35,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_fwd",
+            "part": "valve"
+          }
+        ]
+      },
+      "estop": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              60,
+              60,
+              60
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "contact",
+            "part": "body"
+          }
+        ]
+      },
+      "gripper": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              70,
+              40,
+              50
+            ]
+          },
+          {
+            "name": "valve",
+            "pos": [
+              0,
+              40,
+              0
+            ],
+            "size": [
+              50,
+              35,
+              35
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -35,
+              20,
+              0
+            ],
+            "kind": "air",
+            "name": "cap",
+            "part": "body"
+          },
+          {
+            "at": [
+              35,
+              20,
+              0
+            ],
+            "kind": "air",
+            "name": "rod",
+            "part": "body"
+          },
+          {
+            "at": [
+              -15,
+              17,
+              18
+            ],
+            "kind": "air",
+            "name": "valve_a",
+            "part": "valve"
+          },
+          {
+            "at": [
+              15,
+              17,
+              18
+            ],
+            "kind": "air",
+            "name": "valve_b",
+            "part": "valve"
+          },
+          {
+            "at": [
+              0,
+              17,
+              -18
+            ],
+            "kind": "air",
+            "name": "valve_p",
+            "part": "valve"
+          },
+          {
+            "at": [
+              0,
+              35,
+              0
+            ],
+            "kind": "air",
+            "name": "valve_r",
+            "part": "valve"
+          },
+          {
+            "at": [
+              -20,
+              35,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_fwd",
+            "part": "valve"
+          },
+          {
+            "at": [
+              20,
+              35,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_back",
+            "part": "valve"
+          }
+        ]
+      },
+      "index_table": {
+        "parts": [
+          {
+            "name": "table",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              400,
+              150,
+              400
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              150,
+              200
+            ],
+            "kind": "wire",
+            "name": "run",
+            "part": "table"
+          },
+          {
+            "at": [
+              20,
+              150,
+              200
+            ],
+            "kind": "wire",
+            "name": "home",
+            "part": "table"
+          }
+        ]
+      },
+      "lamp": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              30,
+              40,
+              30
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil",
+            "part": "body"
+          }
+        ]
+      },
+      "level_sensor": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              30,
+              100,
+              30
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              100,
+              0
+            ],
+            "kind": "wire",
+            "name": "output",
+            "part": "body"
+          }
+        ]
+      },
+      "motor": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              120,
+              100,
+              100
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -60,
+              50,
+              0
+            ],
+            "kind": "wire",
+            "name": "run_fwd",
+            "part": "body"
+          },
+          {
+            "at": [
+              -60,
+              50,
+              20
+            ],
+            "kind": "wire",
+            "name": "run_back",
+            "part": "body"
+          }
+        ]
+      },
+      "part_sink": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              60,
+              40,
+              60
+            ]
+          }
+        ],
+        "ports": []
+      },
+      "part_source": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              60,
+              40,
+              60
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "make",
+            "part": "body"
+          }
+        ]
+      },
+      "photo_sensor": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              20,
+              50,
+              20
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "output",
+            "part": "body"
+          }
+        ]
+      },
+      "prox_sensor": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              18,
+              18,
+              60
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              9,
+              -30
+            ],
+            "kind": "wire",
+            "name": "output",
+            "part": "body"
+          }
+        ]
+      },
+      "pump": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              150,
+              120,
+              120
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              120,
+              0
+            ],
+            "kind": "wire",
+            "name": "run",
+            "part": "body"
+          }
+        ]
+      },
+      "reed_sensor": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              30,
+              10,
+              10
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -15,
+              5,
+              0
+            ],
+            "kind": "wire",
+            "name": "output",
+            "part": "body"
+          }
+        ]
+      },
+      "robot_arm": {
+        "parts": [
+          {
+            "name": "base",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              300,
+              400,
+              300
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              150
+            ],
+            "kind": "wire",
+            "name": "power",
+            "part": "base"
+          }
+        ]
+      },
+      "rotary_actuator": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              80,
+              80,
+              80
+            ]
+          },
+          {
+            "name": "valve",
+            "pos": [
+              0,
+              80,
+              0
+            ],
+            "size": [
+              50,
+              35,
+              35
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -40,
+              40,
+              0
+            ],
+            "kind": "air",
+            "name": "cap",
+            "part": "body"
+          },
+          {
+            "at": [
+              40,
+              40,
+              0
+            ],
+            "kind": "air",
+            "name": "rod",
+            "part": "body"
+          },
+          {
+            "at": [
+              -15,
+              17,
+              18
+            ],
+            "kind": "air",
+            "name": "valve_a",
+            "part": "valve"
+          },
+          {
+            "at": [
+              15,
+              17,
+              18
+            ],
+            "kind": "air",
+            "name": "valve_b",
+            "part": "valve"
+          },
+          {
+            "at": [
+              0,
+              17,
+              -18
+            ],
+            "kind": "air",
+            "name": "valve_p",
+            "part": "valve"
+          },
+          {
+            "at": [
+              0,
+              35,
+              0
+            ],
+            "kind": "air",
+            "name": "valve_r",
+            "part": "valve"
+          },
+          {
+            "at": [
+              -20,
+              35,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_fwd",
+            "part": "valve"
+          },
+          {
+            "at": [
+              20,
+              35,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_back",
+            "part": "valve"
+          }
+        ]
+      },
+      "selector": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              40,
+              50,
+              40
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -10,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "contact_1",
+            "part": "body"
+          },
+          {
+            "at": [
+              10,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "contact_2",
+            "part": "body"
+          }
+        ]
+      },
+      "servo_axis": {
+        "parts": [
+          {
+            "name": "rail",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              400,
+              60,
+              80
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              -200,
+              30,
+              0
+            ],
+            "kind": "wire",
+            "name": "power",
+            "part": "rail"
+          }
+        ]
+      },
+      "tank": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              400,
+              600,
+              400
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              600,
+              0
+            ],
+            "kind": "wire",
+            "name": "fill",
+            "part": "body"
+          },
+          {
+            "at": [
+              0,
+              0,
+              200
+            ],
+            "kind": "wire",
+            "name": "drain",
+            "part": "body"
+          }
+        ]
+      },
+      "tower_light": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              50,
+              200,
+              50
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_red",
+            "part": "body"
+          },
+          {
+            "at": [
+              10,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_yellow",
+            "part": "body"
+          },
+          {
+            "at": [
+              20,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_green",
+            "part": "body"
+          },
+          {
+            "at": [
+              -10,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil_buzzer",
+            "part": "body"
+          }
+        ]
+      },
+      "vacuum_pad": {
+        "parts": [
+          {
+            "name": "pad",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              40,
+              40,
+              40
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              40,
+              0
+            ],
+            "kind": "air",
+            "name": "vacuum",
+            "part": "pad"
+          },
+          {
+            "at": [
+              20,
+              20,
+              0
+            ],
+            "kind": "wire",
+            "name": "coil",
+            "part": "pad"
+          }
+        ]
+      },
+      "zone_sensor": {
+        "parts": [
+          {
+            "name": "body",
+            "pos": [
+              0,
+              0,
+              0
+            ],
+            "size": [
+              20,
+              50,
+              20
+            ]
+          }
+        ],
+        "ports": [
+          {
+            "at": [
+              0,
+              0,
+              0
+            ],
+            "kind": "wire",
+            "name": "output",
+            "part": "body"
+          }
+        ]
+      }
+    },
+    "layout_note": "Millimetres, y is up, y = 0 is the floor. A device pose.pos is the bottom centre of the device. Each part has size [x,y,z] and pos = offset of the part's bottom centre from the device pose.pos (override with the device `parts` field: {part: {pos, rot}}). A port `at` is the offset from the bottom centre of its part. A cylinder lies along x. Rotation is about y (pose.rot[1]). Parts are static: a stroke is not part of the size. Put devices on the floor (pos y 0) or on top of another device, keep boxes from overlapping, and draw air links valve_a -> cap and valve_b -> rod (a device with a valve and no links gets these by default).",
+    "mounts": [
+      {
+        "datum": "base",
+        "forms": [
+          "all"
+        ],
+        "style": "unknown"
+      },
+      {
+        "datum": "base",
+        "forms": [
+          "all"
+        ],
+        "style": "floor"
+      },
+      {
+        "datum": "base",
+        "forms": [
+          "all"
+        ],
+        "style": "surface"
+      },
+      {
+        "datum": "face",
+        "forms": [
+          "box"
+        ],
+        "style": "hole"
+      },
+      {
+        "datum": {
+          "belt": "seat",
+          "box": "seat",
+          "cyl": "cap_end",
+          "frame": "base",
+          "jaw": "cap_end",
+          "linear": "base",
+          "robot6": "base",
+          "solid": "base",
+          "table": "seat"
+        },
+        "forms": [
+          "all"
+        ],
+        "style": "rod_end"
+      },
+      {
+        "datum": {
+          "belt": "seat",
+          "box": "seat",
+          "cyl": "cap_end",
+          "frame": "base",
+          "jaw": "cap_end",
+          "linear": "base",
+          "robot6": "base",
+          "solid": "base",
+          "table": "seat"
+        },
+        "forms": [
+          "all"
+        ],
+        "style": "flange"
+      },
+      {
+        "datum": "base",
+        "forms": [
+          "cyl"
+        ],
+        "style": "foot"
+      },
+      {
+        "datum": "head_end",
+        "forms": [
+          "cyl"
+        ],
+        "style": "nose"
+      },
+      {
+        "datum": "head_end",
+        "forms": [
+          "cyl"
+        ],
+        "style": "flange_front"
+      },
+      {
+        "datum": "cap_end",
+        "forms": [
+          "cyl"
+        ],
+        "style": "flange_rear"
+      },
+      {
+        "datum": "pivot",
+        "forms": [
+          "cyl"
+        ],
+        "style": "clevis_rear"
+      },
+      {
+        "datum": "mid",
+        "forms": [
+          "cyl"
+        ],
+        "style": "trunnion"
+      },
+      {
+        "datum": "base",
+        "forms": [
+          "solid"
+        ],
+        "style": "hinge"
+      }
+    ],
+    "params_note": "A param is {type:number, min, max, default}, {type:enum, values, default} or {type:bool, default}. timing:true kinds also take timing {lag_ms, fwd_ms, back_ms (0 to 60000), source}.",
+    "presets": {
+      "index_table": {
+        "arg_order": [
+          "move_ms",
+          "lag_ms",
+          "start_deg",
+          "window_deg"
+        ],
+        "args": {
+          "lag_ms": {
+            "default": 50,
+            "max": 60000,
+            "min": 0,
+            "type": "number"
+          },
+          "move_ms": {
+            "default": 500,
+            "max": 60000,
+            "min": 1,
+            "type": "number"
+          },
+          "start_deg": {
+            "default": 0,
+            "max": 359.999,
+            "min": 0,
+            "type": "number"
+          },
+          "window_deg": {
+            "default": 1,
+            "max": 45,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "kinds": [
+          "index_table"
+        ],
+        "label": "Index table: each pulse on run turns one station (360 / stations) in move_ms after lag_ms",
+        "mech": {
+          "drivers": [
+            {
+              "count": {
+                "param": "stations"
+              },
+              "joint": "table",
+              "lag_ms": {
+                "arg": "lag_ms"
+              },
+              "move_ms": {
+                "arg": "move_ms"
+              },
+              "pulse": "run",
+              "type": "step"
+            }
+          ],
+          "joints": [
+            {
+              "axis": "y",
+              "name": "table",
+              "on": "top",
+              "start": {
+                "arg": "start_deg"
+              },
+              "type": "revolute",
+              "wrap": true
+            }
+          ],
+          "sensors": [
+            {
+              "at": 0,
+              "joint": "table",
+              "out": "home",
+              "type": "window",
+              "window": {
+                "arg": "window_deg"
+              }
+            },
+            {
+              "at": 0,
+              "joint": "table",
+              "optional": true,
+              "out": "in_pos",
+              "per_turn": {
+                "param": "stations"
+              },
+              "type": "window",
+              "window": {
+                "arg": "window_deg"
+              }
+            }
+          ]
+        },
+        "signals": {
+          "home": "io slot, bit in",
+          "in_pos": "io slot, bit in (optional)",
+          "run": "io slot, bit out"
+        }
+      },
+      "robot_6r": {
+        "arg_order": [
+          "base_h_mm",
+          "upper_mm",
+          "fore_mm",
+          "wrist_mm",
+          "programs"
+        ],
+        "args": {
+          "base_h_mm": {
+            "default": 300,
+            "max": 3000,
+            "min": 0,
+            "type": "number"
+          },
+          "fore_mm": {
+            "default": 400,
+            "max": 3000,
+            "min": 0,
+            "type": "number"
+          },
+          "programs": {
+            "type": "programs"
+          },
+          "upper_mm": {
+            "default": 400,
+            "max": 3000,
+            "min": 0,
+            "type": "number"
+          },
+          "wrist_mm": {
+            "default": 100,
+            "max": 3000,
+            "min": 0,
+            "type": "number"
+          }
+        },
+        "kinds": [
+          "robot_arm"
+        ],
+        "label": "6-axis arm (generic figure of 10-architecture 12.5, no link offsets): plays a taught pose by a program number",
+        "mech": {
+          "drivers": [
+            {
+              "busy": "busy",
+              "done": "done",
+              "joints": [
+                "j1",
+                "j2",
+                "j3",
+                "j4",
+                "j5",
+                "j6"
+              ],
+              "programs": {
+                "arg": "programs"
+              },
+              "select": "prog",
+              "start": "start",
+              "type": "playback"
+            }
+          ],
+          "joints": [
+            {
+              "axis": "y",
+              "max": 180,
+              "min": -180,
+              "name": "j1",
+              "on": "base",
+              "type": "revolute"
+            },
+            {
+              "axis": "-z",
+              "max": 180,
+              "min": -180,
+              "name": "j2",
+              "on": "j1",
+              "pos": [
+                0,
+                {
+                  "arg": "base_h_mm"
+                },
+                0
+              ],
+              "type": "revolute"
+            },
+            {
+              "axis": "-z",
+              "max": 180,
+              "min": -180,
+              "name": "j3",
+              "on": "j2",
+              "pos": [
+                0,
+                {
+                  "arg": "upper_mm"
+                },
+                0
+              ],
+              "type": "revolute"
+            },
+            {
+              "axis": "y",
+              "max": 180,
+              "min": -180,
+              "name": "j4",
+              "on": "j3",
+              "pos": [
+                0,
+                {
+                  "arg": "fore_mm"
+                },
+                0
+              ],
+              "type": "revolute"
+            },
+            {
+              "axis": "-z",
+              "max": 180,
+              "min": -180,
+              "name": "j5",
+              "on": "j4",
+              "type": "revolute"
+            },
+            {
+              "axis": "y",
+              "max": 180,
+              "min": -180,
+              "name": "j6",
+              "on": "j5",
+              "pos": [
+                0,
+                {
+                  "arg": "wrist_mm"
+                },
+                0
+              ],
+              "type": "revolute"
+            },
+            {
+              "name": "flange",
+              "on": "j6",
+              "type": "fixed"
+            }
+          ]
+        },
+        "signals": {
+          "busy": "bit in (optional)",
+          "done": "bit in (optional)",
+          "prog": "word or bcd out",
+          "start": "bit out"
+        }
+      },
+      "servo_screw": {
+        "arg_order": [
+          "word",
+          "width",
+          "per_mm",
+          "speed_mm_s",
+          "enable",
+          "busy"
+        ],
+        "args": {
+          "busy": {
+            "default": "busy",
+            "optional": true,
+            "type": "signal",
+            "use": "bit_in"
+          },
+          "enable": {
+            "default": "servo_on",
+            "optional": true,
+            "type": "signal",
+            "use": "bit_out"
+          },
+          "per_mm": {
+            "default": 1,
+            "max": 100000,
+            "min": 0.0001,
+            "type": "number"
+          },
+          "speed_mm_s": {
+            "max": 5000,
+            "min": 0.1,
+            "optional": true,
+            "type": "number"
+          },
+          "width": {
+            "default": 16,
+            "type": "enum",
+            "values": [
+              16,
+              32
+            ]
+          },
+          "word": {
+            "type": "signal",
+            "use": "word"
+          }
+        },
+        "kinds": [
+          "servo_axis"
+        ],
+        "label": "Ball-screw axis: the carriage follows a commanded position; the motor turns once for each lead_mm of travel",
+        "mech": {
+          "couplings": [
+            {
+              "from": "carriage",
+              "lead_mm": {
+                "param": "lead_mm"
+              },
+              "to": "motor",
+              "type": "ratio"
+            }
+          ],
+          "drivers": [
+            {
+              "busy": {
+                "arg": "busy"
+              },
+              "enable": {
+                "arg": "enable"
+              },
+              "joint": "carriage",
+              "per_unit": {
+                "arg": "per_mm"
+              },
+              "speed": {
+                "arg": "speed_mm_s"
+              },
+              "type": "follow",
+              "width": {
+                "arg": "width"
+              },
+              "word": {
+                "arg": "word"
+              }
+            }
+          ],
+          "joints": [
+            {
+              "name": "carriage",
+              "type": "form"
+            },
+            {
+              "axis": "y",
+              "name": "motor",
+              "on": "left",
+              "pos": [
+                0,
+                30,
+                0
+              ],
+              "type": "revolute",
+              "wrap": true
+            }
+          ]
+        },
+        "signals": {
+          "<word arg>": "word out (the commanded position)",
+          "busy": "bit in (optional, stand-in mode only)",
+          "servo_on": "bit out (optional)"
+        }
+      },
+      "wheeled_base": {
+        "arg_order": [
+          "wheel_d_mm",
+          "track_mm",
+          "programs"
+        ],
+        "args": {
+          "programs": {
+            "type": "programs"
+          },
+          "track_mm": {
+            "default": 300,
+            "max": 10000,
+            "min": 1,
+            "type": "number"
+          },
+          "wheel_d_mm": {
+            "default": 100,
+            "max": 2000,
+            "min": 1,
+            "type": "number"
+          }
+        },
+        "kinds": [
+          "machine"
+        ],
+        "label": "Two-wheel base: the wheels turn by a program; the base follows by differential drive (no slip)",
+        "mech": {
+          "couplings": [
+            {
+              "base": "body",
+              "left": "wl",
+              "right": "wr",
+              "track_mm": {
+                "arg": "track_mm"
+              },
+              "type": "diff_drive",
+              "wheel_d_mm": {
+                "arg": "wheel_d_mm"
+              }
+            }
+          ],
+          "drivers": [
+            {
+              "busy": "busy",
+              "done": "done",
+              "joints": [
+                "wl",
+                "wr"
+              ],
+              "programs": {
+                "arg": "programs"
+              },
+              "select": "prog",
+              "start": "start",
+              "type": "playback"
+            }
+          ],
+          "joints": [
+            {
+              "name": "body",
+              "on": "base",
+              "type": "planar"
+            },
+            {
+              "axis": "-z",
+              "name": "wl",
+              "on": "body",
+              "pos": [
+                0,
+                {
+                  "arg": "wheel_d_mm",
+                  "mul": 0.5
+                },
+                {
+                  "arg": "track_mm",
+                  "mul": -0.5
+                }
+              ],
+              "type": "revolute",
+              "wrap": true
+            },
+            {
+              "axis": "-z",
+              "name": "wr",
+              "on": "body",
+              "pos": [
+                0,
+                {
+                  "arg": "wheel_d_mm",
+                  "mul": 0.5
+                },
+                {
+                  "arg": "track_mm",
+                  "mul": 0.5
+                }
+              ],
+              "type": "revolute",
+              "wrap": true
+            }
+          ]
+        },
+        "signals": {
+          "busy": "bit in (optional)",
+          "done": "bit in (optional)",
+          "prog": "word or bcd out",
+          "start": "bit out"
+        }
+      }
+    },
+    "presets_note": "A preset is a template of the device key `mech`: pick it with mech {preset, args, sensors?, basis?}. `args` are the preset's own values (arg_order is their order); a number field may be {arg, mul}. The server expands it to joints, couplings, drivers and sensors (facts.mech[].expanded). A preset gives the same motion as the same explicit mech.",
+    "schema": 1,
+    "series": {
+      "generic": {
+        "source": "Assumed ratios of the design study (docs/research/photo-twin/10-architecture.md 2.5): body_len 3.0 * bore + stroke (never below stroke + 20), body_dia 1.4 * bore, rod_dia 0.4 * bore, rod_out 2.0 * bore, pivot_back 1.5 * bore. No maker table; values marked ratio."
+      },
+      "smc_cm2": {
+        "bores": {
+          "20": {
+            "D": 8,
+            "H": 41,
+            "I": 28,
+            "L": 30,
+            "S": 62
+          },
+          "25": {
+            "D": 10,
+            "H": 45,
+            "I": 33.5,
+            "L": 30,
+            "S": 62
+          },
+          "32": {
+            "D": 12,
+            "H": 45,
+            "I": 37.5,
+            "L": 30,
+            "S": 64
+          },
+          "40": {
+            "D": 14,
+            "H": 50,
+            "I": 46.5,
+            "L": 39,
+            "S": 88
+          }
+        },
+        "source": "SMC CM2 series, CAT.EUS20-269A-UK, page 8 Basic (Double-side Bossed) (B): S, I, D, H; page 12 Single Clevis (C): L (design 10-architecture.md 2.5). cylinder_single adds 25 mm to S for each started 50 mm of stroke (CAT.EUS20-269B-UK page 37). CDM2 (built-in magnet) is taken to have the same sizes: not verified.",
+        "spring_mm_per_50": 25
+      }
+    },
+    "signal_schema": {
+      "active": "high | low (bit signals only, default high)",
+      "device": "bit: X, Y or M address; word and bcd: D address",
+      "dir": "in | out (seen from the PLC: out = the PLC drives it, in = the PLC reads it)",
+      "name": "1 to 24 characters of A-Z a-z 0-9 _ -",
+      "type": "bit | word | bcd"
+    },
+    "tones": [
+      "metal",
+      "black",
+      "dark",
+      "white",
+      "orange",
+      "green",
+      "red",
+      "blue",
+      "yellow",
+      "clear",
+      "mark"
+    ],
+    "valve_types": [
+      "5/2-double",
+      "5/2-single",
+      "3/2-single",
+      "5/3-closed",
+      "5/3-exhaust"
+    ]
+  },
+  "format_version": 1,
+  "frames": {
+    "belt": [
+      "base",
+      "surface",
+      "in",
+      "end",
+      "seat"
+    ],
+    "box": [
+      "base",
+      "top",
+      "bottom",
+      "front",
+      "back",
+      "left",
+      "right",
+      "seat"
+    ],
+    "custom": "a `solid` may add `frames` {name:{pos, rot, type}}; they are fixed in `base`",
+    "cyl": [
+      "base",
+      "mid",
+      "cap_end",
+      "head_end",
+      "pivot",
+      "out"
+    ],
+    "frame": [
+      "base"
+    ],
+    "jaw": [
+      "base",
+      "mid",
+      "cap_end",
+      "head_end",
+      "out"
+    ],
+    "linear": [
+      "base",
+      "top",
+      "bottom",
+      "front",
+      "back",
+      "left",
+      "right",
+      "carriage"
+    ],
+    "mech": [
+      "base"
+    ],
+    "moving": "`out` (cyl, jaw) and `carriage` (linear) move with the axis value; every other frame is fixed in `base`",
+    "robot6": [
+      "base"
+    ],
+    "solid": [
+      "base",
+      "top",
+      "bottom",
+      "front",
+      "back",
+      "left",
+      "right"
+    ],
+    "table": [
+      "base",
+      "top",
+      "bottom",
+      "front",
+      "back",
+      "left",
+      "right",
+      "seat"
+    ]
+  },
+  "geometry_note": "Units mm, degrees, ms. Right-handed axes. World +y is up, the floor is y = 0. A frame is an origin and three axes; every device has the frame `base` (for a catalog kind the bottom centre of the main part, +y away from the surface it stands on). rot [rx, ry, rz] means R = Ry(ry) * Rz(rz) * Rx(rx): ry is the heading about the parent +y (a positive angle turns +x toward -z), rz tilts the own +x above the parent x-z plane, rx rolls about the own +x. Test vectors: [0,-90,0] maps +x to [0,0,1]; [0,0,-90] maps +x to [0,-1,0]; [90,0,0] maps +y to [0,0,1] and +z to [0,-1,0]. world(datum of the child) = world(frame `on`) * T(pose.pos) * R(pose.rot); the datum is a frame of the device itself (key `datum`, default from the mount style), so pose places that frame, not `base`. A `surface` frame has +y out of the surface; an `axial` frame has +x out along an axis. A face frame of a box: look at the face from outside with the body upright; +x points right, +z points down, +y points at you. A cylinder or gripper lies along its +x: frames mid, cap_end, head_end, pivot and `out` (the rod end; it moves with the stroke). A belt carries along +x: frames surface, in, end. A linear servo axis moves its carriage along +x: the frame `carriage` moves with the axis value. `seat` is the bottom centre of a box kind with +x = body +y. Sizes come from named params (x_mm, y_mm, z_mm, bore_mm, stroke_mm, body_len_mm, length_mm ...); a size that the scene does not give is derived and `facts.dims` says how (given, series, ratio, default). Schema 2 only: `on` (\"<id>\" or \"<id>.<frame>\"), `mount`, `datum`, `basis`, `model`, kind `solid` with `shape` (box or cyl items) and `frames`, and the scene key `refs` (known lengths between two frames).",
+  "guide": {
+    "skin_recipe": {
+      "device": {
+        "id": "l1",
+        "io": {
+          "coil": "Y10"
+        },
+        "kind": "lamp",
+        "skin": {
+          "groups": [
+            {
+              "hide": "Y10",
+              "items": [
+                {
+                  "axis": "y",
+                  "d": 14,
+                  "len": 6,
+                  "pos": [
+                    0,
+                    3,
+                    0
+                  ],
+                  "t": "cyl",
+                  "tone": "dark"
+                }
+              ],
+              "name": "lamp_off"
+            },
+            {
+              "items": [
+                {
+                  "axis": "y",
+                  "d": 14,
+                  "len": 6,
+                  "pos": [
+                    0,
+                    3,
+                    0
+                  ],
+                  "t": "cyl",
+                  "tone": "mark"
+                }
+              ],
+              "name": "lamp_on",
+              "show": "Y10"
+            }
+          ]
+        }
+      },
+      "note": "A lamp that the PLC drives is a device of kind lamp. Its look is two groups of one address: the dark lamp while the bit is OFF, the lit lamp (tone mark) while it is ON."
+    },
+    "skin_rules": "A skin is the look only: {groups:[{name (1-16 of a-z 0-9 _), frame (a frame of the same device, default base), show|hide (a bit pin \"<device id>.<slot or signal>\" of the model), items:[{t:box,size,pos,rot,tone}|{t:cyl,d,len,d2,axis,pos,rot,tone}]}]}. Items are in the coordinates of the frame of their group; a group on `out` moves with the rod, a group on `carriage` with the carriage. tone is one of `tones`; `mark` only in a group with `show`. At most 16 groups, 64 items and 16384 bytes for each device, 1000 skin items for the scene. A skin sets no size, place, travel, direction, address or timing: those are the skeleton. `indicators` shows the bits of other devices on a board: [{pins [\"<device id>.<signal>\", ...] (1-64 bit pins), at [x,y,z], step [dx,dy,dz], frame, d}], at most 8 rows and 128 lamps for each device.",
+    "workpieces": "Workpieces (schema 2, simulation only; rules, no physics). 1. Read the photo and the tones of `tones`. 2. Draft scene key `workpieces.types` {name: {shape round|square, d_mm or side_mm, h_mm, material metal|plastic, tone (a name of tones except mark), basis}}: one type for each shape, colour and size; sizes from a known length are basis ref, by eye guess; write material as you think and always basis guess, because a photo does not show metal. 3. Draft scene key `points` [{name (1-24 of a-z 0-9 _), on (\"<id>\" or \"<id>.<frame>\": the device that makes or holds the part there, so the point moves with it), pos [x,y,z] in that frame (the bottom centre of a part that rests there), catch_mm, holds, basis}]. 4. Device keys: `stack` {point, fed_by (a cylinder with a push rule from that point), content (type names, lowest first, at most 20), refill}; `push` [{from, to}] on a cylinder (at most 4); `stop` {at} on a conveyor or {belt, at} on a cylinder (active from half stroke); `sense` on a sensor, exactly one of {point, within_mm, material any|metal}, {held_by: a pad or gripper}, {pulse_of: a conveyor, mm_per_pulse}; scene key `workpieces.start` [{type, at}]. 5. Read facts.points, facts.workpieces, facts.push (contact_mm and end_gap_mm of each push rule) and ask: put the ask lines to the person (which colour is metal, one puck measured with a ruler), then draft again with basis user or measured. The person confirms the draft on the page. Limits: 32 points, 8 types, 20 start parts, 4 stacks, 16 push rules, 8 stops, 32 sensor rules, 50 parts at the start."
+  },
+  "model_rules": [
+    {
+      "key": "schema",
+      "rule": "a twin model is schema 2"
+    },
+    {
+      "key": "photos",
+      "rule": "a photo is a file of the person; a model file names none"
+    },
+    {
+      "key": "modules",
+      "rule": "a module model is a PLC feature"
+    },
+    {
+      "key": "io",
+      "rule": "its values are PLC addresses; every slot of the kind is a pin <id>.<slot>"
+    },
+    {
+      "key": "signals[].device",
+      "rule": "a PLC address; the pin is <id>.<name>"
+    },
+    {
+      "key": "position",
+      "rule": "a word address; use mech with the preset servo_screw and a word signal"
+    },
+    {
+      "key": "skin.groups[].show, hide",
+      "rule": "one pin \"<device id>.<signal>\", not an address"
+    },
+    {
+      "key": "indicators",
+      "rule": "pins: [\"<device id>.<signal>\", ...], not from and count"
+    },
+    {
+      "key": "signals[].name",
+      "rule": "not a slot name of its kind: a pin name is used once"
+    }
+  ],
+  "mounts": [
+    {
+      "datum": "base",
+      "forms": [
+        "all"
+      ],
+      "style": "unknown"
+    },
+    {
+      "datum": "base",
+      "forms": [
+        "all"
+      ],
+      "style": "floor"
+    },
+    {
+      "datum": "base",
+      "forms": [
+        "all"
+      ],
+      "style": "surface"
+    },
+    {
+      "datum": "face",
+      "forms": [
+        "box"
+      ],
+      "style": "hole"
+    },
+    {
+      "datum": {
+        "belt": "seat",
+        "box": "seat",
+        "cyl": "cap_end",
+        "frame": "base",
+        "jaw": "cap_end",
+        "linear": "base",
+        "robot6": "base",
+        "solid": "base",
+        "table": "seat"
+      },
+      "forms": [
+        "all"
+      ],
+      "style": "rod_end"
+    },
+    {
+      "datum": {
+        "belt": "seat",
+        "box": "seat",
+        "cyl": "cap_end",
+        "frame": "base",
+        "jaw": "cap_end",
+        "linear": "base",
+        "robot6": "base",
+        "solid": "base",
+        "table": "seat"
+      },
+      "forms": [
+        "all"
+      ],
+      "style": "flange"
+    },
+    {
+      "datum": "base",
+      "forms": [
+        "cyl"
+      ],
+      "style": "foot"
+    },
+    {
+      "datum": "head_end",
+      "forms": [
+        "cyl"
+      ],
+      "style": "nose"
+    },
+    {
+      "datum": "head_end",
+      "forms": [
+        "cyl"
+      ],
+      "style": "flange_front"
+    },
+    {
+      "datum": "cap_end",
+      "forms": [
+        "cyl"
+      ],
+      "style": "flange_rear"
+    },
+    {
+      "datum": "pivot",
+      "forms": [
+        "cyl"
+      ],
+      "style": "clevis_rear"
+    },
+    {
+      "datum": "mid",
+      "forms": [
+        "cyl"
+      ],
+      "style": "trunnion"
+    },
+    {
+      "datum": "base",
+      "forms": [
+        "solid"
+      ],
+      "style": "hinge"
+    }
+  ],
+  "note": "Read-only. A simulation pass is not a test on real equipment.",
+  "scene_schema": {
+    "devices": "array of at most 200: {id (1-32 of A-Z a-z 0-9 - _, unique), kind (a key of catalog.kinds), label, pose:{pos:[x,y,z] mm, rot:[x,y,z] deg}, params (per kind), timing:{lag_ms, fwd_ms, back_ms}, signals:[{name, dir, type, active}] (no device: a pin is <id>.<slot or signal name>), mech, skin (groups; show and hide take a pin), indicators (rows with pins), on, mount, datum, frames, shape, basis, model, stack, push, stop, sense}. A twin model holds no PLC address: no io, no signals[].device, no position, no scene photos or modules.",
+    "limits": {
+      "max_bytes": 262144,
+      "max_devices": 200,
+      "no_two_output_slots_on_one_address": true
+    },
+    "name": "optional text, at most 40 characters",
+    "parts_and_links": "device `parts`:{part_name:{pos:[x,y,z], rot:[x,y,z]}} (part names from catalog.layout[kind].parts); scene `links` (at most 400):[{from:\"<device>.<port>\", to:\"<device>.<port>\", kind:\"air\"|\"wire\"}] (ports from catalog.layout[kind].ports; both ends must have the link kind). See catalog.layout_note.",
+    "photos": "optional array of at most 32: {file, camera:{pos:[x,y,z], target:[x,y,z], fov} | null}",
+    "schema": "1 or 2. Schema 2 adds, per device: on (\"<id>\" or \"<id>.<frame>\"; default the world), mount (a style of `mounts` that allows the form of the kind; default unknown; floor needs no `on`), datum (the frame of this device that pose places; default from the mount style, see `mounts[].datum`; never a moving frame), size params per kind (cylinders: series, body_len_mm, body_dia_mm, rod_dia_mm, rod_out_mm, pivot_back_mm, axis_h_mm: absent = derived, see `series`; servo_axis: stroke_mm, home_at, addr_grows, home_mm, lead_mm, carriage_len_mm, carriage_h_mm, body_h_mm, body_w_mm, body_len_mm; conveyor: length_mm, width_mm, height_mm, motor_at; box kinds: x_mm, y_mm, z_mm), basis ({param|pose|shape: user|label|measured|ref|guess}, at most 32), model (text, at most 40), and for kind `solid` shape (1 to 24 items {t:box,size,pos,rot} or {t:cyl,d,len,d2,axis,pos,rot}) and frames ({name:{pos, rot:[rx,ry,rz], type:surface|axial}}, at most 16). pose.rot has three angles in schema 2. Device keys `skin` (the look: groups of box/cyl items bound to a frame of the device, with show/hide by a pin of the scene and a tone from `tones`), `skin_source` (the server sets it: a model's skin is always `model`; only the person's page sets `checked`) and `indicators` (rows of lamps that repeat bits of other devices); the rules are in `guide.skin_rules`, the work order in `guide.order`. Scene key `refs` (at most 16 {a:\"<id>.<frame>\", b:\"<id>.<frame>\", mm, basis: measured|label}): a length that a person measured; the reply gives `scene_mm` for each. The reply of a schema 2 draft has `facts` (where each device stands in the world, its axis, `box_mm`, `dims` with their source, the axis tips), `ask` (what to put to the person), `notes`, `not_simulated` and `limits`; read them, do not trust your own arithmetic. See `geometry_note` and `frames`.",
+    "simulated_false": "kinds with simulated:false are drawn and mapped, but the plant does not move them yet"
+  },
+  "series": {
+    "generic": {
+      "source": "Assumed ratios of the design study (docs/research/photo-twin/10-architecture.md 2.5): body_len 3.0 * bore + stroke (never below stroke + 20), body_dia 1.4 * bore, rod_dia 0.4 * bore, rod_out 2.0 * bore, pivot_back 1.5 * bore. No maker table; values marked ratio."
+    },
+    "smc_cm2": {
+      "bores": {
+        "20": {
+          "D": 8,
+          "H": 41,
+          "I": 28,
+          "L": 30,
+          "S": 62
+        },
+        "25": {
+          "D": 10,
+          "H": 45,
+          "I": 33.5,
+          "L": 30,
+          "S": 62
+        },
+        "32": {
+          "D": 12,
+          "H": 45,
+          "I": 37.5,
+          "L": 30,
+          "S": 64
+        },
+        "40": {
+          "D": 14,
+          "H": 50,
+          "I": 46.5,
+          "L": 39,
+          "S": 88
+        }
+      },
+      "source": "SMC CM2 series, CAT.EUS20-269A-UK, page 8 Basic (Double-side Bossed) (B): S, I, D, H; page 12 Single Clevis (C): L (design 10-architecture.md 2.5). cylinder_single adds 25 mm to S for each started 50 mm of stroke (CAT.EUS20-269B-UK page 37). CDM2 (built-in magnet) is taken to have the same sizes: not verified.",
+      "spring_mm_per_50": 25
+    }
+  },
+  "tones": [
+    "metal",
+    "black",
+    "dark",
+    "white",
+    "orange",
+    "green",
+    "red",
+    "blue",
+    "yellow",
+    "clear",
+    "mark"
+  ]
+}

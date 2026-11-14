@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Twin model · twin-modeling-mcp</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231b1f24'/%3E%3Cpath fill='%23fff' d='M8 28h12V12h8v40h-8V36H8zM36 12h8v16h12v8H44v16h-8z'/%3E%3Crect x='28' y='20' width='8' height='24' fill='%2330a46c'/%3E%3C/svg%3E">
+<script type="importmap">
+{ "imports": { "three": "/vendor/three/three.module.js", "three/addons/": "/vendor/three/" } }
+</script>
+<style>
+/* twin-modeling-mcp의 공개 3D 화면 (reusable-parts 3.1e, 설계 47, 시안 B). 영어와 한국어. 모양은 plc-mcp의 3D 탭과 같다(TW193):
+   같은 Anatomy 렌더러, 같은 토큰 값, 같은 조작 문법. 새 색, 그라디언트, 빛 번짐 없음. 밝은 종이 테마만(TW156).
+   --a-* 값은 wheresryan22/anatomy kit/iso.css (MIT, Copyright (c) 2026 Ryan)에서 가져왔다. THIRD_PARTY.md 참고 */
+:root {
+  --bg: #f2f2ef; --panel: #fbfbfa; --ink: #18181a; --muted: #57575a; --line: #d4d4d6;
+  --in: #1f6feb; --ok: #1a7f37; --bad: #cf222e; --warn: #9a6700;
+  --a-paper: #fbfbfa; --a-top: #ffffff; --a-s3: #f4f4f1; --a-hi: #26262a; --a-mid: #8a8a8f; --a-lo: #b4b4b8; --a-faint: #d4d4d6; --a-lit: #000000;
+  --a-halo: #8a8a80; --a-halo-op: 0.32; --a-stop: #f1b8ba;
+  --coil: #3e63dd; --sensor: #30a46c; --alarm: #e5484d; --exhaust: #c2410c; --motion: #26262a; --lamp-g: #30a46c; --lamp-a: #b37a00;
+  --tint-add: #eff8f2; --tint-del: #fdf0f0; --tint-chg: #fef9ec; --mark: #ffb020;
+  --sk-metal: #cdd0d5; --sk-black: #303136; --sk-dark: #5a5d65; --sk-white: #ffffff;
+  --sk-orange: #dc9259; --sk-green: #77b08a; --sk-red: #d27873; --sk-blue: #7697cc; --sk-yellow: #dcc264;
+  --sk-clear: #a9cfdc; --sk-clear-op: 0.3; --sk-mark: #ffb020;
+  --sk-line: #3d3d43; --sk-line-inv: #b9bcc3; --sk-line-clear: #5f8391; --sk-line-mark: #8a5a00;
+  --sk-lamp-off: #4a4c52; --sk-belt-mark: #7d8088;
+  /* 말마다 글꼴 한 벌 (TW206): 영어는 시스템 글꼴, 한국어는 맑은 고딕 계열. 웹 글꼴 없음 */
+  --font: system-ui, "Segoe UI", "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --serif: Georgia, "Noto Serif KR", "Batang", "바탕", "AppleMyungjo", serif;
+  --mono: ui-monospace, "SF Mono", Consolas, "D2Coding", monospace;
+  color-scheme: light;
+}
+:root:lang(ko) { --font: "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif; --serif: "Noto Serif KR", "Batang", "바탕", Georgia, serif; }
+* { box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body { margin: 0; background: var(--a-paper); color: var(--ink); font: 14px/1.45 var(--font); }
+:root:lang(ko) body { word-break: keep-all; }
+button, input, select { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.vh { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--in); outline-offset: 2px; }
+
+/* 그림 */
+.stage { position: fixed; inset: 0; }
+.view { position: absolute; inset: 0; overflow: hidden; background: var(--a-paper); }
+.view canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.tags { position: absolute; inset: 0; pointer-events: none; }
+/* 렌더러가 그림 위에 얹는 것: 입출력 줄, 경보 꼬리표, 모서리 괄호, 표시등 고리와 꼬리표, 부품 꼬리표 (plc-mcp 화면의 규칙과 같다) */
+.strip { position: absolute; left: 0; top: 0; display: flex; flex-wrap: wrap; gap: 2px 8px; max-width: calc(100vw - 16px); padding: 2px 7px; background: rgba(251, 251, 250, 0.94); border: 1px solid var(--a-faint); border-radius: 4px; font: 600 12px/17px var(--mono); color: var(--ink); white-space: nowrap; }
+.strip.hide { display: none; }
+.sl { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.sl.on { color: var(--ink); font-weight: 700; }
+.sl .lp { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--k) 75%, var(--ink)); background: transparent; flex: none; }
+.sl.on .lp { background: var(--k); box-shadow: 0 0 5px var(--k); }
+.sl.na .lp { border-style: dotted; border-color: var(--a-mid); }
+.sl b { font-weight: 700; color: var(--ink); }
+.sl.x { --k: var(--sensor); } .sl.y { --k: var(--coil); } .sl.m { --k: var(--lamp-a); } .sl.d { --k: var(--a-mid); }
+.sl.fr .lp { outline: 3px double var(--ink); outline-offset: 1px; }
+.sl .fm { font-weight: 700; border: 1px solid var(--ink); border-radius: 3px; padding: 0 3px; font-size: 11px; line-height: 14px; }
+.sl.out { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--a-mid); }
+.sl.out .lp { border-style: dashed; border-color: var(--a-mid); }
+.strip.mini { gap: 3px; padding: 2px 4px; }
+.strip.mini .sl span { display: none; }
+.strip .ax { flex-basis: 100%; font: 600 12px/17px var(--font); color: var(--ink); }
+.strip.two { max-width: 330px; white-space: normal; }
+.atag { position: absolute; left: 0; top: 0; padding: 1px 7px; background: var(--panel); border: 1.5px solid var(--bad); border-radius: 4px; color: var(--bad); font: 700 12px/17px var(--font); white-space: nowrap; }
+.brk { position: absolute; left: 0; top: 0; pointer-events: none; --c: var(--ink); --t: 2px; --l: 14px; filter: drop-shadow(0 0 1px var(--a-paper)) drop-shadow(0 0 1px var(--a-paper));
+  background:
+    linear-gradient(var(--c), var(--c)) left top / var(--l) var(--t), linear-gradient(var(--c), var(--c)) left top / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) right top / var(--l) var(--t), linear-gradient(var(--c), var(--c)) right top / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) left bottom / var(--l) var(--t), linear-gradient(var(--c), var(--c)) left bottom / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) right bottom / var(--l) var(--t), linear-gradient(var(--c), var(--c)) right bottom / var(--t) var(--l);
+  background-repeat: no-repeat; }
+.brk.hov { --c: var(--muted); --t: 1.5px; --l: 10px; }
+.brk.alm { --c: var(--alarm); }
+.brk.pt { --l: 8px; } .brk.pt.hov { --l: 7px; }
+.ltag { position: absolute; left: 0; top: 0; padding: 2px 7px; background: var(--panel); border: 1px solid var(--a-mid); border-radius: 4px; font: 600 12px/17px var(--mono); white-space: nowrap; }
+.lring { position: absolute; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 1.5px solid var(--ink); border-radius: 50%; }
+.wtag { position: absolute; left: 0; top: 0; padding: 0 8px; background: var(--panel); border: 1px solid var(--a-mid); border-radius: 9px; font: 700 12px/18px var(--mono); white-space: nowrap; pointer-events: none; }
+.wtag.zero { border-style: dotted; color: var(--muted); font-weight: 400; }
+.wtag.lft { border: 1.5px dashed var(--ink); border-radius: 4px; font-family: var(--font); padding: 0 7px; }
+.wtag.frc { border: 3px double var(--ink); border-radius: 4px; padding: 0 5px; }
+.wtag[hidden], .pname[hidden] { display: none; }
+.pname { position: absolute; left: 0; top: 0; padding: 0 3px; background: color-mix(in srgb, var(--panel) 88%, transparent); font: 11px/14px var(--mono); color: var(--ink); white-space: nowrap; pointer-events: none; }
+
+/* 조작 (plc-mcp 화면과 같은 문법) */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 4px 12px; border: 1px solid var(--muted); border-radius: 6px; background: var(--panel); font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.btn.primary { background: var(--ink); color: var(--panel); border-color: var(--ink); font-weight: 700; }
+.btn.sm { min-height: 32px; padding: 2px 9px; font-size: 12px; }
+.btn.ic { width: 40px; padding: 0; }
+.btn svg { width: 18px; height: 18px; fill: currentColor; }
+.btn:disabled { color: var(--muted); border-color: var(--line); background: transparent; cursor: not-allowed; }
+.sel { min-height: 40px; max-width: 240px; padding: 0 8px; border: 1px solid var(--muted); border-radius: 6px; background: var(--panel); font-size: 13px; }
+.seg { display: inline-flex; border: 1px solid var(--muted); border-radius: 6px; overflow: hidden; background: var(--panel); }
+.seg button { min-height: 40px; padding: 0 12px; border: 0; border-left: 1px solid var(--line); background: transparent; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.seg button:first-child { border-left: 0; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--panel); font-weight: 700; }
+.seg button:focus-visible { outline-offset: -3px; }
+.chip { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border: 3px double var(--ink); border-radius: 6px; background: var(--panel); font-weight: 700; font-size: 13px; white-space: nowrap; cursor: pointer; }
+.menu-btn { width: 44px; height: 44px; display: grid; place-items: center; border: 1px solid var(--muted); border-radius: 6px; background: var(--panel); cursor: pointer; }
+.menu-btn svg { width: 22px; height: 22px; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; fill: none; }
+.note { margin: 0; font-size: 12px; color: var(--muted); }
+.note.bad { color: var(--bad); font-weight: 700; }
+.badge { display: inline-block; padding: 0 6px; border: 1px solid currentColor; border-radius: 4px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.badge.muted { color: var(--muted); } .badge.skin { border-style: dashed; color: var(--ink); } .badge.seen { color: var(--muted); }
+.sw { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 40px; border: 0; background: transparent; padding: 4px 0; cursor: pointer; font-size: 13px; text-align: left; }
+.sw .lbl { flex: 1; }
+.sw .tr { width: 36px; height: 20px; border-radius: 10px; border: 2px solid var(--muted); position: relative; flex: none; }
+.sw .tr::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--muted); }
+.sw[aria-checked="true"] .tr { background: var(--ink); border-color: var(--ink); }
+.sw[aria-checked="true"] .tr::after { left: 18px; background: var(--panel); }
+.sw .w { font-weight: 700; min-width: 2.6em; text-align: right; }
+.model-box { border: 1px dashed var(--muted); border-radius: 6px; padding: 8px 10px; background: var(--a-s3); }
+.model-box .tag { display: block; font-size: 12px; font-weight: 700; color: var(--warn); margin-bottom: 4px; }
+.model-box pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 12px/1.5 var(--mono); }
+
+/* 위 줄: 이름, 모델 고르기, 초안 표시, 말 바꾸기, 메뉴. 어느 너비에서도 한 줄이다 */
+.top { position: absolute; z-index: 5; top: 12px; left: 12px; right: 12px; display: flex; align-items: center; gap: 8px; pointer-events: none; }
+.top > * { pointer-events: auto; }
+.mark { font: 600 17px/1 var(--serif); padding: 0 6px 0 2px; white-space: nowrap; }
+.end { margin-left: auto; display: flex; gap: 8px; }
+.bar { position: absolute; z-index: 5; top: 64px; left: 12px; display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 4px 12px; border: 1px solid var(--ink); border-radius: 6px; background: var(--panel); font-size: 13px; font-weight: 700; }
+/* 아래 막대: 어떻게 도는지 */
+.dock { position: absolute; z-index: 5; left: 50%; bottom: 14px; transform: translateX(-50%); width: min(760px, calc(100% - 24px)); background: var(--panel); border: 1px solid var(--muted); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.1); padding: 8px 10px; display: grid; grid-template-columns: auto auto auto 1fr auto; gap: 8px; align-items: center; }
+.dock .src { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
+.dock .src .state { margin-left: auto; font-weight: 700; font-size: 13px; text-align: right; }
+.line { position: relative; height: 40px; display: flex; align-items: center; }
+.line .bar2 { position: absolute; left: 0; right: 0; height: 4px; background: var(--line); border-radius: 2px; }
+.line .fill { position: absolute; left: 0; height: 4px; background: var(--ink); border-radius: 2px; }
+.time { font: 600 12px/1 var(--mono); white-space: nowrap; }
+.grp { display: flex; gap: 8px; align-items: center; }
+#speedRow { display: none; align-items: center; gap: 8px; }
+/* 카드: 고른 장치 하나 */
+.card { position: absolute; z-index: 4; right: 12px; top: 68px; width: 320px; max-height: calc(100% - 200px); overflow: auto; background: var(--panel); border: 1px solid var(--muted); border-radius: 6px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1); padding: 12px 14px; }
+.card .hd { display: flex; align-items: center; gap: 8px; }
+.card h2 { margin: 0; flex: 1; font: 600 18px/1.3 var(--serif); overflow-wrap: anywhere; }
+.card .x { width: 32px; height: 32px; border: 0; background: transparent; font-size: 20px; cursor: pointer; }
+.card .kd { margin: 4px 0 2px; font-size: 13px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.card .stt { margin: 2px 0 8px; font-weight: 700; }
+.card dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 0; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; }
+.card dt { color: var(--muted); }
+.card dd { margin: 0; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.pins { display: grid; gap: 4px; padding: 8px 0 0; border-top: 1px solid var(--line); }
+.pins h3 { margin: 4px 0 2px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.pin { display: flex; align-items: center; gap: 8px; min-height: 36px; font-size: 13px; }
+.pin .nm { flex: 1; font-family: var(--mono); overflow-wrap: anywhere; }
+.pin .lp { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--k) 75%, var(--ink)); flex: none; }
+.pin.on .lp { background: var(--k); }
+.pin.p-out { --k: var(--coil); } .pin.p-in { --k: var(--sensor); } /* `in`이라는 이름은 메뉴의 `.in` 칸 규칙과 겹친다 */
+.pin .v { min-width: 4.5em; text-align: right; }
+.pin .v.n { font-family: var(--mono); }
+.pin input { width: 6.5em; min-height: 32px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 6px; background: var(--panel); font-family: var(--mono); }
+.pin .btn { min-height: 32px; }
+/* 메뉴 */
+.menu { position: fixed; z-index: 8; top: 0; right: 0; bottom: 0; width: min(380px, 100%); background: var(--panel); border-left: 1px solid var(--muted); box-shadow: -8px 0 24px rgba(0,0,0,.08); overflow: auto; }
+.menu header { position: sticky; top: 0; display: flex; gap: 8px; align-items: center; padding: 12px 14px; background: var(--panel); border-bottom: 1px solid var(--line); z-index: 1; }
+.menu header h2 { margin: 0; flex: 1; font: 600 18px/1.3 var(--serif); }
+.menu details { border-bottom: 1px solid var(--line); }
+.menu summary { padding: 12px 14px; font-weight: 700; cursor: pointer; min-height: 48px; display: flex; align-items: center; gap: 6px; }
+.menu summary .n { font-weight: 400; color: var(--muted); font-size: 12px; }
+.menu .in { padding: 0 14px 14px; display: grid; gap: 8px; }
+.menu .in .pins { border-top: 0; padding-top: 0; }
+.menu .in .dev { font: 700 13px/1.3 var(--font); margin: 6px 0 0; overflow-wrap: anywhere; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.dl { list-style: none; margin: 0; padding: 0; display: grid; }
+.dl > li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 6px 0; border-top: 1px solid var(--line); }
+.dl > li:first-child { border-top: 0; }
+.dl .nm { flex: 1; min-height: 40px; border: 0; background: none; padding: 0; text-align: left; font-weight: 700; cursor: pointer; overflow-wrap: anywhere; }
+.dl .nm.plain { cursor: default; font-weight: 600; }
+.dl select, .dl input { min-height: 36px; padding: 0 6px; border: 1px solid var(--muted); border-radius: 6px; background: var(--panel); max-width: 100%; }
+.diff { list-style: none; margin: 6px 0; padding: 0; }
+.diff li { display: grid; grid-template-columns: 64px 1fr; gap: 8px; padding: 6px 8px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.diff .k { font-size: 12px; font-weight: 700; border-radius: 4px; text-align: center; align-self: start; border: 1px solid currentColor; }
+.diff .add { background: var(--tint-add); } .diff .add .k { color: var(--ok); }
+.diff .del { background: var(--tint-del); } .diff .del .k { color: var(--bad); }
+.diff .chg { background: var(--tint-chg); } .diff .chg .k { color: var(--warn); }
+.diff .f { display: block; font-size: 12px; font-family: var(--mono); overflow-wrap: anywhere; }
+/* 빈 화면과 알림 한 줄 */
+.empty { position: absolute; z-index: 2; inset: 0; display: grid; place-content: center; gap: 6px; padding: 80px 24px; text-align: center; pointer-events: none; }
+.empty h2 { margin: 0; font: 600 22px/1.3 var(--serif); }
+.empty p { margin: 0; color: var(--muted); max-width: 46ch; }
+.say { position: absolute; z-index: 6; left: 50%; bottom: 128px; transform: translateX(-50%); margin: 0; padding: 7px 14px; max-width: min(560px, calc(100% - 24px)); background: var(--ink); color: var(--panel); border-radius: 6px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18); }
+.say.bad { background: var(--bad); }
+@media (max-width: 600px) {
+  .top { left: 8px; right: 8px; top: 8px; } .mark { display: none; } .top .sel { max-width: 130px; }
+  .dock { bottom: 8px; width: calc(100% - 16px); grid-template-columns: auto auto auto 1fr auto; padding: 6px 8px; }
+  .dock .spd { display: none; } /* 폰: 속도는 메뉴의 보기에 있다 */
+  .dock .src { flex-wrap: wrap; }
+  .dock .src .state { flex-basis: 100%; margin-left: 0; text-align: left; font-size: 12px; } /* 상태 줄은 막대의 둘째 줄이다 */
+  #speedRow { display: flex; }
+  .card { left: 8px; right: 8px; top: auto; bottom: 132px; width: auto; max-height: calc(100% - 330px); } /* 카드가 길어도 그림이 보일 띠(약 150 px)를 남긴다 */
+  .bar { top: 60px; left: 8px; right: 8px; }
+  .say { bottom: 124px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+  <div class="view" id="view"></div>
+  <div class="top">
+    <span class="mark" data-t="app.name"></span>
+    <label class="vh" for="model" data-t="model.label"></label><select class="sel" id="model"></select>
+    <button class="chip" id="draftChip" hidden></button>
+    <button class="chip" id="skinChip" hidden></button>
+    <div class="end">
+      <div class="seg" role="group" data-t-label="lang.label"><button data-lang="en" lang="en"></button><button data-lang="ko" lang="ko"></button></div>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu" data-t-label="menu.open"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+  <div class="bar" id="bar" role="status" hidden><span id="barText"></span><button class="btn sm" id="barBtn" data-t="scene.load"></button></div>
+  <div class="empty" id="empty" hidden><h2 id="eTitle"></h2><p id="eText"></p></div>
+  <section class="card" id="card" hidden></section>
+  <div class="dock" role="group" id="dock" data-t-label="run.label">
+    <div class="src">
+      <label class="vh" for="run" data-t="run.label"></label>
+      <select class="sel" id="run"><option value="last" data-t="run.last"></option><option value="none" data-t="run.none"></option></select>
+      <span class="state" id="status" role="status"></span>
+    </div>
+    <button class="btn ic primary" id="pp"></button>
+    <button class="btn ic" id="stop"></button>
+    <button class="btn ic" id="stepb"></button>
+    <div class="line" role="progressbar" aria-valuemin="0" id="line"><div class="bar2"></div><div class="fill" id="fill"></div></div>
+    <span class="grp">
+      <span class="time" id="time"></span>
+      <label class="vh" for="speed" data-t="sim.speed"></label>
+      <select class="sel spd" id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
+    </span>
+  </div>
+  <p class="say" id="say" role="status" hidden></p>
+</main>
+<aside class="menu" id="menu" hidden>
+  <header><h2 data-t="menu.open"></h2><button class="btn sm" id="menuClose" data-t="menu.close"></button></header>
+  <details id="dPins" open><summary><span data-t="sec.pins"></span></summary><div class="in" id="pins"></div></details>
+  <details id="dSheet"><summary><span data-t="sec.sheet"></span></summary><div class="in" id="sheet"></div></details>
+  <details id="dDev"><summary><span data-t="sec.devices"></span> <span class="n" id="devN"></span></summary><div class="in">
+    <ul class="dl" id="devs"></ul>
+    <div class="row" id="skRow" hidden><button class="btn" id="skAll"></button></div>
+    <p class="note" id="skNote" data-t="skin.note" hidden></p>
+  </div></details>
+  <details id="dDraft"><summary><span data-t="sec.draft"></span> <span class="n" id="drN"></span></summary><div class="in">
+    <button class="sw" role="switch" aria-checked="false" id="swAuto"><span class="lbl" data-t="draft.auto"></span><span class="tr"></span><span class="w"></span></button>
+    <div id="diff"></div>
+    <div class="row" id="draftActs" hidden><button class="btn primary" id="confirm" data-t="draft.confirm"></button><button class="btn" id="discard"></button></div>
+    <p class="note" id="edMsg" role="status"></p>
+  </div></details>
+  <details id="dParts"><summary><span data-t="sec.parts"></span></summary><div class="in">
+    <p class="note" id="partsNote"></p>
+    <div class="row"><button class="btn" id="partsReset" data-t="parts.reset"></button></div>
+  </div></details>
+  <details id="dFault"><summary><span data-t="sec.faults"></span> <span class="n" id="fN"></span></summary><div class="in">
+    <p class="note" data-t="faults.note"></p>
+    <p class="note" id="fMsg" role="status"></p>
+    <ul class="dl" id="fList"></ul>
+    <div class="row"><button class="btn" id="fClear" data-t="faults.clear" disabled></button></div>
+  </div></details>
+  <details id="dView"><summary><span data-t="sec.view"></span></summary><div class="in">
+    <button class="sw" role="switch" aria-checked="false" id="swStrips"><span class="lbl" data-t="view.strips"></span><span class="tr"></span><span class="w"></span></button>
+    <button class="sw" role="switch" aria-checked="false" id="swFlow"><span class="lbl" data-t="view.flow"></span><span class="tr"></span><span class="w"></span></button>
+    <button class="sw" role="switch" aria-checked="false" id="swCut"><span class="lbl" data-t="view.cut"></span><span class="tr"></span><span class="w"></span></button>
+    <div id="speedRow"><label for="speed2" data-t="sim.speed"></label><select class="sel" id="speed2"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></div>
+    <div class="row"><button class="btn" id="fit" data-t="view.fit"></button></div>
+  </div></details>
+</aside>
+<script type="module">
+import { createTwin, dict } from '/vendor/twin-scene.js';
+import { $, el, enc, makeKeep, makeApi, jointText, drvText as coreDrvText, fmt, stateFrom, stampKey, faultListOf, simInput, renderShot, renderFail } from '/vendor/twin-core.js';
+
+const TOKEN = "__DASHBOARD_TOKEN__";
+const keep = makeKeep('twinModel.');
+
+// ---- 화면 글: 키 → [영어, 한국어] (설계 47의 4.1절). 모델이 쓴 글(장치 이름, 원리 시트)은 번역하지 않는다 (TW203) ----
+const TEXT = {
+  'app.name': ['Twin model', '트윈 모델'], 'app.title': ['Twin model · twin-modeling-mcp', '트윈 모델 · twin-modeling-mcp'],
+  'lang.label': ['Language', '언어'], 'model.label': ['Model', '모델'], 'run.label': ['Run', '실행'],
+  'run.last': ['Last model_sim run', '마지막 model_sim 실행'], 'run.last.short': ['Last run', '마지막 실행'],
+  'run.none': ['No program · press the pins', '프로그램 없음 · 핀을 눌러 움직임'], 'run.none.short': ['No program', '프로그램 없음'],
+  'run.nolast': ['No model_sim run of this model yet', '이 모델의 model_sim 실행이 아직 없습니다'],
+  'sim.start': ['Start', '시작'], 'sim.stop': ['Stop', '정지'], 'sim.pause': ['Pause', '일시정지'], 'sim.resume': ['Resume', '계속'],
+  'sim.step': ['Step 100 ms', '100 ms 앞으로'], 'sim.speed': ['Speed', '속도'],  'sim.time': ['t = {s} s', 't = {s} s'], 'sim.of': ['{a} of {b} s', '{a} / {b} s'],
+  'sim.ended': ['Run ended at {b} s', '{b} s에서 실행이 끝났습니다'], 'sim.gone': ['The simulation ended. Start it again.', '시뮬레이션이 끝났습니다. 다시 시작하세요.'],
+  'sim.error': ['Simulation error: {text}', '시뮬 오류: {text}'], 'sim.note': ['A simulation pass is not a test on real equipment.', '시뮬레이션 통과는 실제 장비 시험이 아닙니다.'],
+  'state.idle': ['Not running · drawn at the start values', '멈춤 · 시작 값으로 그림'], 'state.paused': ['Paused', '일시정지'],
+  'state.moving': ['Now · {list}', '지금 · {list}'], 'state.still': ['Everything stopped', '모두 정지'],
+  'draft.chip': ['Draft · not confirmed', '초안 · 확정 전'], 'draft.chip.short': ['Draft', '초안'], 'draft.confirm': ['Confirm draft', '초안 확정'], 'draft.discard': ['Discard draft', '초안 버리기'],
+  'draft.discard.arm': ['Press again to discard', '한 번 더 누르면 버립니다'], 'draft.none': ['No draft. The model is confirmed.', '초안이 없습니다. 확정된 모델입니다.'],
+  'draft.shown': ['The drawing shows the draft.', '그림은 초안을 보여 줍니다.'], 'draft.confirmed': ['Draft confirmed. The model changed.', '확정했습니다. 모델이 바뀌었습니다.'], 'draft.discarded': ['Draft discarded.', '초안을 버렸습니다.'],
+  'draft.added': ['Added', '추가'], 'draft.removed': ['Removed', '삭제'], 'draft.changed': ['Changed', '변경'],
+  'draft.auto': ['Apply AI model changes at once', 'AI 모델 변경 바로 반영'], 'draft.changes': ['Changes: {n}', '바뀐 곳 {n}'],
+  'scene.changed': ['The model changed · Load', '모델이 바뀌었습니다 · 불러오기'], 'scene.newdraft': ['A new draft is here · Load', '새 초안이 있습니다 · 불러오기'], 'scene.load': ['Load', '불러오기'],
+  'skin.chip': ['Look: written by a model · not checked', '외형: 모델 작성 · 확인 안 됨'], 'skin.check': ['Mark look checked', '외형 확인'], 'skin.uncheck': ['Undo look check', '외형 확인 취소'],
+  'skin.checkall': ['Mark all looks checked', '모두 외형 확인'], 'skin.checkall.arm': ['Press again to mark all', '한 번 더 누르면 모두 확인합니다'],
+  'skin.note': ['This says only that the look was seen, not that a size is right.', '외형을 사람이 봤다는 표시일 뿐입니다. 치수가 맞다는 뜻이 아닙니다.'],
+  'skin.seen': ['Seen by a person', '사람이 봄'], 'skin.model': ['Written by a model', '모델 작성'],
+  'menu.open': ['Menu', '메뉴'], 'menu.close': ['Close', '닫기'],
+  'sec.pins': ['Pins', '핀'], 'sec.sheet': ['Principle sheet', '원리 시트'], 'sec.devices': ['Devices', '장치'], 'sec.draft': ['Draft', '초안'], 'sec.parts': ['Parts', '부품'], 'sec.faults': ['Faults', '고장 넣기'], 'sec.view': ['View', '보기'],
+  'view.fit': ['Fit view', '시점 맞춤'], 'view.strips': ['Show all I/O strips', '입출력 줄 모두 보기'], 'view.flow': ['Show all air flow', '공기 흐름 모두 보기'], 'view.cut': ['Show all cutaways', '단면 모두 보기'],
+  'sw.on': ['On', '켜짐'], 'sw.off': ['Off', '꺼짐'],
+  'card.close': ['Close card', '카드 닫기'], 'card.nolook': ['No look · joints only', '형상 없음 · 관절만 그림'], 'card.drive': ['Drive', '구동'], 'card.drive.n': ['Drive {n}', '구동 {n}'],
+  'card.out': ['Outputs · you drive them', '출력 · 사람이 줌'], 'card.in': ['Inputs · the model writes them', '입력 · 모델이 씀'], 'card.start': ['Start the simulation to move the joints', '시뮬을 시작하면 관절이 움직입니다'],
+  'pin.press': ['Press', '누르기'], 'pin.set': ['Set', '넣기'], 'pin.on': ['On', '켜짐'], 'pin.off': ['Off', '꺼짐'],
+  'pin.locked': ['Pins are pressed only with "No program"', '핀은 "프로그램 없음"일 때만 누릅니다'],  'drv.playback': ['Playing program {n}', '프로그램 {n}번 재생 중'], 'drv.step': ['Moving one station', '한 칸 이동 중'], 'drv.coils.fwd': ['Forward command', '전진 지령'], 'drv.coils.back': ['Back command', '후진 지령'], 'drv.coils.none': ['No command', '지령 없음'],
+  'drv.follow': ['Moving to the target', '목표로 이동 중'], 'drv.follow.at': ['At the target', '목표 위치'], 'drv.stop': ['Stopped', '정지'], 'drv.moving': ['Moving', '움직이는 중'],
+  'sheet.tag': ['Written by a model · not checked', '모델 작성 · 확인 안 됨'], 'sheet.none': ['This model has no principle sheet.', '이 모델에는 원리 시트가 없습니다.'],
+  'faults.note': ['One fault for each device. A change starts the simulation again from t = 0.', '장치마다 하나. 바꾸면 시뮬을 처음부터 다시 돌립니다.'], 'faults.none': ['No fault', '고장 없음'],
+  'faults.sensor_stuck_on': ['Sensor stuck on', '센서 켜짐 고착'], 'faults.sensor_stuck_off': ['Sensor stuck off', '센서 꺼짐 고착'], 'faults.coil_dead': ['Coil dead', '코일 불량'], 'faults.air_off': ['No air', '공기 차단'], 'faults.slow': ['Slow', '느림'],
+  'faults.factor': ['Slow factor (1 to 10)', '느림 배수 (1~10)'], 'faults.all_sensors': ['All sensors', '모든 센서'], 'faults.all_coils': ['All coils', '모든 코일'], 'faults.clear': ['Clear all faults', '고장 모두 해제'],
+  'faults.restarted': ['Faults changed. The simulation started again from t = 0.', '고장을 바꾸고 시뮬을 처음부터 다시 시작했습니다.'], 'faults.nodev': ['No moving device can take a fault.', '고장을 넣을 수 있는 움직이는 장치가 없습니다.'],
+  'parts.none': ['This model has no workpieces.', '이 모델에는 공작물이 없습니다.'], 'parts.reset': ['Reset parts', '부품 처음으로'], 'parts.line': ['Parts move only in a simulation.', '부품은 시뮬에서만 움직입니다.'],
+  'empty.title': ['No model yet', '모델이 아직 없습니다'], 'empty.text': ['Ask the AI to draft one with model_draft.', 'AI에게 model_draft로 초안을 만들게 하세요.'],
+  'empty.notoken': ['This page works only when twin-modeling-mcp opens it. Use the address in the server\'s start line.', '이 페이지는 twin-modeling-mcp가 열어 줄 때만 됩니다. 서버 시작 줄의 주소로 여세요.'],
+  'empty.badmodel': ['The model did not pass its check', '모델이 검사에 통과하지 못했습니다'], 'empty.badmodel.text': ['It is not drawn. The reason is under Draft in the menu.', '그리지 않습니다. 까닭은 메뉴의 초안에 있습니다.'],
+  'net.down': ['Cannot reach the server. Check that twin-modeling-mcp is running.', '서버에 닿지 않습니다. twin-modeling-mcp가 켜져 있는지 확인하세요.'],
+  'net.forbidden': ['The token does not match. Open the page again from the server\'s address.', '토큰이 맞지 않습니다. 서버의 주소로 페이지를 다시 여세요.'],
+  'kind.button': ['Push button', '누름 버튼'], 'kind.buzzer': ['Buzzer', '부저'], 'kind.conveyor': ['Conveyor', '컨베이어'], 'kind.cylinder_double': ['Double-acting cylinder', '복동 실린더'],
+  'kind.cylinder_single': ['Single-acting cylinder', '단동 실린더'], 'kind.estop': ['Emergency stop', '비상 정지'], 'kind.gripper': ['Gripper', '그리퍼'], 'kind.index_table': ['Index table', '인덱스 테이블'],
+  'kind.lamp': ['Lamp', '표시등'], 'kind.level_sensor': ['Level sensor', '레벨 센서'], 'kind.machine': ['Machine', '기계'], 'kind.motor': ['Motor', '모터'], 'kind.part_sink': ['Part sink', '부품 받이'],
+  'kind.part_source': ['Part source', '부품 공급기'], 'kind.photo_sensor': ['Photo sensor', '광전 센서'], 'kind.prox_sensor': ['Proximity sensor', '근접 센서'], 'kind.pump': ['Pump', '펌프'],
+  'kind.reed_sensor': ['Reed sensor', '리드 센서'], 'kind.robot_arm': ['Robot arm', '로봇 팔'], 'kind.rotary_actuator': ['Rotary actuator', '로터리 액추에이터'], 'kind.selector': ['Selector switch', '셀렉터 스위치'],
+  'kind.servo_axis': ['Servo axis', '서보 축'], 'kind.solid': ['Fixed part', '고정물'], 'kind.tank': ['Tank', '탱크'], 'kind.tower_light': ['Tower light', '타워 램프'], 'kind.vacuum_pad': ['Vacuum pad', '진공 패드'],
+  'kind.zone_sensor': ['Zone sensor', '구역 센서'],
+  // 그림 안의 글 (렌더러의 `opts.text`, TW215)
+  'r.io': ['{label} I/O', '{label} 입출력'], 'r.on': ['on', '켜짐'], 'r.off': ['off', '꺼짐'], 'r.unknown': ['unknown', '모름'],
+  'r.forced.on': ['on, forced (not written by the rule)', '켜짐, 강제로 켬 (규칙이 쓰지 않음)'], 'r.forced.off': ['off, forced (not written by the rule)', '꺼짐, 강제로 끔 (규칙이 쓰지 않음)'], 'r.forced': ['forced', '강제'],
+  'r.canvas': ['Isometric drawing of the model. The device list is in the menu.', '모델 등각 그림. 장치 목록은 메뉴에 있습니다.'],
+  'r.stack.n': ['{label} {n}', '{label} {n}개'], 'r.stack.empty': ['{label} empty', '{label} 비었음'], 'r.count': ['{n}', '{n}개'], 'r.left': ['outside the rules', '규칙 밖'],
+  'r.axis': ['Drawn at the start values', '시작 값으로 그림'], 'r.lamp.out': ['{addr} not in the model (drawn off)', '{addr} 모델에 없는 핀 (늘 꺼짐으로 그림)'], 'r.alarm': ['alarm', '알람'],
+};
+
+// ---- 말 고르기 (TW204): 주소의 `?lang=`, 저장한 선택, 브라우저 언어, 영어 ----
+const pickLang = () => {
+  const q = new URLSearchParams(location.search).get('lang'); if (q === 'en' || q === 'ko') return q;
+  const s = keep.get('lang', ''); if (s === 'en' || s === 'ko') return s;
+  for (const l of navigator.languages || [navigator.language || '']) { if (/^ko\b/i.test(l)) return 'ko'; if (/^en\b/i.test(l)) return 'en'; }
+  return 'en';
+};
+let lang = pickLang();
+const narrow = () => matchMedia('(max-width: 600px)').matches;
+const t = (k, v) => fmt(TEXT[k] ? TEXT[k][lang === 'ko' ? 1 : 0] : k, v);
+const api = makeApi({ token: TOKEN, lang: () => lang, translate: s => s, net: () => t('net.down') });
+
+// ---- 상태 ----
+const EMPTY = () => ({ bits: dict(), words: dict(), axes: dict(), lights: dict(), levels: dict(), alarms: [], plant: [], parts: [], forced: [], stacks: dict(), partLog: [], joints: null, jmov: dict(), drv: dict() });
+const pinKind = dict(); // 핀 이름 → 램프 색 종류 (TW210): 출력 비트 y(코일 파랑), 입력 비트 x(센서 초록), 워드 d(회색)
+const twin = createTwin($('view'), { onPick: id => pick(id), text: (k, v) => t(k, v), ioKind: a => pinKind[a] || 'd' });
+$('view').twin = twin; // 시험이 console에서 읽는 손잡이 (probe, frames)
+let cat = null, sceneName = '', data = null, shown = null, rd = null, sel = null, S = EMPTY(), active = !document.hidden;
+let simId = null, playing = false, speed = 1, scanMs = 10, simT = 0, total = 0, lastTotal = 0, ended = false, simErr = '', busy = false, stepTimer = 0, gen = 0;
+let faults = dict(), sheet = null, shownStamp = '', stale = false, stampT = 0, rT = 0, rBusy = false, sayT = 0, armT = 0, skArm = 0;
+const devOf = id => (shown && shown.devices || []).find(d => d.id === id);
+const kindOf = d => (cat && cat.kinds[d.kind]) || { behaviors: [], io: {} };
+const labelOf = d => d.label || d.id;
+const engOf = id => { const r = ((rd && rd.devices) || []).find(x => x.id === id); return r && r.mech && Object.values(r.frames || {}).some(f => f && f.joint) ? r : null; };
+const runSrc = () => $('run').value;
+// 모델의 핀 목록: 종류의 모든 `io` 칸, 그다음 신호 (엔진 `fill_pins`와 같은 차례). 핀 이름은 `<장치 id>.<이름>`이다
+const pinsOf = d => [...Object.entries(kindOf(d).io || {}).map(([n, s]) => ({ name: n, pin: d.id + '.' + n, out: s.dir === 'out', word: s.type === 'word' })), ...(d.signals || []).map(s => ({ name: s.name, pin: d.id + '.' + s.name, out: s.dir === 'out', word: !!s.type && s.type !== 'bit' }))];
+// 그림에 주는 장면 복사본: 핀이 곧 주소다(칸마다 `io`, 신호마다 `device`)
+function withPins(sc) {
+  const c = structuredClone(sc);
+  for (const d of c.devices || []) { d.io = {}; for (const n of Object.keys(kindOf(d).io || {})) d.io[n] = d.id + '.' + n; for (const s of d.signals || []) s.device = d.id + '.' + s.name; }
+  return c;
+}
+function say(text, bad) { const s = $('say'); s.textContent = text; s.className = 'say' + (bad ? ' bad' : ''); s.hidden = false; clearTimeout(sayT); sayT = setTimeout(() => { s.hidden = true; }, bad ? 9000 : 5000); }
+function empty(title, text) { $('empty').hidden = !title; $('eTitle').textContent = title || ''; $('eText').textContent = text || ''; }
+const setText = (e, s) => { if (e.textContent !== s) e.textContent = s; };
+const drvText = (d, moving) => coreDrvText(d, moving, t);
+function icon(path) { const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'), p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('aria-hidden', 'true'); p.setAttribute('d', path); s.append(p); return s; }
+const ICON = { play: 'M7 4v16l13-8z', pause: 'M6 4h4v16H6zM14 4h4v16h-4z', step: 'M5 4v16l11-8zM17 4h3v16h-3z', stop: 'M6 6h12v12H6z' };
+// 서버 글: 말에 맞춰 서버가 준다. 이 화면이 아는 코드는 하나뿐이다 (끝난 시뮬레이션)
+const serverText = r => (/^unknown simulation/.test(r.error || '') ? t('sim.gone') : r.status === 403 ? t('net.forbidden') : r.error);
+
+// ---- 글을 다시 칠한다 (말을 바꿔도 새로고침 없이) ----
+function paintTexts() {
+  document.documentElement.lang = lang; document.title = t('app.title');
+  for (const e of document.querySelectorAll('[data-t]')) { const k = e.dataset.t, s = t(narrow() && TEXT[k + '.short'] ? k + '.short' : k); if (e.textContent !== s) e.textContent = s; }
+  for (const e of document.querySelectorAll('[data-t-label]')) e.setAttribute('aria-label', t(e.dataset.tLabel));
+  for (const b of document.querySelectorAll('[data-lang]')) {
+    const ko = b.dataset.lang === 'ko'; b.textContent = narrow() ? (ko ? '한' : 'EN') : (ko ? '한국어' : 'English'); b.setAttribute('aria-label', ko ? '한국어' : 'English'); b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+  }
+  for (const id of ['swAuto', 'swStrips', 'swFlow', 'swCut']) { const b = $(id); b.querySelector('.w').textContent = t(b.getAttribute('aria-checked') === 'true' ? 'sw.on' : 'sw.off'); }
+  $('draftChip').textContent = t(narrow() ? 'draft.chip.short' : 'draft.chip');
+  $('skinChip').textContent = t('skin.chip'); if (!$('skAll').dataset.arm) $('skAll').textContent = t('skin.checkall'); // 눌러 둔(armed) 동안은 글을 바꾸지 않는다 (R3-23)
+  paintAll();
+}
+for (const b of document.querySelectorAll('[data-lang]')) b.onclick = () => { if (b.dataset.lang === lang) return; lang = b.dataset.lang; keep.set('lang', lang); paintTexts(); if (shown) loadScene(false, true); };
+matchMedia('(max-width: 600px)').addEventListener('change', paintTexts);
+
+// ---- 장면 ----
+const fillModels = names => { const v = $('model').value; $('model').replaceChildren(...names.map(n => { const o = el('option', '', n); o.value = n; return o; })); if (names.includes(v)) $('model').value = v; };
+async function loadModels() {
+  const r = await api('GET', '/api/twin/scenes');
+  if (!r.ok) { // 시작할 때 서버에 닿지 않으면 2초 뒤에 다시 묻는다 (R3-24). 토큰이 틀린 것은 다시 물어도 같다
+    empty(r.status === 403 ? t('net.forbidden') : t('net.down'), '');
+    if (r.status !== 403) setTimeout(loadModels, 2000);
+    return;
+  }
+  empty('', '');
+  const names = r.v.scenes.map(s => s.name), want = new URLSearchParams(location.search).get('scene') || keep.get('scene', '');
+  fillModels(names); scenePoll();
+  if (!names.length) return empty(t('empty.title'), t('empty.text'));
+  sceneName = names.includes(want) ? want : names[0]; $('model').value = sceneName;
+  await loadScene(true);
+}
+// 장면을 다시 불러오면 이전 시뮬레이션은 멈춘다: 서버의 시뮬레이션은 시작한 때의 장면에 묶여 있다 (R3-20). 장면이 그대로인 다시 그리기(말 바꾸기, 외형 확인)는 `keepSim`으로 이어 간다.
+async function loadScene(refit, keepSim) {
+  if (simId && !keepSim) await simStop();
+  if (!keepSim) $('fMsg').textContent = '';
+  { const l = await api('GET', '/api/twin/scenes'); if (l.ok) shownStamp = stampKey(l.v.scenes.find(s => s.name === sceneName)); stale = false; bar(''); }
+  const r = await api('GET', '/api/twin/scene?scene=' + enc(sceneName));
+  if (!r.ok) return empty(serverText(r), '');
+  data = r.v; shown = data.draft || data.scene; rd = (data.draft ? data.draft_resolved : data.resolved) || null;
+  if (!shown || (shown.schema === 2 && !rd)) { shown = null; rd = null; twin.load({ devices: [] }, cat, [], false, null); empty(t('empty.badmodel'), t('empty.badmodel.text')); buildAll(); return; }
+  empty(shown.devices && shown.devices.length ? '' : t('empty.title'), shown.devices && shown.devices.length ? '' : t('empty.text'));
+  const sc = withPins(shown);
+  for (const k of Object.keys(pinKind)) delete pinKind[k];
+  for (const d of sc.devices) for (const p of pinsOf(d)) pinKind[p.pin] = p.word ? 'd' : p.out ? 'y' : 'x';
+  twin.load(sc, cat, data.draft ? data.draft_links : data.links, refit, rd); twin.setState(S, 0);
+  if (sel && !devOf(sel)) sel = null;
+  if (!sel && refit) sel = ((shown.devices || []).find(d => engOf(d.id) || pinsOf(d).length) || {}).id || null; // 카드는 처음부터 열려 있다
+  twin.select(sel, false);
+  $('draftChip').hidden = !data.draft;
+  const sh = await api('GET', '/api/twin/sheet?scene=' + enc(sceneName)); sheet = sh.ok ? sh.v.sheet : null;
+  buildAll(); applyInset(); if (refit) { twin.fit(); }
+}
+let netDown = false, halted = false; // 서버가 없거나 토큰이 바뀐 동안 (R3-19)
+// 묻는 고리는 하나만 돈다: 탭이 다시 보일 때 답을 기다리는 중이면 두 번째 고리를 만들지 않는다 (R3-24)
+let pollBusy = false;
+async function scenePoll() {
+  clearTimeout(stampT); if (!active || halted || pollBusy) return;
+  pollBusy = true;
+  try { await scenePollOnce(); } finally { pollBusy = false; }
+  if (active && !halted) stampT = setTimeout(scenePoll, 2000);
+}
+async function scenePollOnce() {
+  const r = await api('GET', '/api/twin/scenes');
+  if (!r.ok) {
+    // 한 줄로 알린다. 토큰이 바뀐 것(403)은 새로 열어야만 풀리므로 더 묻지 않고, 서버가 없는 것은 계속 묻다가 돌아오면 다시 불러온다.
+    netDown = true; clearTimeout(stepTimer); playing = false; empty(r.status === 403 ? t('net.forbidden') : t('net.down'), ''); paintAll();
+    if (r.status === 403) { halted = true; return; }
+    return;
+  } else if (netDown) { netDown = false; empty('', ''); await loadScene(false); }
+  if (r.ok) {
+    const names = r.v.scenes.map(s => s.name);
+    if (names.join('\n') !== [...$('model').options].map(o => o.value).join('\n')) fillModels(names);
+    if (!sceneName && names.length) { sceneName = names[0]; $('model').value = sceneName; empty('', ''); await loadScene(true); }
+    else {
+      const it = r.v.scenes.find(s => s.name === sceneName), key = stampKey(it);
+      if (it && shownStamp && key !== shownStamp && !stale) { stale = true; if (simId && playing) bar(t(it.has_draft ? 'scene.newdraft' : 'scene.changed'), true); else await loadScene(false); }
+    }
+  }
+}
+function bar(text, btn) { $('bar').hidden = !text; $('barText').textContent = text ? text.split(' · ')[0] : ''; $('barBtn').hidden = !btn; }
+$('barBtn').onclick = () => loadScene(false);
+$('model').onchange = async () => { await simStop(); sceneName = $('model').value; keep.set('scene', sceneName); sel = null; faults = dict(); await loadScene(true); };
+
+// ---- 시뮬레이션 (TW195, 설계 47의 3.3절): 화면이 직접 걸음을 준다. 한 번에 한 요청, 느린 답은 다음 걸음을 늦춘다 ----
+function accept(v) {
+  const s = stateFrom(v); S = s; simT = v.time_ms; scanMs = v.scan_ms || scanMs; simErr = v.error ? t('sim.error', { text: v.error }) : '';
+  if (v.total_ms != null) total = v.total_ms;
+  twin.setState(S, 150); paintAll();
+}
+async function simStart(paused) {
+  if (simId) await simStop(true);
+  const src = runSrc(), fl = faultListOf(faults);
+  const r = await api('POST', '/api/ladder/sim/start', { source: src === 'last' ? 'last_run' : 'none', scene: sceneName, realtime: false, scan_ms: 10, ...(fl.length ? { faults: fl } : {}) });
+  if (!r.ok) {
+    if (src === 'last' && r.status === 409) { $('run').value = 'none'; say(t('run.nolast'), true); return simStart(paused); }
+    simErr = serverText(r); paintAll(); return false;
+  }
+  simId = r.v.sim; ended = false; total = r.v.total_ms || 0; lastTotal = total; accept(r.v); playing = !paused; schedule(); return true;
+}
+async function simStop(quiet) {
+  clearTimeout(stepTimer); gen++; playing = false; ended = false;
+  if (simId) { const id = simId; simId = null; await api('POST', '/api/ladder/sim/stop', { sim: id }); }
+  if (!quiet) { S = EMPTY(); simT = 0; simErr = ''; twin.setState(S, 0); paintAll(); }
+}
+const schedule = () => { clearTimeout(stepTimer); if (simId && playing && active) stepTimer = setTimeout(tick, 150); };
+// 서버가 "모르는 시뮬레이션"이라고 하면(멈췄거나 다른 것으로 바뀜) 화면의 시뮬레이션 상태를 비운다. tick, 한 걸음, 핀 누르기가 같은 길을 쓴다 (R3-24)
+function gone(r) {
+  if (!/^unknown simulation/.test(r.error || '')) return false;
+  simId = null; playing = false; ended = false; S = EMPTY(); twin.setState(S, 0); return true;
+}
+async function tick() {
+  if (!simId || !playing || !active) return;
+  if (busy) return schedule(); // 앞의 걸음이 아직이면 다음 걸음을 미룬다. 여기서 끊으면 재생이 멈춘 채 남는다 (R3-24)
+  const my = ++gen, scans = Math.min(500, Math.max(1, Math.round(speed * 150 / scanMs)));
+  busy = true; const r = await api('POST', '/api/ladder/sim/step', { sim: simId, scans }); busy = false;
+  if (my !== gen || !simId) return;
+  if (!r.ok) { simErr = serverText(r); playing = false; gone(r); paintAll(); return; } // 어떤 오류든 걸음을 멈춘다 (R3-19)
+  accept(r.v); if (total && r.v.time_ms >= total) { playing = false; ended = true; paintAll(); return; }
+  schedule();
+}
+async function stepOnce() {
+  if (playing || busy) return;
+  if (!simId && !(await simStart(true))) return;
+  if (ended) return;
+  busy = true; const r = await api('POST', '/api/ladder/sim/step', { sim: simId, scans: Math.max(1, Math.round(100 / scanMs)) }); busy = false;
+  if (r.ok) { accept(r.v); if (total && r.v.time_ms >= total) { ended = true; paintAll(); } } else { simErr = serverText(r); gone(r); paintAll(); }
+}
+$('pp').onclick = async () => {
+  if (!simId || ended) return void (await simStart(false)); // 처음이거나 끝난 뒤: 처음부터 시작
+  playing = !playing; paintAll(); if (playing) schedule();
+};
+$('stop').onclick = () => simStop();
+$('stepb').onclick = stepOnce;
+// 속도는 아래 막대와 메뉴(폰) 두 곳에 있고 같은 값을 가진다
+for (const id of ['speed', 'speed2']) $(id).onchange = () => { speed = Number($(id).value) || 1; $('speed').value = $('speed2').value = String(speed); };
+$('run').onchange = async () => { if (simId) await simStop(); else { S = EMPTY(); twin.setState(S, 0); } paintAll(); };
+document.addEventListener('visibilitychange', () => { const a = !document.hidden; if (a === active) return; active = a; twin.active(a); if (a) { schedule(); scenePoll(); renderPoll(); } else { clearTimeout(stepTimer); clearTimeout(stampT); clearTimeout(rT); gen++; } });
+addEventListener('pagehide', () => { if (simId) fetch('/api/ladder/sim/stop', { method: 'POST', keepalive: true, headers: { 'X-Dashboard-Token': TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({ sim: simId }) }); });
+
+// ---- 핀 누르기: 출력 핀만, 프로그램 없음일 때 (TW197) ----
+const pinsOpen = () => !!simId && runSrc() === 'none';
+async function pinCall(pin, value) {
+  if (!simId) return;
+  const r = await simInput(api, simId, pin, value);
+  if (!r.ok) { say(serverText(r), true); if (gone(r)) paintAll(); return; }
+  accept(r.v);
+}
+// 다시 그린 뒤에도 키보드 초점이 같은 단추에 있게 한다 (`data-k`가 이름표)
+function keepFocus(fn) { const a = document.activeElement, k = a && a.dataset && a.dataset.k; fn(); if (k) { const n = [...document.querySelectorAll('[data-k]')].find(e => e.dataset.k === k); if (n && n !== document.activeElement) n.focus(); } }
+const sigOf = dev => JSON.stringify([dev.id, lang, !!simId, runSrc(), stateLine(dev), pinsOf(dev).map(p => [S.bits[p.pin], S.words[p.pin]]), S.joints && S.joints[dev.id], S.drv[dev.id]]);
+function pinRows(dev) {
+  const box = el('div', 'pins'), list = pinsOf(dev);
+  for (const [dir, head] of [['out', 'card.out'], ['in', 'card.in']]) {
+    const rows = list.filter(p => (p.out ? 'out' : 'in') === dir); if (!rows.length) continue;
+    box.append(el('h3', '', t(head)));
+    for (const p of rows) {
+      const on = !!S.bits[p.pin], r = el('div', 'pin p-' + dir + (on && !p.word ? ' on' : ''));
+      if (!p.word) r.append(el('span', 'lp'));
+      r.append(el('span', 'nm', p.pin));
+      if (p.word) {
+        if (dir === 'out' && pinsOpen()) {
+          const i = el('input'); i.type = 'number'; i.step = '1'; i.value = S.words[p.pin] ?? 0; i.setAttribute('aria-label', p.pin); i.dataset.k = 'in:' + p.pin;
+          const go = el('button', 'btn sm', t('pin.set')); go.dataset.k = 'set:' + p.pin; go.onclick = () => { const n = Math.round(Number(i.value)); if (Number.isFinite(n)) pinCall(p.pin, n); };
+          r.append(i, go);
+        } else r.append(el('span', 'v n', String(S.words[p.pin] ?? 0)));
+      } else {
+        r.append(el('span', 'v', t(on ? 'pin.on' : 'pin.off')));
+        if (dir === 'out' && pinsOpen()) { const b = el('button', 'btn sm', t('pin.press')); b.dataset.k = 'press:' + p.pin; b.setAttribute('aria-pressed', String(on)); b.onclick = () => pinCall(p.pin, !on); r.append(b); }
+      }
+      box.append(r);
+    }
+  }
+  if (simId && runSrc() === 'last' && list.some(p => p.out)) box.append(el('p', 'note', t('pin.locked')));
+  return box;
+}
+
+// ---- 카드 (TW198, TW199) ----
+function pick(id) { sel = id && devOf(id) ? id : null; twin.select(sel, false); buildCard(); applyInset(); }
+// 지금 움직이는 구동기: 재생과 한 칸 이동은 그 신호가, 따라가기와 코일은 관절이 움직이는지가 말한다 (엔진은 구동기가 멈춘 뒤 한 걸음 동안 관절을 "움직임"으로 남길 수 있다)
+const liveDrv = id => (S.drv[id] || []).find(x => x && (x.running || x.moving || ((x.type === 'follow' || x.type === 'coils') && S.jmov[id])));
+const isMoving = id => ((S.drv[id] || []).length ? !!liveDrv(id) : !!S.jmov[id]);
+function stateLine(dev) {
+  if (!simId) return t('card.start');
+  const drs = S.drv[dev.id] || [], d = liveDrv(dev.id), ax = S.axes[dev.id];
+  if (d) return drvText(d, !!S.jmov[dev.id]);
+  if (drs.length) return drvText(drs[0], false);
+  return S.jmov[dev.id] || (ax && ax.moving) ? t('drv.moving') : t('drv.stop');
+}
+let cardSig = '', pinsSig = '';
+function buildCard() {
+  const dev = sel && devOf(sel), c = $('card'); c.hidden = !dev; if (!dev) { cardSig = ''; return; }
+  cardSig = sigOf(dev); c.replaceChildren();
+  const hd = el('div', 'hd'), x = el('button', 'x', '×'); x.setAttribute('aria-label', t('card.close')); x.onclick = () => pick(null); hd.append(el('h2', '', labelOf(dev)), x); c.append(hd);
+  const kd = el('p', 'kd', TEXT['kind.' + dev.kind] ? t('kind.' + dev.kind) : dev.kind), eng = engOf(dev.id), hasSkin = !!(rd && dev.skin);
+  if (hasSkin) kd.append(el('span', 'badge ' + (dev.skin_source === 'checked' ? 'seen' : 'skin'), t(dev.skin_source === 'checked' ? 'skin.seen' : 'skin.model')));
+  else if (eng) kd.append(el('span', 'badge muted', t('card.nolook')));
+  c.append(kd, el('p', 'stt', stateLine(dev)));
+  const dl = el('dl');
+  if (eng) { // 관절마다 값 한 줄, 구동기마다 상태 한 줄 (설계 45 2.2, 2.4). 시뮬 밖에서는 시작 값이다
+    // 시뮬 밖에서는 모델의 모든 관절(형태 관절 포함)을 시작 값으로 적는다: 형태 관절은 `frames`에 없으므로 장치의 `mech.joints`에서 이름을 가져오고 값은 원점(`mech.form.home`)이다 (R3-26)
+    const run = S.joints && S.joints[dev.id], fr = eng.frames || {}, mj = dev.mech && Array.isArray(dev.mech.joints) ? dev.mech.joints : null;
+    const names = run ? Object.keys(run) : mj ? mj.filter(j => j.type !== 'fixed').map(j => j.name) : Object.keys(fr).filter(n => fr[n].joint && fr[n].joint.type !== 'fixed');
+    for (const n of names) { const J = fr[n] && fr[n].joint, ty = J ? J.type : 'prismatic', v = run ? run[n] : !J ? (eng.mech && eng.mech.form && eng.mech.form.home) || 0 : ty === 'planar' ? J.start : (J.start || [])[0]; dl.append(el('dt', '', n), el('dd', '', jointText(ty, v))); }
+    if (run) (S.drv[dev.id] || []).forEach((d, k, a) => dl.append(el('dt', '', t(a.length > 1 ? 'card.drive.n' : 'card.drive', { n: k + 1 })), el('dd', '', drvText(d, !!S.jmov[dev.id]))));
+  }
+  if (dl.children.length) c.append(dl);
+  if (pinsOf(dev).length) c.append(pinRows(dev));
+  c.append(el('p', 'note', t('sim.note')));
+  applyInset(); // 폰에서는 카드 높이가 그림의 띠를 정한다
+}
+// 카드 안의 핀 줄만 다시 그린다 (입력칸에 쓰는 중이면 건드리지 않는다)
+function paintCard() {
+  const c = $('card'), dev = sel && devOf(sel); if (c.hidden || !dev) return;
+  if (sigOf(dev) === cardSig) return; // 바뀐 것이 없으면 다시 그리지 않는다
+  if (c.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') { const stt = c.querySelector('.stt'); if (stt) setText(stt, stateLine(dev)); return; } // 쓰는 중인 칸은 건드리지 않는다
+  keepFocus(buildCard);
+}
+
+// ---- 아래 막대 ----
+function paintDock() {
+  const run = runSrc(), has = !!simId, pp = $('pp'), idle = !has || ended;
+  pp.replaceChildren(icon(playing ? ICON.pause : ICON.play)); const lbl = t(idle ? 'sim.start' : playing ? 'sim.pause' : 'sim.resume'); pp.setAttribute('aria-label', lbl); pp.title = lbl;
+  $('stop').replaceChildren(icon(ICON.stop)); $('stop').setAttribute('aria-label', t('sim.stop')); $('stop').title = t('sim.stop'); $('stop').disabled = !has;
+  $('stepb').replaceChildren(icon(ICON.step)); $('stepb').setAttribute('aria-label', t('sim.step')); $('stepb').title = t('sim.step'); $('stepb').disabled = playing || busy || ended; // 끝난 뒤에는 한 걸음이 아무것도 하지 않는다 (R3-24)
+  const tot = has ? total : lastTotal, showLine = run === 'last' && tot > 0;
+  $('line').style.visibility = showLine ? '' : 'hidden';
+  $('line').setAttribute('aria-valuemax', String(tot)); $('line').setAttribute('aria-valuenow', String(simT)); $('line').setAttribute('aria-label', t('run.label'));
+  $('fill').style.width = (tot ? Math.min(100, simT / tot * 100) : 0) + '%';
+  const sec = ms => (ms / 1000).toFixed(2);
+  setText($('time'), showLine ? t('sim.of', { a: sec(has ? simT : 0), b: sec(tot) }) : t('sim.time', { s: sec(has ? simT : 0) }));
+  let st;
+  if (simErr) st = simErr; else if (!has) st = t('state.idle'); else if (ended) st = t('sim.ended', { b: sec(total) }); else if (!playing) st = t('state.paused');
+  else { const list = []; for (const id in S.jmov) if (isMoving(id)) { const d = devOf(id), dr = liveDrv(id); if (d) list.push(labelOf(d) + (dr ? ' (' + drvText(dr, true) + ')' : '')); } st = list.length ? t('state.moving', { list: list.join(', ') }) : t('state.still'); }
+  setText($('status'), st);
+  // 폰: 속도는 메뉴의 보기에도 있다 (아래 막대에는 자리가 없다)
+}
+// ---- 메뉴 ----
+function buildPins(force) {
+  const box = $('pins'), list = (shown ? shown.devices : []).filter(d => pinsOf(d).length), sig = JSON.stringify([lang, !!simId, runSrc(), list.map(d => [d.id, pinsOf(d).map(p => [S.bits[p.pin], S.words[p.pin]])])]);
+  if (!force && ($('menu').hidden || sig === pinsSig || box.contains(document.activeElement) && document.activeElement.tagName === 'INPUT')) return;
+  pinsSig = sig; keepFocus(() => box.replaceChildren(...list.flatMap(d => [el('p', 'dev', labelOf(d)), pinRows(d)])));
+}
+function buildSheet() {
+  const box = $('sheet'); box.replaceChildren();
+  if (sheet == null) return void box.append(el('p', 'note', t('sheet.none')));
+  const b = el('div', 'model-box'); b.append(el('span', 'tag', t('sheet.tag')), el('pre', '', sheet)); box.append(b); // 글로만 넣는다: 마크다운으로 읽지 않는다 (TW202)
+}
+const skinDevs = () => (shown && shown.devices || []).filter(d => d.skin), unchecked = () => skinDevs().filter(d => d.skin_source !== 'checked');
+async function skinCheck(ids, checked) {
+  const r = await api('POST', '/api/twin/skin/check', { scene: sceneName, devices: ids, checked });
+  if (!r.ok) return say(serverText(r), true);
+  await loadScene(false, true); // 외형 표시만 바뀐다: 시뮬레이션은 이어 간다
+}
+function buildDevices() {
+  const list = shown ? shown.devices : [], sd = rd ? skinDevs() : [], un = rd ? unchecked().length : 0, lock = !!(data && data.draft);
+  $('devN').textContent = list.length ? String(list.length) : '';
+  $('devs').replaceChildren(...list.map(d => {
+    const li = el('li'), nm = el('button', 'nm', labelOf(d)); nm.onclick = () => { pick(d.id); $('menu').hidden = true; $('menuBtn').setAttribute('aria-expanded', 'false'); applyInset(); };
+    li.append(nm); if (rd && d.skin) { const seen = d.skin_source === 'checked', b = el('button', 'btn sm', t(seen ? 'skin.uncheck' : 'skin.check')); b.disabled = lock; b.onclick = () => skinCheck([d.id], !seen); li.append(el('span', 'badge ' + (seen ? 'seen' : 'skin'), t(seen ? 'skin.seen' : 'skin.model')), b); }
+    return li;
+  }));
+  $('skinChip').hidden = !rd || !un; $('skRow').hidden = !sd.length; $('skNote').hidden = !sd.length; $('skAll').disabled = lock || !un;
+}
+$('skAll').onclick = () => {
+  const b = $('skAll');
+  if (!b.dataset.arm) { b.dataset.arm = '1'; b.textContent = t('skin.checkall.arm'); skArm = setTimeout(() => { b.dataset.arm = ''; b.textContent = t('skin.checkall'); }, 4000); return; }
+  clearTimeout(skArm); b.dataset.arm = ''; b.textContent = t('skin.checkall'); skinCheck(unchecked().map(d => d.id), true);
+};
+$('skinChip').onclick = () => openMenu(true, 'dDev');
+function buildDraft() {
+  const d = data && data.diff, box = $('diff'), items = [];
+  if (d) {
+    const old = id => ((data.scene && data.scene.devices) || []).find(x => x.id === id) || {}, nu = id => (data.draft.devices || []).find(x => x.id === id) || {};
+    const li = (cls, k, title, extra) => { const e = el('li', cls), b = el('div'); b.append(el('b', '', title)); if (extra) b.append(el('span', 'f', extra)); e.append(el('span', 'k', k), b); return e; };
+    for (const id of d.added) items.push(li('add', t('draft.added'), labelOf(nu(id)) + ' · ' + (TEXT['kind.' + nu(id).kind] ? t('kind.' + nu(id).kind) : nu(id).kind)));
+    for (const c of d.changed) items.push(li('chg', t('draft.changed'), labelOf(nu(c.id)), c.fields.join(', ')));
+    for (const id of d.removed) items.push(li('del', t('draft.removed'), labelOf(old(id)) || id));
+  }
+  $('drN').textContent = data && data.draft ? t('draft.changes', { n: items.length }) : '';
+  const ul = el('ul', 'diff'); ul.append(...items);
+  box.replaceChildren(el('p', 'note', t(data && data.draft ? 'draft.shown' : 'draft.none')), ul);
+  $('draftActs').hidden = !(data && data.draft); disarm();
+  if (data && data.scene_error && !data.draft) box.append(el('p', 'note bad', data.scene_error));
+  if (data && data.draft_error) box.append(el('p', 'note bad', data.draft_error));
+}
+const sw = (id, fn) => { const b = $(id); b.onclick = () => { const v = b.getAttribute('aria-checked') !== 'true'; b.setAttribute('aria-checked', String(v)); b.querySelector('.w').textContent = t(v ? 'sw.on' : 'sw.off'); fn(v, v2 => { b.setAttribute('aria-checked', String(v2)); b.querySelector('.w').textContent = t(v2 ? 'sw.on' : 'sw.off'); }); }; return b; };
+sw('swAuto', async (v, set) => { const r = await api('POST', '/api/twin/auto', { on: v }); if (!r.ok) { set(!v); say(serverText(r), true); } });
+sw('swStrips', v => twin.strips(v)); sw('swFlow', v => twin.flow(v)); sw('swCut', v => twin.cut(v));
+async function loadAuto() { const r = await api('GET', '/api/twin/auto'); if (r.ok) { $('swAuto').setAttribute('aria-checked', String(!!r.v.on)); $('swAuto').querySelector('.w').textContent = t(r.v.on ? 'sw.on' : 'sw.off'); } }
+$('confirm').onclick = async () => { const r = await api('POST', '/api/twin/confirm', { scene: sceneName }); if (!r.ok) return void ($('edMsg').textContent = serverText(r)); $('edMsg').textContent = ''; say(t('draft.confirmed')); await loadScene(false); };
+function disarm() { clearTimeout(armT); $('discard').textContent = t('draft.discard'); $('discard').dataset.arm = ''; }
+$('discard').onclick = async () => { // 버리기는 두 번 눌러야 한다 (되돌릴 수 없음)
+  if (!$('discard').dataset.arm) { $('discard').dataset.arm = '1'; $('discard').textContent = t('draft.discard.arm'); armT = setTimeout(disarm, 4000); return; }
+  const r = await api('DELETE', '/api/twin/draft?scene=' + enc(sceneName)); if (!r.ok) return void ($('edMsg').textContent = serverText(r));
+  say(t('draft.discarded')); await loadScene(false);
+};
+$('draftChip').onclick = () => openMenu(true, 'dDraft');
+// 공작물: 그림에는 보이고, 조작은 "부품 처음으로" 하나뿐이다 (TW201)
+function buildParts() {
+  const has = !!(twin.work.types && twin.work.types()), sec = $('dParts'); $('partsNote').textContent = t(has ? 'parts.line' : 'parts.none'); $('partsReset').disabled = !has || !simId; sec.hidden = false;
+}
+$('partsReset').onclick = async () => { if (!simId) return; const r = await api('POST', '/api/ladder/sim/part', { sim: simId, reset: true }); if (!r.ok) return say(serverText(r), true); accept(r.v); };
+// 고장 넣기 (F25): 장치마다 하나. 시뮬을 처음부터 다시 돌린다
+const FAULTS = ['sensor_stuck_on', 'sensor_stuck_off', 'coil_dead', 'air_off', 'slow'];
+const faultCan = d => { const K = kindOf(d), B = K.behaviors || []; return K.simulated !== false && (B.includes('linear') || B.includes('rotary') || B.includes('belt')); };
+function buildFaults() {
+  for (const id in faults) if (!devOf(id)) delete faults[id];
+  const opt = (v, s) => { const o = el('option', '', s); o.value = v; return o; };
+  const devs = (shown ? shown.devices : []).filter(faultCan);
+  $('fList').replaceChildren(...(devs.length ? devs.map(dev => {
+    const bits = pinsOf(dev).filter(p => !p.word), f = faults[dev.id] || {}, li = el('li'), kind = el('select'), addr = el('select'), fac = el('input'), name = labelOf(dev);
+    kind.setAttribute('aria-label', name); addr.setAttribute('aria-label', name + ' · ' + t('faults.all_sensors')); fac.setAttribute('aria-label', t('faults.factor'));
+    kind.append(opt('', t('faults.none')), ...FAULTS.map(v => opt(v, t('faults.' + v)))); kind.value = f.fault || '';
+    Object.assign(fac, { type: 'number', min: 1, max: 10, step: 0.5, value: f.factor || 2 });
+    const fill = () => { const k = kind.value, list = k.startsWith('sensor') ? bits.filter(p => !p.out) : k === 'coil_dead' ? bits.filter(p => p.out) : []; addr.replaceChildren(opt('', t(k === 'coil_dead' ? 'faults.all_coils' : 'faults.all_sensors')), ...list.map(p => opt(p.pin, p.pin))); addr.hidden = !list.length; fac.hidden = k !== 'slow'; };
+    const set = () => { if (!kind.value) delete faults[dev.id]; else faults[dev.id] = { fault: kind.value, addr: addr.hidden ? '' : addr.value, factor: Math.min(10, Math.max(1, Number(fac.value) || 2)) }; faultApply(); };
+    fill(); addr.value = f.addr || ''; kind.onchange = () => { fill(); set(); }; addr.onchange = set; fac.onchange = set;
+    li.append(el('span', 'nm plain', name), kind, addr, fac); return li;
+  }) : [el('li', '', t('faults.nodev'))]));
+  const n = Object.keys(faults).length; $('fN').textContent = n ? String(n) : ''; $('fClear').disabled = !n;
+}
+async function faultApply() { const n = Object.keys(faults).length; $('fN').textContent = n ? String(n) : ''; $('fClear').disabled = !n; if (simId) { const ok = await simStart(!playing); $('fMsg').textContent = ok ? t('faults.restarted') : ''; } } // 다시 시작에 실패했으면 "다시 시작했습니다"라고 하지 않는다 (R3-24)
+$('fClear').onclick = () => { faults = dict(); buildFaults(); faultApply(); };
+$('fit').onclick = () => { applyInset(); twin.fit(); };
+function openMenu(on, section) {
+  $('menu').hidden = !on; $('menuBtn').setAttribute('aria-expanded', String(on));
+  if (on && section) { for (const d of document.querySelectorAll('#menu details')) d.open = d.id === section; }
+  if (on) { buildPins(true); $('menuClose').focus(); } else $('menuBtn').focus();
+  applyInset();
+}
+$('menuBtn').onclick = () => openMenu($('menu').hidden); $('menuClose').onclick = () => openMenu(false);
+addEventListener('keydown', e => { if (e.key === 'Escape') { if (!$('menu').hidden) openMenu(false); else if (sel) pick(null); } });
+// 그림 위에 얹은 것(오른쪽 카드, 아래 막대)을 뺀 칸에 맞춘다 (F1, TW208): 카드는 900 px 이상에서만 옆에 선다
+function applyInset() {
+  const open = !$('card').hidden, side = open && innerWidth >= 900, menu = !$('menu').hidden ? $('menu').offsetWidth : 0;
+  // 폰: 카드가 막대 위에 서므로 그림은 카드 위의 띠에 맞춘다
+  const floor = Math.min($('dock').getBoundingClientRect().top, open && !side ? $('card').getBoundingClientRect().top : Infinity);
+  twin.setInset({ right: Math.max(side ? $('card').offsetWidth + 24 : 0, menu), bottom: Math.max(0, innerHeight - floor) });
+}
+addEventListener('resize', () => { paintTexts(); applyInset(); });
+
+function buildAll() { buildPins(true); buildSheet(); buildDevices(); buildDraft(); buildParts(); buildFaults(); buildCard(); paintDock(); }
+function paintAll() { paintDock(); paintCard(); buildPins(); buildParts(); }
+
+// ---- AI에게 줄 그림 (model_render): 보이는 동안 1초마다 요청이 있는지 묻고, 있으면 요청의 시점으로 그려 JPEG와 장치 상자를 보낸다 ----
+let rPoll = false; // 묻는 고리는 하나만 돈다 (R3-24)
+async function renderPoll() {
+  clearTimeout(rT); if (!active || halted || rPoll) return;
+  rPoll = true;
+  try {
+    if (!rBusy) { const r = await api('GET', '/api/twin/render/next'); if (!r.ok && r.status === 403) return; if (r.ok && r.v.request) { rBusy = true; try { await renderAnswer(r.v.request); } finally { rBusy = false; } } }
+  } finally { rPoll = false; }
+  clearTimeout(rT); if (active && !halted) rT = setTimeout(renderPoll, 1000);
+}
+async function renderAnswer(q) {
+  if (!shown || q.scene !== sceneName) return renderFail(api, q, `the page shows model ${sceneName || '(none)'}, not ${q.scene}`);
+  try { await renderShot(api, twin, q, 16 / 9); } catch (e) { renderFail(api, q, (e && e.message) || 'render failed'); }
+}
+
+// ---- 시작 ----
+(async function () {
+  paintTexts();
+  if (TOKEN.startsWith('__')) return empty(t('empty.notoken'), '');
+  const c = await api('GET', '/api/twin/catalog');
+  if (!c.ok) return empty(c.status === 403 ? t('net.forbidden') : t('net.down'), '');
+  cat = c.v; await loadModels(); loadAuto(); paintTexts();
+  renderPoll();
+})();
+</script>
+</body>
+</html>

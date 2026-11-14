@@ -1,0 +1,4 @@
+# Back edges inside the crate twin-page (a unit uses a unit in a row below it in layers.txt). Ratchet: the test
+# layers_follow_the_table (of the root package) fails for a back edge that is not listed, and for a listed one that is gone.
+# Format: <id> <from unit> -> <to unit>  # the move that removes it.
+# None (reusable-parts 3.1b: no allow list grows).

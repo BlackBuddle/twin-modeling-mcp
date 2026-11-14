@@ -1,0 +1,523 @@
+{
+  "schema": 1,
+  "signal_schema": {
+    "name": "1 to 24 characters of A-Z a-z 0-9 _ -",
+    "dir": "in | out (seen from the PLC: out = the PLC drives it, in = the PLC reads it)",
+    "type": "bit | word | bcd",
+    "device": "bit: X, Y or M address; word and bcd: D address",
+    "active": "high | low (bit signals only, default high)"
+  },
+  "valve_types": ["5/2-double", "5/2-single", "3/2-single", "5/3-closed", "5/3-exhaust"],
+  "params_note": "A param is {type:number, min, max, default}, {type:enum, values, default} or {type:bool, default}. timing:true kinds also take timing {lag_ms, fwd_ms, back_ms (0 to 60000), source}.",
+  "presets_note": "A preset is a template of the device key `mech`: pick it with mech {preset, args, sensors?, basis?}. `args` are the preset's own values (arg_order is their order); a number field may be {arg, mul}. The server expands it to joints, couplings, drivers and sensors (facts.mech[].expanded). A preset gives the same motion as the same explicit mech.",
+  "presets": {
+    "servo_screw": {
+      "kinds": ["servo_axis"],
+      "label": "Ball-screw axis: the carriage follows a commanded position; the motor turns once for each lead_mm of travel",
+      "signals": {"<word arg>": "word out (the commanded position)", "servo_on": "bit out (optional)", "busy": "bit in (optional, stand-in mode only)"},
+      "arg_order": ["word", "width", "per_mm", "speed_mm_s", "enable", "busy"],
+      "args": {
+        "word": {"type": "signal", "use": "word"},
+        "width": {"type": "enum", "values": [16, 32], "default": 16},
+        "per_mm": {"type": "number", "min": 0.0001, "max": 100000, "default": 1},
+        "speed_mm_s": {"type": "number", "min": 0.1, "max": 5000, "optional": true},
+        "enable": {"type": "signal", "use": "bit_out", "default": "servo_on", "optional": true},
+        "busy": {"type": "signal", "use": "bit_in", "default": "busy", "optional": true}
+      },
+      "mech": {
+        "joints": [
+          {"name": "carriage", "type": "form"},
+          {"name": "motor", "type": "revolute", "on": "left", "pos": [0, 30, 0], "axis": "y", "wrap": true}
+        ],
+        "drivers": [{"type": "follow", "joint": "carriage", "word": {"arg": "word"}, "width": {"arg": "width"}, "per_unit": {"arg": "per_mm"},
+                     "speed": {"arg": "speed_mm_s"}, "enable": {"arg": "enable"}, "busy": {"arg": "busy"}}],
+        "couplings": [{"type": "ratio", "from": "carriage", "to": "motor", "lead_mm": {"param": "lead_mm"}}]
+      }
+    },
+    "index_table": {
+      "kinds": ["index_table"],
+      "label": "Index table: each pulse on run turns one station (360 / stations) in move_ms after lag_ms",
+      "signals": {"run": "io slot, bit out", "home": "io slot, bit in", "in_pos": "io slot, bit in (optional)"},
+      "arg_order": ["move_ms", "lag_ms", "start_deg", "window_deg"],
+      "args": {
+        "move_ms": {"type": "number", "min": 1, "max": 60000, "default": 500},
+        "lag_ms": {"type": "number", "min": 0, "max": 60000, "default": 50},
+        "start_deg": {"type": "number", "min": 0, "max": 359.999, "default": 0},
+        "window_deg": {"type": "number", "min": 0, "max": 45, "default": 1}
+      },
+      "mech": {
+        "joints": [{"name": "table", "type": "revolute", "on": "top", "axis": "y", "wrap": true, "start": {"arg": "start_deg"}}],
+        "drivers": [{"type": "step", "joint": "table", "pulse": "run", "count": {"param": "stations"}, "move_ms": {"arg": "move_ms"}, "lag_ms": {"arg": "lag_ms"}}],
+        "sensors": [
+          {"type": "window", "joint": "table", "at": 0, "window": {"arg": "window_deg"}, "out": "home"},
+          {"type": "window", "joint": "table", "at": 0, "per_turn": {"param": "stations"}, "window": {"arg": "window_deg"}, "out": "in_pos", "optional": true}
+        ]
+      }
+    },
+    "robot_6r": {
+      "kinds": ["robot_arm"],
+      "label": "6-axis arm (generic figure of 10-architecture 12.5, no link offsets): plays a taught pose by a program number",
+      "signals": {"start": "bit out", "prog": "word or bcd out", "busy": "bit in (optional)", "done": "bit in (optional)"},
+      "arg_order": ["base_h_mm", "upper_mm", "fore_mm", "wrist_mm", "programs"],
+      "args": {
+        "base_h_mm": {"type": "number", "min": 0, "max": 3000, "default": 300},
+        "upper_mm": {"type": "number", "min": 0, "max": 3000, "default": 400},
+        "fore_mm": {"type": "number", "min": 0, "max": 3000, "default": 400},
+        "wrist_mm": {"type": "number", "min": 0, "max": 3000, "default": 100},
+        "programs": {"type": "programs"}
+      },
+      "mech": {
+        "joints": [
+          {"name": "j1", "type": "revolute", "on": "base", "axis": "y", "min": -180, "max": 180},
+          {"name": "j2", "type": "revolute", "on": "j1", "pos": [0, {"arg": "base_h_mm"}, 0], "axis": "-z", "min": -180, "max": 180},
+          {"name": "j3", "type": "revolute", "on": "j2", "pos": [0, {"arg": "upper_mm"}, 0], "axis": "-z", "min": -180, "max": 180},
+          {"name": "j4", "type": "revolute", "on": "j3", "pos": [0, {"arg": "fore_mm"}, 0], "axis": "y", "min": -180, "max": 180},
+          {"name": "j5", "type": "revolute", "on": "j4", "axis": "-z", "min": -180, "max": 180},
+          {"name": "j6", "type": "revolute", "on": "j5", "pos": [0, {"arg": "wrist_mm"}, 0], "axis": "y", "min": -180, "max": 180},
+          {"name": "flange", "type": "fixed", "on": "j6"}
+        ],
+        "drivers": [{"type": "playback", "joints": ["j1", "j2", "j3", "j4", "j5", "j6"], "select": "prog", "start": "start", "busy": "busy", "done": "done", "programs": {"arg": "programs"}}]
+      }
+    },
+    "wheeled_base": {
+      "kinds": ["machine"],
+      "label": "Two-wheel base: the wheels turn by a program; the base follows by differential drive (no slip)",
+      "signals": {"start": "bit out", "prog": "word or bcd out", "busy": "bit in (optional)", "done": "bit in (optional)"},
+      "arg_order": ["wheel_d_mm", "track_mm", "programs"],
+      "args": {
+        "wheel_d_mm": {"type": "number", "min": 1, "max": 2000, "default": 100},
+        "track_mm": {"type": "number", "min": 1, "max": 10000, "default": 300},
+        "programs": {"type": "programs"}
+      },
+      "mech": {
+        "joints": [
+          {"name": "body", "type": "planar", "on": "base"},
+          {"name": "wl", "type": "revolute", "on": "body", "pos": [0, {"arg": "wheel_d_mm", "mul": 0.5}, {"arg": "track_mm", "mul": -0.5}], "axis": "-z", "wrap": true},
+          {"name": "wr", "type": "revolute", "on": "body", "pos": [0, {"arg": "wheel_d_mm", "mul": 0.5}, {"arg": "track_mm", "mul": 0.5}], "axis": "-z", "wrap": true}
+        ],
+        "couplings": [{"type": "diff_drive", "left": "wl", "right": "wr", "base": "body", "wheel_d_mm": {"arg": "wheel_d_mm"}, "track_mm": {"arg": "track_mm"}}],
+        "drivers": [{"type": "playback", "joints": ["wl", "wr"], "select": "prog", "start": "start", "busy": "busy", "done": "done", "programs": {"arg": "programs"}}]
+      }
+    }
+  },
+  "kinds": {
+    "cylinder_double": {
+      "class": "pneumatic", "label": "Double-acting cylinder", "form": "cyl", "simulated": true,
+      "params2": {
+        "series": {"type": "enum", "values": ["generic", "smc_cm2"], "default": "generic"},
+        "body_len_mm": {"type": "number", "min": 10, "max": 6000, "derive": true},
+        "body_dia_mm": {"type": "number", "min": 4, "max": 600, "derive": true},
+        "rod_dia_mm": {"type": "number", "min": 1, "max": 300, "derive": true},
+        "rod_out_mm": {"type": "number", "min": 0, "max": 2000, "derive": true},
+        "pivot_back_mm": {"type": "number", "min": 0, "max": 1000, "derive": true},
+        "rod_end_mm": {"type": "number", "min": 0, "max": 500, "default": 0},
+        "axis_h_mm": {"type": "number", "min": 0, "max": 1000, "derive": true}
+      },
+      "behaviors": ["valve", "linear"], "timing": true,
+      "io": {"coil_fwd": {"dir": "out"}, "coil_back": {"dir": "out"}, "sensor_back": {"dir": "in"}, "sensor_fwd": {"dir": "in"}},
+      "params": {
+        "stroke_mm": {"type": "number", "min": 1, "max": 5000, "default": 100},
+        "bore_mm": {"type": "number", "min": 1, "max": 500, "default": 20},
+        "valve": {"type": "enum", "values": ["5/2-double", "5/2-single", "5/3-closed", "5/3-exhaust"], "default": "5/2-double"},
+        "window_mm": {"type": "number", "min": 0, "max": 50, "default": 2},
+        "on_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0},
+        "off_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0}
+      }
+    },
+    "cylinder_single": {
+      "class": "pneumatic", "label": "Single-acting spring return cylinder", "form": "cyl", "simulated": true,
+      "params2": {
+        "series": {"type": "enum", "values": ["generic", "smc_cm2"], "default": "generic"},
+        "body_len_mm": {"type": "number", "min": 10, "max": 6000, "derive": true},
+        "body_dia_mm": {"type": "number", "min": 4, "max": 600, "derive": true},
+        "rod_dia_mm": {"type": "number", "min": 1, "max": 300, "derive": true},
+        "rod_out_mm": {"type": "number", "min": 0, "max": 2000, "derive": true},
+        "pivot_back_mm": {"type": "number", "min": 0, "max": 1000, "derive": true},
+        "rod_end_mm": {"type": "number", "min": 0, "max": 500, "default": 0},
+        "axis_h_mm": {"type": "number", "min": 0, "max": 1000, "derive": true}
+      },
+      "behaviors": ["valve", "linear"], "timing": true,
+      "io": {"coil_fwd": {"dir": "out"}, "sensor_back": {"dir": "in"}, "sensor_fwd": {"dir": "in"}},
+      "params": {
+        "stroke_mm": {"type": "number", "min": 1, "max": 5000, "default": 50},
+        "bore_mm": {"type": "number", "min": 1, "max": 500, "default": 16},
+        "valve": {"type": "enum", "values": ["5/2-single", "3/2-single"], "default": "5/2-single"},
+        "window_mm": {"type": "number", "min": 0, "max": 50, "default": 2},
+        "on_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0},
+        "off_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0}
+      }
+    },
+    "rotary_actuator": {
+      "class": "pneumatic", "label": "Rotary actuator", "simulated": true,
+      "behaviors": ["valve", "rotary"], "timing": true,
+      "io": {"coil_fwd": {"dir": "out"}, "coil_back": {"dir": "out"}, "sensor_back": {"dir": "in"}, "sensor_fwd": {"dir": "in"}},
+      "params": {
+        "angle_deg": {"type": "number", "min": 1, "max": 360, "default": 90},
+        "valve": {"type": "enum", "values": ["5/2-double", "5/2-single", "5/3-closed", "5/3-exhaust"], "default": "5/2-double"},
+        "window_mm": {"type": "number", "min": 0, "max": 50, "default": 2},
+        "on_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0},
+        "off_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0}
+      }
+    },
+    "gripper": {
+      "class": "pneumatic", "label": "Pneumatic gripper (fwd = close)", "form": "jaw", "simulated": true,
+      "behaviors": ["valve", "linear", "hold"], "timing": true,
+      "io": {"coil_fwd": {"dir": "out"}, "coil_back": {"dir": "out"}, "sensor_back": {"dir": "in"}, "sensor_fwd": {"dir": "in"}},
+      "params": {
+        "reach_mm": {"type": "number", "min": 1, "max": 500, "default": 40},
+        "stroke_mm": {"type": "number", "min": 1, "max": 500, "default": 20},
+        "valve": {"type": "enum", "values": ["5/2-double", "5/2-single", "5/3-closed", "5/3-exhaust"], "default": "5/2-double"},
+        "window_mm": {"type": "number", "min": 0, "max": 50, "default": 1},
+        "on_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0},
+        "off_delay_ms": {"type": "number", "min": 0, "max": 60000, "default": 0}
+      }
+    },
+    "vacuum_pad": {
+      "class": "pneumatic", "label": "Vacuum pad", "simulated": true,
+      "behaviors": ["light", "hold"],
+      "io": {"coil": {"dir": "out"}},
+      "params": {"reach_mm": {"type": "number", "min": 1, "max": 500, "default": 40}}
+    },
+    "part_source": {
+      "class": "workpiece", "label": "Workpiece source (a part appears on the make bit or a click)", "simulated": true,
+      "behaviors": ["source"],
+      "io": {"make": {"dir": "in"}},
+      "params": {"part_mm": {"type": "number", "min": 5, "max": 500, "default": 40}}
+    },
+    "part_sink": {
+      "class": "workpiece", "label": "Workpiece sink (removes a part in its zone)", "simulated": true,
+      "behaviors": ["sink"],
+      "io": {},
+      "params": {"zone_mm": {"type": "number", "min": 1, "max": 1000, "default": 60}}
+    },
+    "zone_sensor": {
+      "class": "sensor", "label": "Presence sensor (ON while a workpiece is in its zone)", "simulated": true,
+      "behaviors": ["zone"],
+      "io": {"output": {"dir": "in"}},
+      "params": {"zone_mm": {"type": "number", "min": 1, "max": 1000, "default": 60}}
+    },
+    "motor": {
+      "class": "electric", "label": "Motor (run forward / backward)", "simulated": true,
+      "behaviors": ["rotary"],
+      "io": {"run_fwd": {"dir": "out"}, "run_back": {"dir": "out"}},
+      "params": {"speed_deg_s": {"type": "number", "min": 0, "max": 100000, "default": 360}}
+    },
+    "conveyor": {
+      "class": "electric", "label": "Belt conveyor", "form": "belt", "simulated": true,
+      "params2": {
+        "length_mm": {"type": "number", "min": 50, "max": 20000, "default": 1000},
+        "width_mm": {"type": "number", "min": 20, "max": 5000, "default": 200},
+        "height_mm": {"type": "number", "min": 10, "max": 5000, "default": 80},
+        "motor_at": {"type": "enum", "values": ["end", "none"], "default": "end"}
+      },
+      "behaviors": ["belt"],
+      "io": {"run_fwd": {"dir": "out"}, "run_back": {"dir": "out"}},
+      "params": {"speed_mm_s": {"type": "number", "min": 0, "max": 5000, "default": 100}}
+    },
+    "index_table": {
+      "class": "electric", "label": "Index table (moves with mech; drawn only without it)", "form": "table", "simulated": false, "mech": true, "presets": ["index_table"],
+      "behaviors": ["rotary"],
+      "io": {"run": {"dir": "out"}, "home": {"dir": "in"}, "in_pos": {"dir": "in"}},
+      "params": {"stations": {"type": "number", "min": 2, "max": 36, "default": 6}}
+    },
+    "servo_axis": {
+      "class": "electric", "label": "Servo axis (signals by the shared schema) (moves with mech; drawn only without it)", "form": "linear", "simulated": false, "mech": true, "presets": ["servo_screw"],
+      "params2": {
+        "home_at": {"type": "enum", "values": ["-x", "+x"], "default": "-x"},
+        "addr_grows": {"type": "enum", "values": ["away", "toward"], "default": "away"},
+        "home_mm": {"type": "number", "min": -100000, "max": 100000, "default": 0},
+        "lead_mm": {"type": "number", "min": 0.01, "max": 1000, "optional": true},
+        "carriage_len_mm": {"type": "number", "min": 10, "max": 2000, "default": 80},
+        "carriage_h_mm": {"type": "number", "min": 1, "max": 500, "default": 20},
+        "body_h_mm": {"type": "number", "min": 5, "max": 1000, "default": 60},
+        "body_w_mm": {"type": "number", "min": 5, "max": 1000, "default": 80},
+        "body_len_mm": {"type": "number", "min": 20, "max": 10000, "derive": true}
+      },
+      "behaviors": ["linear"], "signals": true,
+      "io": {},
+      "params": {"stroke_mm": {"type": "number", "min": 1, "max": 5000, "default": 200}}
+    },
+    "lamp": {
+      "class": "indicator", "label": "Pilot lamp", "simulated": true,
+      "behaviors": ["light"],
+      "io": {"coil": {"dir": "out"}},
+      "params": {"color": {"type": "enum", "values": ["red", "green", "yellow", "blue", "white"], "default": "green"}}
+    },
+    "tower_light": {
+      "class": "indicator", "label": "Tower light", "simulated": true,
+      "behaviors": ["light"],
+      "io": {"coil_red": {"dir": "out"}, "coil_yellow": {"dir": "out"}, "coil_green": {"dir": "out"}, "coil_buzzer": {"dir": "out"}},
+      "params": {}
+    },
+    "buzzer": {
+      "class": "indicator", "label": "Buzzer", "simulated": true,
+      "behaviors": ["light"],
+      "io": {"coil": {"dir": "out"}},
+      "params": {}
+    },
+    "button": {
+      "class": "control", "label": "Push button", "simulated": true,
+      "behaviors": ["switch"],
+      "io": {"contact": {"dir": "in"}},
+      "params": {
+        "color": {"type": "enum", "values": ["red", "green", "yellow", "blue", "black", "white"], "default": "green"},
+        "contact": {"type": "enum", "values": ["no", "nc"], "default": "no"},
+        "action": {"type": "enum", "values": ["momentary", "latching"], "default": "momentary"}
+      }
+    },
+    "selector": {
+      "class": "control", "label": "Selector switch", "simulated": true,
+      "behaviors": ["switch"],
+      "io": {"contact_1": {"dir": "in"}, "contact_2": {"dir": "in"}},
+      "params": {"contact": {"type": "enum", "values": ["no", "nc"], "default": "no"}}
+    },
+    "estop": {
+      "class": "control", "label": "Emergency stop (NC contact)", "simulated": true,
+      "behaviors": ["switch"],
+      "io": {"contact": {"dir": "in"}},
+      "params": {"contact": {"type": "enum", "values": ["no", "nc"], "default": "nc"}}
+    },
+    "reed_sensor": {
+      "class": "sensor", "label": "Reed sensor (standalone, settable input)", "simulated": true,
+      "behaviors": ["sensor"],
+      "io": {"output": {"dir": "in"}},
+      "params": {}
+    },
+    "photo_sensor": {
+      "class": "sensor", "label": "Photoelectric sensor (standalone, settable input)", "simulated": true,
+      "behaviors": ["sensor"],
+      "io": {"output": {"dir": "in"}},
+      "params": {}
+    },
+    "prox_sensor": {
+      "class": "sensor", "label": "Proximity sensor (standalone, settable input)", "simulated": true,
+      "behaviors": ["sensor"],
+      "io": {"output": {"dir": "in"}},
+      "params": {}
+    },
+    "tank": {
+      "class": "process", "label": "Tank with fill and drain", "simulated": true,
+      "behaviors": ["level"],
+      "io": {"fill": {"dir": "out"}, "drain": {"dir": "out"}, "sensor_low": {"dir": "in"}, "sensor_high": {"dir": "in"}, "value_word": {"dir": "in", "type": "word"}},
+      "params": {
+        "capacity": {"type": "number", "min": 1, "max": 1000000, "default": 100},
+        "fill_rate": {"type": "number", "min": 0, "max": 100000, "default": 10},
+        "drain_rate": {"type": "number", "min": 0, "max": 100000, "default": 10},
+        "low_at": {"type": "number", "min": 0, "max": 1000000, "default": 10},
+        "high_at": {"type": "number", "min": 0, "max": 1000000, "default": 90},
+        "initial": {"type": "number", "min": 0, "max": 1000000, "default": 0}
+      }
+    },
+    "pump": {
+      "class": "process", "label": "Pump (state only)", "simulated": true,
+      "behaviors": ["light"],
+      "io": {"run": {"dir": "out"}},
+      "params": {}
+    },
+    "level_sensor": {
+      "class": "process", "label": "Level sensor (standalone, settable input)", "simulated": true,
+      "behaviors": ["sensor"],
+      "io": {"output": {"dir": "in"}},
+      "params": {}
+    },
+    "robot_arm": {
+      "class": "robot", "label": "Robot arm (signals by the shared schema) (moves with mech; drawn only without it)", "simulated": false, "mech": true, "presets": ["robot_6r"],
+      "behaviors": ["robot"], "signals": true,
+      "io": {},
+      "params": {"axes": {"type": "number", "min": 1, "max": 7, "default": 6}}
+    },
+    "machine": {
+      "class": "machine", "label": "Machine of primitives (moves by joints, couplings and drivers of mech; schema 2 only, needs mech)", "form": "mech", "simulated": false, "mech": true, "presets": ["wheeled_base"],
+      "behaviors": [], "signals": true,
+      "io": {},
+      "params": {}
+    },
+    "solid": {
+      "class": "structure", "label": "Free solid (schema 2: needs `shape`, optional `frames`)", "form": "solid", "simulated": true,
+      "behaviors": [],
+      "io": {},
+      "params": {}
+    }
+  },
+  "mounts": [
+    {"style": "unknown", "forms": ["all"], "datum": "base"},
+    {"style": "floor", "forms": ["all"], "datum": "base"},
+    {"style": "surface", "forms": ["all"], "datum": "base"},
+    {"style": "hole", "forms": ["box"], "datum": "face"},
+    {"style": "rod_end", "forms": ["all"], "datum": {"cyl": "cap_end", "jaw": "cap_end", "box": "seat", "belt": "seat", "table": "seat", "solid": "base", "robot6": "base", "linear": "base", "frame": "base"}},
+    {"style": "flange", "forms": ["all"], "datum": {"cyl": "cap_end", "jaw": "cap_end", "box": "seat", "belt": "seat", "table": "seat", "solid": "base", "robot6": "base", "linear": "base", "frame": "base"}},
+    {"style": "foot", "forms": ["cyl"], "datum": "base"},
+    {"style": "nose", "forms": ["cyl"], "datum": "head_end"},
+    {"style": "flange_front", "forms": ["cyl"], "datum": "head_end"},
+    {"style": "flange_rear", "forms": ["cyl"], "datum": "cap_end"},
+    {"style": "clevis_rear", "forms": ["cyl"], "datum": "pivot"},
+    {"style": "trunnion", "forms": ["cyl"], "datum": "mid"},
+    {"style": "hinge", "forms": ["solid"], "datum": "base"}
+  ],
+  "box_params": {
+    "x_mm": {"type": "number", "min": 1, "max": 10000, "derive": true},
+    "y_mm": {"type": "number", "min": 1, "max": 10000, "derive": true},
+    "z_mm": {"type": "number", "min": 1, "max": 10000, "derive": true}
+  },
+  "ask_params": ["bore_mm", "stroke_mm", "series", "length_mm", "width_mm", "stations"],
+  "tones": ["metal", "black", "dark", "white", "orange", "green", "red", "blue", "yellow", "clear", "mark"],
+  "guide": {
+    "order": [
+      "1. server_info and twin_catalog: read the kinds, frames, mounts, series, tones, limits and this guide.",
+      "2. Read the photos. Write your reading list in chat: stations, devices, what is fastened to what, directions, labels.",
+      "3. twin_scene_draft {scene, draft} with the SKELETON: schema 2 devices with on, mount, pose, params, io, timing and a basis word (label, ref, guess; measured and user only for what the person gave) for each number you give. No skin yet. The reply has facts, ask, notes, not_simulated, limits.",
+      "4. Compare facts with your reading list. Put the ask items to the person (mounts, bores and strokes that are guesses, one measured reference length: scene key refs). Correct the skeleton and draft again.",
+      "5. twin_scene_draft again with the same scene plus a skin (and indicators) on the devices. The server saves skin_source model; only the person can set it to checked on the page.",
+      "6. twin_render to look at the result and compare it with the photos.",
+      "7. The person adjusts places and travels on the page and confirms the draft. You write only the draft."
+    ],
+    "workpieces": "Workpieces (schema 2, simulation only; rules, no physics). 1. Read the photo (twin_photo_get) and the tones of `tones`. 2. Draft scene key `workpieces.types` {name: {shape round|square, d_mm or side_mm, h_mm, material metal|plastic, tone (a name of tones except mark), basis}}: one type for each shape, colour and size; sizes from a known length are basis ref, by eye guess; write material as you think and always basis guess, because a photo does not show metal. 3. Draft scene key `points` [{name (1-24 of a-z 0-9 _), on (\"<id>\" or \"<id>.<frame>\": the device that makes or holds the part there, so the point moves with it), pos [x,y,z] in that frame (the bottom centre of a part that rests there), catch_mm, holds, basis}]. 4. Device keys: `stack` {point, fed_by (a cylinder with a push rule from that point), content (type names, lowest first, at most 20), refill}; `push` [{from, to}] on a cylinder (at most 4); `stop` {at} on a conveyor or {belt, at} on a cylinder (active from half stroke); `sense` on a sensor, exactly one of {point, within_mm, material any|metal}, {held_by: a pad or gripper}, {pulse_of: a conveyor, mm_per_pulse}; `position` {from (D, W, R, ZR word or U<n>\\G<n>), width 16|32, per_mm, speed_mm_s} on a servo_axis; scene key `workpieces.start` [{type, at}] and `modules` (a QD77MS model, same form as scenario.modules of ladder_from_il). 5. Read facts.points, facts.workpieces, facts.push (contact_mm and end_gap_mm of each push rule) and ask: put the ask lines to the person (which colour is metal, one puck measured with a ruler), then draft again with basis user or measured. The person confirms the draft on the page. Limits: 32 points, 8 types, 20 start parts, 4 stacks, 16 push rules, 8 stops, 32 sensor rules, 50 parts at the start.",
+    "skin_rules": "A skin is the look only: {groups:[{name (1-16 of a-z 0-9 _), frame (a frame of the same device, default base), show|hide (a bit address that an io slot or a bit signal of a device of the scene has), items:[{t:box,size,pos,rot,tone}|{t:cyl,d,len,d2,axis,pos,rot,tone}]}]}. Items are in the coordinates of the frame of their group; a group on `out` moves with the rod, a group on `carriage` with the carriage. tone is one of `tones`; `mark` only in a group with `show`. At most 16 groups, 64 items and 16384 bytes for each device, 1000 skin items for the scene. A skin sets no size, place, travel, direction, address or timing: those are the skeleton. `indicators` shows the bits of other devices on a board: [{from (first bit address), count (1-64), at [x,y,z], step [dx,dy,dz], frame, d}], at most 8 rows and 128 lamps for each device.",
+    "skin_recipe": {
+      "note": "A lamp that the PLC drives is a device of kind lamp. Its look is two groups of one address: the dark lamp while the bit is OFF, the lit lamp (tone mark) while it is ON.",
+      "device": {
+        "id": "l1", "kind": "lamp", "io": {"coil": "Y10"},
+        "skin": {"groups": [
+          {"name": "lamp_off", "hide": "Y10", "items": [{"t": "cyl", "d": 14, "len": 6, "axis": "y", "pos": [0, 3, 0], "tone": "dark"}]},
+          {"name": "lamp_on", "show": "Y10", "items": [{"t": "cyl", "d": 14, "len": 6, "axis": "y", "pos": [0, 3, 0], "tone": "mark"}]}
+        ]}
+      }
+    }
+  },
+  "series": {
+    "generic": {"source": "Assumed ratios of the design study (docs/research/photo-twin/10-architecture.md 2.5): body_len 3.0 * bore + stroke (never below stroke + 20), body_dia 1.4 * bore, rod_dia 0.4 * bore, rod_out 2.0 * bore, pivot_back 1.5 * bore. No maker table; values marked ratio."},
+    "smc_cm2": {
+      "source": "SMC CM2 series, CAT.EUS20-269A-UK, page 8 Basic (Double-side Bossed) (B): S, I, D, H; page 12 Single Clevis (C): L (design 10-architecture.md 2.5). cylinder_single adds 25 mm to S for each started 50 mm of stroke (CAT.EUS20-269B-UK page 37). CDM2 (built-in magnet) is taken to have the same sizes: not verified.",
+      "spring_mm_per_50": 25,
+      "bores": {
+        "20": {"S": 62, "I": 28, "D": 8, "H": 41, "L": 30},
+        "25": {"S": 62, "I": 33.5, "D": 10, "H": 45, "L": 30},
+        "32": {"S": 64, "I": 37.5, "D": 12, "H": 45, "L": 30},
+        "40": {"S": 88, "I": 46.5, "D": 14, "H": 50, "L": 39}
+      }
+    }
+  },
+  "layout_note": "Millimetres, y is up, y = 0 is the floor. A device pose.pos is the bottom centre of the device. Each part has size [x,y,z] and pos = offset of the part's bottom centre from the device pose.pos (override with the device `parts` field: {part: {pos, rot}}). A port `at` is the offset from the bottom centre of its part. A cylinder lies along x. Rotation is about y (pose.rot[1]). Parts are static: a stroke is not part of the size. Put devices on the floor (pos y 0) or on top of another device, keep boxes from overlapping, and draw air links valve_a -> cap and valve_b -> rod (a device with a valve and no links gets these by default).",
+  "layout": {
+    "cylinder_double": {
+      "parts": [{"name": "body", "size": [200, 50, 50], "pos": [0, 0, 0]}, {"name": "rod", "size": [60, 12, 12], "pos": [130, 19, 0]}, {"name": "valve", "size": [60, 40, 40], "pos": [0, 50, 0]}],
+      "ports": [
+        {"name": "cap", "kind": "air", "part": "body", "at": [-100, 25, 0]}, {"name": "rod", "kind": "air", "part": "body", "at": [100, 25, 0]},
+        {"name": "valve_a", "kind": "air", "part": "valve", "at": [-20, 20, 20]}, {"name": "valve_b", "kind": "air", "part": "valve", "at": [20, 20, 20]},
+        {"name": "valve_p", "kind": "air", "part": "valve", "at": [0, 20, -20]}, {"name": "valve_r", "kind": "air", "part": "valve", "at": [0, 40, 0]},
+        {"name": "coil_fwd", "kind": "wire", "part": "valve", "at": [-25, 40, 0]}, {"name": "coil_back", "kind": "wire", "part": "valve", "at": [25, 40, 0]}
+      ]
+    },
+    "cylinder_single": {
+      "parts": [{"name": "body", "size": [160, 40, 40], "pos": [0, 0, 0]}, {"name": "rod", "size": [40, 10, 10], "pos": [100, 15, 0]}, {"name": "valve", "size": [50, 35, 35], "pos": [0, 40, 0]}],
+      "ports": [
+        {"name": "cap", "kind": "air", "part": "body", "at": [-80, 20, 0]},
+        {"name": "valve_a", "kind": "air", "part": "valve", "at": [0, 17, 18]},
+        {"name": "valve_p", "kind": "air", "part": "valve", "at": [-15, 17, -18]}, {"name": "valve_r", "kind": "air", "part": "valve", "at": [15, 35, 0]},
+        {"name": "coil_fwd", "kind": "wire", "part": "valve", "at": [0, 35, 0]}
+      ]
+    },
+    "rotary_actuator": {
+      "parts": [{"name": "body", "size": [80, 80, 80], "pos": [0, 0, 0]}, {"name": "valve", "size": [50, 35, 35], "pos": [0, 80, 0]}],
+      "ports": [
+        {"name": "cap", "kind": "air", "part": "body", "at": [-40, 40, 0]}, {"name": "rod", "kind": "air", "part": "body", "at": [40, 40, 0]},
+        {"name": "valve_a", "kind": "air", "part": "valve", "at": [-15, 17, 18]}, {"name": "valve_b", "kind": "air", "part": "valve", "at": [15, 17, 18]},
+        {"name": "valve_p", "kind": "air", "part": "valve", "at": [0, 17, -18]}, {"name": "valve_r", "kind": "air", "part": "valve", "at": [0, 35, 0]},
+        {"name": "coil_fwd", "kind": "wire", "part": "valve", "at": [-20, 35, 0]}, {"name": "coil_back", "kind": "wire", "part": "valve", "at": [20, 35, 0]}
+      ]
+    },
+    "gripper": {
+      "parts": [{"name": "body", "size": [70, 40, 50], "pos": [0, 0, 0]}, {"name": "valve", "size": [50, 35, 35], "pos": [0, 40, 0]}],
+      "ports": [
+        {"name": "cap", "kind": "air", "part": "body", "at": [-35, 20, 0]}, {"name": "rod", "kind": "air", "part": "body", "at": [35, 20, 0]},
+        {"name": "valve_a", "kind": "air", "part": "valve", "at": [-15, 17, 18]}, {"name": "valve_b", "kind": "air", "part": "valve", "at": [15, 17, 18]},
+        {"name": "valve_p", "kind": "air", "part": "valve", "at": [0, 17, -18]}, {"name": "valve_r", "kind": "air", "part": "valve", "at": [0, 35, 0]},
+        {"name": "coil_fwd", "kind": "wire", "part": "valve", "at": [-20, 35, 0]}, {"name": "coil_back", "kind": "wire", "part": "valve", "at": [20, 35, 0]}
+      ]
+    },
+    "vacuum_pad": {
+      "parts": [{"name": "pad", "size": [40, 40, 40], "pos": [0, 0, 0]}],
+      "ports": [{"name": "vacuum", "kind": "air", "part": "pad", "at": [0, 40, 0]}, {"name": "coil", "kind": "wire", "part": "pad", "at": [20, 20, 0]}]
+    },
+    "part_source": {
+      "parts": [{"name": "body", "size": [60, 40, 60], "pos": [0, 0, 0]}],
+      "ports": [{"name": "make", "kind": "wire", "part": "body", "at": [0, 0, 0]}]
+    },
+    "part_sink": {
+      "parts": [{"name": "body", "size": [60, 40, 60], "pos": [0, 0, 0]}],
+      "ports": []
+    },
+    "zone_sensor": {
+      "parts": [{"name": "body", "size": [20, 50, 20], "pos": [0, 0, 0]}],
+      "ports": [{"name": "output", "kind": "wire", "part": "body", "at": [0, 0, 0]}]
+    },
+    "motor": {
+      "parts": [{"name": "body", "size": [120, 100, 100], "pos": [0, 0, 0]}],
+      "ports": [{"name": "run_fwd", "kind": "wire", "part": "body", "at": [-60, 50, 0]}, {"name": "run_back", "kind": "wire", "part": "body", "at": [-60, 50, 20]}]
+    },
+    "conveyor": {
+      "parts": [{"name": "frame", "size": [1000, 80, 200], "pos": [0, 0, 0]}, {"name": "motor", "size": [100, 80, 80], "pos": [550, 0, 0]}],
+      "ports": [{"name": "run_fwd", "kind": "wire", "part": "motor", "at": [0, 80, 0]}, {"name": "run_back", "kind": "wire", "part": "motor", "at": [20, 80, 0]}]
+    },
+    "index_table": {
+      "parts": [{"name": "table", "size": [400, 150, 400], "pos": [0, 0, 0]}],
+      "ports": [{"name": "run", "kind": "wire", "part": "table", "at": [0, 150, 200]}, {"name": "home", "kind": "wire", "part": "table", "at": [20, 150, 200]}]
+    },
+    "servo_axis": {
+      "parts": [{"name": "rail", "size": [400, 60, 80], "pos": [0, 0, 0]}],
+      "ports": [{"name": "power", "kind": "wire", "part": "rail", "at": [-200, 30, 0]}]
+    },
+    "lamp": {
+      "parts": [{"name": "body", "size": [30, 40, 30], "pos": [0, 0, 0]}],
+      "ports": [{"name": "coil", "kind": "wire", "part": "body", "at": [0, 0, 0]}]
+    },
+    "tower_light": {
+      "parts": [{"name": "body", "size": [50, 200, 50], "pos": [0, 0, 0]}],
+      "ports": [{"name": "coil_red", "kind": "wire", "part": "body", "at": [0, 0, 0]}, {"name": "coil_yellow", "kind": "wire", "part": "body", "at": [10, 0, 0]}, {"name": "coil_green", "kind": "wire", "part": "body", "at": [20, 0, 0]}, {"name": "coil_buzzer", "kind": "wire", "part": "body", "at": [-10, 0, 0]}]
+    },
+    "buzzer": {
+      "parts": [{"name": "body", "size": [40, 30, 40], "pos": [0, 0, 0]}],
+      "ports": [{"name": "coil", "kind": "wire", "part": "body", "at": [0, 0, 0]}]
+    },
+    "button": {
+      "parts": [{"name": "body", "size": [40, 50, 40], "pos": [0, 0, 0]}],
+      "ports": [{"name": "contact", "kind": "wire", "part": "body", "at": [0, 0, 0]}]
+    },
+    "selector": {
+      "parts": [{"name": "body", "size": [40, 50, 40], "pos": [0, 0, 0]}],
+      "ports": [{"name": "contact_1", "kind": "wire", "part": "body", "at": [-10, 0, 0]}, {"name": "contact_2", "kind": "wire", "part": "body", "at": [10, 0, 0]}]
+    },
+    "estop": {
+      "parts": [{"name": "body", "size": [60, 60, 60], "pos": [0, 0, 0]}],
+      "ports": [{"name": "contact", "kind": "wire", "part": "body", "at": [0, 0, 0]}]
+    },
+    "reed_sensor": {
+      "parts": [{"name": "body", "size": [30, 10, 10], "pos": [0, 0, 0]}],
+      "ports": [{"name": "output", "kind": "wire", "part": "body", "at": [-15, 5, 0]}]
+    },
+    "photo_sensor": {
+      "parts": [{"name": "body", "size": [20, 50, 20], "pos": [0, 0, 0]}],
+      "ports": [{"name": "output", "kind": "wire", "part": "body", "at": [0, 0, 0]}]
+    },
+    "prox_sensor": {
+      "parts": [{"name": "body", "size": [18, 18, 60], "pos": [0, 0, 0]}],
+      "ports": [{"name": "output", "kind": "wire", "part": "body", "at": [0, 9, -30]}]
+    },
+    "tank": {
+      "parts": [{"name": "body", "size": [400, 600, 400], "pos": [0, 0, 0]}],
+      "ports": [{"name": "fill", "kind": "wire", "part": "body", "at": [0, 600, 0]}, {"name": "drain", "kind": "wire", "part": "body", "at": [0, 0, 200]}]
+    },
+    "pump": {
+      "parts": [{"name": "body", "size": [150, 120, 120], "pos": [0, 0, 0]}],
+      "ports": [{"name": "run", "kind": "wire", "part": "body", "at": [0, 120, 0]}]
+    },
+    "level_sensor": {
+      "parts": [{"name": "body", "size": [30, 100, 30], "pos": [0, 0, 0]}],
+      "ports": [{"name": "output", "kind": "wire", "part": "body", "at": [0, 100, 0]}]
+    },
+    "robot_arm": {
+      "parts": [{"name": "base", "size": [300, 400, 300], "pos": [0, 0, 0]}],
+      "ports": [{"name": "power", "kind": "wire", "part": "base", "at": [0, 0, 150]}]
+    }
+  }
+}

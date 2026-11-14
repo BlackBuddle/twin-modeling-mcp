@@ -1,0 +1,17 @@
+# Module layers of the crate twin-engine (reusable-parts 3.1a, doc 46 section 4.6; same rules as src/layers.txt).
+# Rule: a unit may use only the units in the rows above it. The rows are ordered, so this also forbids every cycle.
+# A unit is a file of src/. Layers: 0 base (data, names, character checks, the host trait; no OS call), 2 model (domain logic; no OS call, no PLC code), 5 crate root.
+# Row format: <unit> <layer> <role>. A new source file needs its row first (the test layers_follow_the_table of the root package fails without it).
+# A back edge that exists today is listed in layers-allow.txt; that list can only get shorter.
+text 0 character checks for model text
+b64 0 small base64 encoder
+bind 0 the host boundary: PlantIo and the trait Addresses (the host gives the PLC address rules)
+mech 2 machine model engine: joints, couplings, drivers, window sensors, tick; signal names only, no PLC address, no clock
+scene 2 scene format, checks, catalog
+geom 2 schema 2 geometry core
+layout 2 twin parts, ports, links, layout warnings
+work 2 twin workpieces and their rules
+plant 2 twin plant model (kinematic, no clock, no PLC)
+run 2 simulation recorder (positions, joints, changes, result object) and the part event script; no IL, no clock
+model 2 twin model check (the keys a twin model leaves out, pins, the pin limit) and the run with events on pins; no IL, no clock
+lib 5 crate root: the module list

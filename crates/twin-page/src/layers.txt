@@ -1,0 +1,14 @@
+# Module layers of the crate twin-page (reusable-parts 3.1b, doc 46 section 4.6; same rules as src/layers.txt).
+# Rule: a unit may use only the units in the rows above it. The rows are ordered, so this also forbids every cycle.
+# A unit is a file of src/. Layers: 0 base (data, texts, pure formatters; no OS call), 1 io (OS random, web header checks), 3 service (shared state, files, the render wait), 4 entrance (HTTP routes), 5 crate root.
+# Row format: <unit> <layer> <role>. A new source file needs its row first (the test layers_follow_the_table of the root package fails without it).
+# A back edge that exists today is listed in layers-allow.txt; that list can only get shorter.
+ko 0 Korean page texts: the translator and the scene table
+guard 0 page code text check (markup entrances); used by the page tests of both hosts
+page 0 page file text and the fixed vendor list (compiled-in)
+stamp 0 UTC time texts (pure)
+web 1 OS random token and the Host and Origin checks
+store 3 scene store (files under the output folder)
+render 3 render hub: the wait for the open 3D page, photos
+http 4 /api/twin/* routes
+lib 5 crate root: the module list

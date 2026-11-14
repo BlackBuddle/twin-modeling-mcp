@@ -1,0 +1,11 @@
+[package]
+name = "twin-modeling-mcp"
+version = "0.1.0"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+description = "Twin model server: a stdio MCP server and a localhost 3D page that check, simulate and draw a twin model (a machine as frames, joints, drivers and pins). No PLC code."
+
+[dependencies]
+serde_json = "1"
+twin-engine = { path = "../twin-engine" }
+twin-page = { path = "../twin-page" }
