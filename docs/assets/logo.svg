@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <title>twin-modeling-mcp</title>
+  <rect width="128" height="128" rx="26" fill="#18181a"/>
+  <rect x="16" y="94" width="96" height="10" fill="#fbfbfa"/>
+  <rect x="24" y="46" width="40" height="40" fill="#dc9259"/>
+  <rect x="52" y="26" width="44" height="44" fill="none" stroke="#fbfbfa" stroke-width="8"/>
+</svg>
