@@ -35,6 +35,11 @@ Check the SHA-256 values:
 cd crates/twin-page/ui/vendor && find . -type f ! -name .gitattributes -exec sha256sum {} \; | sort -k2
 ```
 
+## Pictures
+
+The pictures in `examples/` and `docs/assets/` are screenshots of this program's own 3D page, made for this
+repository. No third-party image is used.
+
 ## Design values (no code): Anatomy
 
 The look of the 3D page (`ui/twin-model.html`, `ui/twin-scene.js`) follows the open-source skill "Anatomy". No Anatomy code

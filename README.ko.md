@@ -20,6 +20,8 @@
 | `twin-modeling-mcp` | 서버입니다. 도구 5개와 로컬 3D 화면(영어·한국어)을 제공합니다. |
 | `crates/twin-engine` | 모델 형식과 검사, 기계 엔진(관절, 연동, 구동기), 공작물, 플랜트가 있습니다. OS 호출은 없습니다. |
 | `crates/twin-page` | 화면 파일, 모델 저장소, 화면 경로가 있습니다. |
+| `examples/` | 스킬과 이 서버로 만든 모델 5개입니다. 모델마다 원리 시트, 시뮬레이션 입력, 그림이 있습니다(아래 "예시" 참고). |
+| `docs/` | 영어·한국어 정적 소개 페이지(`docs/index.html`, GitHub Pages용)입니다. |
 
 ## 설치
 
@@ -96,6 +98,73 @@ claude mcp add twin-modeling -- <실행파일-경로>/twin-modeling-mcp --dir <�
 
 시뮬레이션은 일정한 속도로 움직이는 운동학 모델입니다. 물리 계산은 없고 시뮬레이션을 통과했다고 실제 장비에서
 시험한 것은 아닙니다.
+
+## 예시: 말에서 모델까지
+
+아래 내용은 모두 `twin-modeling-mcp` 0.1.0이 실제로 낸 결과입니다. 파일은
+[`examples/pick-and-place/`](examples/pick-and-place/)에 있습니다.
+
+**1. 사람이 쓴 말** (모델과 시트는 영어로 썼습니다):
+
+> A pick-and-place unit: a horizontal air cylinder with 200 mm stroke carries a vertical air cylinder with 100 mm
+> stroke. A suction cup sits at the end of the vertical rod. Both cylinders have two air tubes and a switch at each
+> end. Make a twin model.
+
+(가로 공압 실린더(행정 200 mm)가 세로 공압 실린더(행정 100 mm)를 싣고 세로 로드 끝에 흡착 패드가 달린 픽앤플레이스
+장치입니다. 두 실린더 모두 에어 튜브가 두 개이고 양 끝에 스위치가 있습니다.)
+
+**2. 원리 시트** ([`sheet.md`](examples/pick-and-place/sheet.md) 일부):
+
+```
+3. Motion path:
+   - Valve coils x_cyl.coil_fwd / coil_back -> x_cyl rod (kind cylinder_double, 5/2 double valve) -> carries z_cyl (on: x_cyl.out).
+   - Valve coils z_cyl.coil_fwd / coil_back -> z_cyl rod, pointing down (pose.rot z -90) -> carries pad (on: z_cyl.out).
+   - Vacuum valve pad.coil -> suction at the cup (kind vacuum_pad).
+7. Numbers: stroke of x_cyl 200 mm (user), stroke of z_cyl 100 mm (user), bores and times (guess).
+```
+
+**3. 트윈 모델** ([`model.json`](examples/pick-and-place/model.json) 일부. 전체 파일에는 받침대, 흡착 패드, 외형도
+들어 있습니다):
+
+```json
+{"id": "z_cyl", "kind": "cylinder_double", "on": "x_cyl.out", "mount": "surface",
+ "pose": {"pos": [40, 0, 0], "rot": [0, 0, -90]},
+ "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double"},
+ "timing": {"lag_ms": 30, "fwd_ms": 300, "back_ms": 280},
+ "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"}}
+```
+
+`model_draft`는 경고 없이 저장했으며 응답의 `facts`에 따르면 `z_cyl`은 아래(`down`)를 향하고, 로드 끝은 y 241.5 mm에서
+141.5 mm까지 움직입니다.
+
+**4. 한 사이클 시뮬레이션:** [`sim.json`](examples/pick-and-place/sim.json)의 이벤트(내림, 흡착, 올림, 이동, 내림, 흡착 끔,
+올림, 복귀)로 `model_sim`을 돌린 결과입니다. `changes`의 주요 줄:
+
+| t (ms) | 핀 | 값 | 뜻 |
+|---|---|---|---|
+| 330 | `z_cyl.sensor_fwd` | 1 | 패드가 내려감 |
+| 500 | `pad.coil` | 1 | 흡착 켬 |
+| 1010 | `z_cyl.sensor_back` | 1 | 패드가 올라옴 |
+| 1630 | `x_cyl.sensor_fwd` | 1 | 놓을 자리 위에 옴 |
+| 2030 | `z_cyl.sensor_fwd` | 1 | 다시 내려감 |
+| 3180 | `x_cyl.sensor_back` | 1 | 처음 자리로 돌아옴 |
+
+**5. 화면**에서 모델을 그리고 실행을 재생합니다(1.95 s에서 멈춘 모습):
+
+![3D 화면의 픽앤플레이스 모델](examples/pick-and-place/picture.png)
+
+### 갤러리
+
+폴더마다 `sheet.md`, `model.json`, `sim.json`, 그림이 있고 모든 모델은 이 서버로 초안을 만들고 확정하고
+시뮬레이션했습니다. 수치는 추정값입니다(각 시트의 7번 참고).
+
+| 모델 | 보여 주는 것 | 그림 |
+|---|---|---|
+| [`pick-and-place`](examples/pick-and-place/) | 한 실린더가 다른 실린더를 싣는 복동 실린더 두 개와 흡착 패드. | <img src="examples/pick-and-place/picture.png" width="240" alt="픽앤플레이스"> |
+| [`ball-screw-axis`](examples/ball-screw-axis/) | 프리셋 `servo_screw`: 캐리지가 목표 워드를 따라가고 모터는 1 mm마다 22.5° 돕니다. 2100 ms에 목표 200 mm 도달. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="볼나사 축"> |
+| [`index-table`](examples/index-table/) | 프리셋 `index_table`, 8스테이션: 펄스 하나에 600 ms 동안 한 칸 돕니다. | <img src="examples/index-table/picture.png" width="240" alt="인덱스 테이블"> |
+| [`robot-arm`](examples/robot-arm/) | 프리셋 `robot_6r`, 프로그램 번호로 고르는 티칭 자세 세 개. `done`이 1300, 3100, 4900 ms에 켜짐. | <img src="examples/robot-arm/picture.png" width="240" alt="로봇 팔"> |
+| [`cam-lifter`](examples/cam-lifter/) | 기본 요소만 씀: 도는 축, 캠 표, 승강 관절(스킬의 예시 2). `up_sw`가 1580 ms부터 2230 ms까지 켜짐. | <img src="examples/cam-lifter/picture.png" width="240" alt="캠 리프터"> |
 
 ## 도구
 

@@ -20,6 +20,8 @@ never designs anything: it only checks, simulates, stores and draws what the cli
 | `twin-modeling-mcp` | The server: 5 tools plus the local 3D page (English and Korean). |
 | `crates/twin-engine` | The model format, its checks, the machine engine (joints, couplings, drivers), workpieces and the plant. No OS call. |
 | `crates/twin-page` | The page files, the model store and the page routes. |
+| `examples/` | Five models made with the skill and this server, each with its principle sheet, simulation input and picture (see "Example" below). |
+| `docs/` | A static intro page in English and Korean (`docs/index.html`, for GitHub Pages). |
 
 ## Install
 
@@ -96,6 +98,70 @@ text wins (the skill compares its `Version:` line with `guide.modeling_version` 
    and confirm the draft. `model_render` lets the client ask the page for a picture and compare it with the photo.
 
 A simulation is a kinematic model with constant speeds. There is no physics. A pass is not a test on real equipment.
+
+## Example: from words to a model
+
+All of this is the real output of `twin-modeling-mcp` 0.1.0. The files are in
+[`examples/pick-and-place/`](examples/pick-and-place/).
+
+**1. What the person types:**
+
+> A pick-and-place unit: a horizontal air cylinder with 200 mm stroke carries a vertical air cylinder with 100 mm
+> stroke. A suction cup sits at the end of the vertical rod. Both cylinders have two air tubes and a switch at each
+> end. Make a twin model.
+
+**2. The principle sheet** (excerpt of [`sheet.md`](examples/pick-and-place/sheet.md)):
+
+```
+3. Motion path:
+   - Valve coils x_cyl.coil_fwd / coil_back -> x_cyl rod (kind cylinder_double, 5/2 double valve) -> carries z_cyl (on: x_cyl.out).
+   - Valve coils z_cyl.coil_fwd / coil_back -> z_cyl rod, pointing down (pose.rot z -90) -> carries pad (on: z_cyl.out).
+   - Vacuum valve pad.coil -> suction at the cup (kind vacuum_pad).
+7. Numbers: stroke of x_cyl 200 mm (user), stroke of z_cyl 100 mm (user), bores and times (guess).
+```
+
+**3. The twin model** (excerpt of [`model.json`](examples/pick-and-place/model.json); the full file also has the stand,
+the suction cup and the skins):
+
+```json
+{"id": "z_cyl", "kind": "cylinder_double", "on": "x_cyl.out", "mount": "surface",
+ "pose": {"pos": [40, 0, 0], "rot": [0, 0, -90]},
+ "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double"},
+ "timing": {"lag_ms": 30, "fwd_ms": 300, "back_ms": 280},
+ "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"}}
+```
+
+`model_draft` saved it with no warning. Its `facts` say that `z_cyl` points `down` and that its rod tip goes from
+y 241.5 to 141.5 mm.
+
+**4. One simulated cycle:** `model_sim` with the events of [`sim.json`](examples/pick-and-place/sim.json) (down, vacuum
+on, up, over, down, vacuum off, up, back). Key lines of `changes`:
+
+| t (ms) | Pin | Value | Meaning |
+|---|---|---|---|
+| 330 | `z_cyl.sensor_fwd` | 1 | cup is down |
+| 500 | `pad.coil` | 1 | vacuum on |
+| 1010 | `z_cyl.sensor_back` | 1 | cup is up |
+| 1630 | `x_cyl.sensor_fwd` | 1 | over the place point |
+| 2030 | `z_cyl.sensor_fwd` | 1 | down again |
+| 3180 | `x_cyl.sensor_back` | 1 | back at the start |
+
+**5. The page** draws the model and plays the run (paused at 1.95 s):
+
+![The pick-and-place model on the 3D page](examples/pick-and-place/picture.png)
+
+### Gallery
+
+Each folder holds `sheet.md`, `model.json`, `sim.json` and the picture. Every model was drafted, confirmed and
+simulated with this server; the numbers are guesses (see part 7 of each sheet).
+
+| Model | What it shows | Picture |
+|---|---|---|
+| [`pick-and-place`](examples/pick-and-place/) | Two double-acting cylinders, one carried by the other, and a suction cup. | <img src="examples/pick-and-place/picture.png" width="240" alt="pick and place"> |
+| [`ball-screw-axis`](examples/ball-screw-axis/) | Preset `servo_screw`: the carriage follows a target word; the motor turns 22.5° for each mm. Target 200 mm reached at 2100 ms. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="ball-screw axis"> |
+| [`index-table`](examples/index-table/) | Preset `index_table`, 8 stations: one pulse turns one station in 600 ms. | <img src="examples/index-table/picture.png" width="240" alt="index table"> |
+| [`robot-arm`](examples/robot-arm/) | Preset `robot_6r` with three taught poses chosen by a program number; `done` at 1300, 3100 and 4900 ms. | <img src="examples/robot-arm/picture.png" width="240" alt="robot arm"> |
+| [`cam-lifter`](examples/cam-lifter/) | Primitives only: a turning shaft, a cam table and a lift (Example 2 of the skill). `up_sw` on from 1580 to 2230 ms. | <img src="examples/cam-lifter/picture.png" width="240" alt="cam lifter"> |
 
 ## The tools
 
