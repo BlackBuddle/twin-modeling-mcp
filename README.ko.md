@@ -16,6 +16,243 @@
 - Rust 코드가 쓰는 외부 크레이트는 `serde_json` 하나입니다.
 - 라이선스는 AGPL-3.0-or-later입니다.
 
+## 만들 수 있는 것
+
+폴더마다 `sheet.md`, `model.json`, `sim.json`, 그림이 있습니다. 모든 모델은 이 서버로 초안을 만들고 확정하고
+시뮬레이션했습니다(`model_draft` 경고 없음, `model_sim` 알람 없음).
+
+예시 설비는 설계 예시라서 치수와 시간, 속도는 예시를 위해 정한 추정값이고(각 시트 7번에 `guess`나 `user`로
+표시) 카탈로그 값이 아니며 어느 모델도 실제 설비와 같다고 주장하지 않습니다.
+
+움직이는 그림은 모두 그 모델의 마지막 `model_sim` 실행을 3D 화면에서 1×로, 100 ms씩 걸으며 재생한 것입니다.
+
+### 공압 픽앤플레이스
+
+![픽앤플레이스 스테이션의 시뮬레이션 한 사이클](docs/assets/pick-and-place.gif)
+
+로드리스 X 실린더, 가이드 Z 실린더, 흡착 패드를 단 갠트리와 공급 컨베이어, 지그, 밸브 매니폴드. 장치 14개.  
+시뮬레이션: 집기 960 ms, 놓기 2600 ms, 복귀 3740 ms.  
+폴더: [`examples/pick-and-place`](examples/pick-and-place/)
+
+### 볼나사 서보 축
+
+![볼나사 서보 축의 시뮬레이션 한 사이클](docs/assets/ball-screw-axis.gif)
+
+서보 모터, 커플링, 리드 10 mm 볼나사, 레일 두 줄 위의 캐리지, 케이블 체인, 원점·리밋 스위치. 장치 5개.  
+시뮬레이션: 목표 300, 150, 0 mm, busy는 1500, 2600, 3600 ms에 꺼짐.  
+폴더: [`examples/ball-screw-axis`](examples/ball-screw-axis/)
+
+### 8스테이션 인덱스 테이블
+
+![8스테이션 인덱스 테이블의 시뮬레이션 한 사이클](docs/assets/index-table.gif)
+
+기어드 모터가 달린 캠 인덱서 위의 다이얼, 부품이 든 지그 8개, 기둥에 단 압입 실린더, 부품 센서. 장치 8개.  
+시뮬레이션: 인포지션 640, 2340, 4040 ms, 압입 1050, 2750, 4450 ms.  
+폴더: [`examples/index-table`](examples/index-table/)
+
+### 로봇 셀
+
+![로봇 셀의 시뮬레이션 한 사이클](docs/assets/robot-arm.gif)
+
+받침대 위 6축 로봇(프리셋 `robot_6r`), 흡착 툴, 지그 테이블, 배출 벨트, 펜스. 장치 11개.  
+시뮬레이션: 집기 2900 ms, 벨트에 놓기 4950 ms, 원점 6400 ms.  
+폴더: [`examples/robot-arm`](examples/robot-arm/)
+
+### 캠 리프터
+
+![캠 리프터의 시뮬레이션 한 사이클](docs/assets/cam-lifter.gif)
+
+롤러 종동절이 붙은 배 모양 캠(27점 승강 표), 가이드 승강판, 기어드 모터, 상승·하강·원점 스위치. 장치 4개.  
+시뮬레이션: 상승 스위치 1540~1670 ms, 3090 ms에 다시 원점.  
+폴더: [`examples/cam-lifter`](examples/cam-lifter/)
+
+### 카탈로그의 기계 종류
+
+`model_catalog`가 돌려주는 종류 27개와 프리셋 4개를 묶어 보였습니다. 프리셋은 관절, 연동, 구동기, 센서로
+펼쳐집니다. 맞는 종류가 없는 기계는 기본 요소로 짭니다.
+
+| 무리 | 종류 | 프리셋 |
+|---|---|---|
+| 실린더와 로터리 액추에이터 | `cylinder_double`, `cylinder_single`, `rotary_actuator` | |
+| 컨베이어, 모터, 펌프 | `conveyor`, `motor`, `pump` | |
+| 서보 축 | `servo_axis` | `servo_screw` |
+| 인덱스 테이블 | `index_table` | `index_table` |
+| 로봇 팔 | `robot_arm` | `robot_6r` |
+| 캠과 그 밖의 기구(기본 요소로) | `machine`, `solid`(캠이나 링크는 연동 `table`로, 나사, 랙, 기어는 연동 `ratio`로 적습니다) | `wheeled_base` |
+| 그리퍼와 흡착 패드 | `gripper`, `vacuum_pad` | |
+| 센서 | `photo_sensor`, `prox_sensor`, `reed_sensor`, `zone_sensor`, `level_sensor` | |
+| 램프, 버튼, 스위치 | `lamp`, `tower_light`, `buzzer`, `button`, `selector`, `estop` | |
+| 공작물과 탱크 | `part_source`, `part_sink`, `tank` | |
+
+## 이것으로 할 수 있는 일
+
+- **기계의 3D 모델 얻기.** 기계를 말로 설명하거나 사진을 붙이면 AI 클라이언트가 스킬을 따라 모델을 쓰고
+  서버는 그 모델을 검사해서 3D 화면에 그립니다.
+- **한 사이클 돌려 보기.** 핀에 이벤트를 넣어 `model_sim`으로 돌립니다. 결과를 보면 센서가 켜지는 시각, 관절이
+  움직이는 때, 부품마다 일어난 일을 알 수 있습니다.
+- **만들기 전에 움직임 보기.** 부품을 사거나 만들기 전에 움직임과 동작 순서를 그려 봅니다. 치수와 시간은 누가
+  재기 전까지 추정값입니다.
+- **기계를 설명하고 가르치기.** 3D 화면에서 실행을 재생하며 설명하거나, 클라이언트가 `model_render`로 여섯 방향에서
+  본 그림을 받게 합니다.
+
+시뮬레이션은 일정한 속도로 움직이는 운동학 모델입니다. 물리와 충돌은 계산하지 않으며 통과했다고 실제 장비에서
+시험한 것은 아닙니다.
+
+## 작동 원리
+
+### 모델을 이루는 것
+
+트윈 모델은 장치 목록을 담은 JSON 객체 하나입니다. 장치마다 카탈로그의 종류가 있고 종류로 나타낼 수 없는
+움직임은 그 장치의 `mech`에 직접 적습니다.
+
+| 부분 | 하는 일 |
+|---|---|
+| 프레임 | 장치는 모두 부모 프레임 위에 놓입니다(`on`, `mount`, mm와 도 단위의 `pose`). 그래서 프레임 전체가 트리 하나를 이룹니다. |
+| 관절 | `fixed`, `prismatic`(직선 이동), `revolute`(회전), `planar`(바닥을 달리는 베이스)가 있습니다. |
+| 연동 | 한 관절이 다른 관절을 움직입니다. `ratio`(나사, 랙, 기어), `table`(캠이나 링크의 곡선), `diff_drive`(바퀴 두 개)가 있습니다. |
+| 구동기 | 핀으로 관절을 움직입니다. `coils`(밸브 코일), `follow`(지령 위치), `step`(펄스 하나에 한 칸), `playback`(프로그램 번호로 고른 자세)가 있습니다. |
+| 센서 | 관절 값의 한 구간에서 켜지는 `window`(끝, 원점, 인포지션 스위치)이거나, 부품을 보는 센서 종류입니다. |
+| 외형 | 겉모습만 정합니다. 프레임 위에 `box`와 `cyl` 요소를 묶어 놓고 저마다 색조를 줄 뿐 움직임은 바꾸지 않습니다. |
+| 핀 | 이름 붙은 신호 `<id>.<slot>`입니다. 이벤트는 핀으로 들어가고 센서는 핀으로 답합니다. |
+
+### 시뮬레이션이 한 tick마다 하는 일
+
+`model_sim`은 정해진 간격(`scan_ms`, 따로 정하지 않으면 10 ms, 1~100)으로 시간을 나아가게 합니다. tick마다 아래
+단계를 이 순서대로 실행합니다.
+
+1. 때가 된 핀 이벤트가 핀 값을 바꿉니다. 실행에 적은 부품 이벤트가 부품을 놓거나 옮기거나 치웁니다.
+2. 실린더, 컨베이어, 모터가 코일이나 운전 핀을 읽습니다. 지연 시간이 지나면 정한 속도로 움직이고 끝 센서는
+   센서 구간 안에서 켜집니다.
+3. `mech`가 있는 장치를 id 순서로 돌립니다. 구동기가 관절을 움직이고 연동이 따라가는 관절을 움직이고 한계를
+   넘은 값은 잘라 내고 창 센서를 본 뒤 `busy`와 `done`을 정합니다.
+4. 공작물 규칙 R1~R9를 정해진 순서로 실행합니다. 부품이 점을 따라가고 패드가 놓고 집고 로드가 밀고 벨트가
+   실어 나르고 매거진에서 부품이 떨어지고, 부품 센서 값이 정해집니다.
+5. 램프와 탱크 수위가 핀을 따라갑니다.
+
+엔진에는 시계도 난수도 없고 순서가 고정되어 있어서 입력이 같으면 결과도 늘 같습니다. 코드는
+`crates/twin-engine/src/model.rs`의 `sim`, `plant.rs`의 `Plant::tick`, `mech.rs`의 `Machine::tick`, `work.rs`의
+`Rt::tick`입니다.
+
+### 스킬이 AI 클라이언트를 이끄는 순서
+
+함께 들어 있는 스킬 `skills/twin-modeling`의 단계입니다.
+
+**AI 클라이언트에서**
+
+1. 기계를 알아봅니다.
+2. 작동 원리를 찾습니다.
+3. 원리 시트(8개 항목)를 씁니다.
+4. 각 부분을 종류, 프리셋, 기본 요소에 대응시킵니다.
+5. 트윈 모델 JSON을 씁니다. 신호는 이름 붙은 핀입니다.
+6. 직접 검사합니다.
+
+**서버와 함께**
+
+7. 초안: `model_draft`로 보내고 `facts`를 읽습니다.
+8. `model_sim`으로 시뮬레이션합니다.
+9. `model_render`와 3D 화면으로 그립니다.
+10. 사람이 초안을 확정합니다.
+
+### 예시: 말에서 모델까지
+
+아래 내용은 모두 `twin-modeling-mcp` 0.1.0이 실제로 낸 결과입니다. 파일은
+[`examples/pick-and-place/`](examples/pick-and-place/)에 있습니다.
+
+**1. 사람이 쓴 말** (모델과 시트는 영어로 썼습니다):
+
+> It is a pneumatic pick-and-place station on an aluminium base plate. Two 45 mm profile posts carry a 45 x 90 cross
+> beam. On the front of the beam a guided rodless cylinder moves the head 200 mm in X; on its carriage a guided
+> cylinder with a 100 mm stroke lowers a vacuum pad. A small inline ejector and a vacuum switch sit on the carriage
+> bracket. Parts (orange plastic housings, about 40 x 40 x 25) come in on a short belt conveyor and stop against an
+> end stop, where a diffuse photo sensor sees them. The head picks a part and puts it into a nest on the right, which
+> has an inductive sensor. All cylinders have two air tubes and a reed switch at each end; the valves sit on a
+> terminal at the back of the plate. There is a tower light on the beam and a box with a start button and an
+> emergency stop at the front. Make a twin model of one cycle.
+
+(알루미늄 베이스판 위의 공압 픽앤플레이스 스테이션입니다. 45 mm 프로파일 기둥 두 개가 45 x 90 크로스빔을 받치고
+빔 앞면의 가이드 로드리스 실린더가 헤드를 X로 200 mm 옮깁니다. 캐리지에 붙은 행정 100 mm 가이드 실린더가 흡착
+패드를 내리고 캐리지 브래킷에는 소형 이젝터와 진공 스위치가 있습니다. 부품(주황색 플라스틱 하우징, 약 40 x 40 x 25)은
+짧은 벨트 컨베이어로 들어와 엔드 스톱에 멈추고 확산형 광센서가 이를 봅니다. 헤드는 부품을 집어 오른쪽 지그에 놓고
+지그에는 근접 센서가 있습니다. 실린더마다 에어 튜브가 두 개이고 양 끝에 리드 스위치가 달렸으며 밸브는 판 뒤쪽 매니폴드에
+모여 있습니다. 빔 위에 타워 램프가, 앞쪽에 시작 버튼과 비상 정지가 든 박스가 있습니다. 한 사이클의 트윈 모델을 만들어
+주세요.)
+
+**2. 원리 시트** ([`sheet.md`](examples/pick-and-place/sheet.md) 일부):
+
+```
+## 3. Motion path
+- Valve coils x_cyl.coil_fwd / coil_back (5/2 double) -> rodless piston -> carriage (kind cylinder_double,
+  frame out moves +x) -> carries the Z bracket, z_cyl, vac_sw and the ejector (on: x_cyl.out).
+- Valve coils z_cyl.coil_fwd / coil_back (5/2 double) -> piston rod and guide rods -> Z plate
+  (kind cylinder_double, pose.rot z -90, so fwd is down) -> carries pad (on: z_cyl.out).
+- Vacuum valve pad.coil -> ejector -> suction at the pad (kind vacuum_pad).
+- Motor contactor conv.run_fwd -> gear motor -> belt (kind conveyor). The end stop holds the first part.
+## 7. Numbers
+| X stroke | 200 | mm | user | words |
+| Z stroke | 100 | mm | user | words |
+| X bore   | 25  | mm | guess |      |
+```
+
+**3. 트윈 모델** ([`model.json`](examples/pick-and-place/model.json)의 장치 14개 중 하나, 외형은 뺐습니다. 전체 파일에는
+프레임, 컨베이어, 지그, 밸브 매니폴드, 타워 램프, 조작 박스와 외형 요소 264개가 들어 있습니다):
+
+```json
+{"id": "z_cyl", "kind": "cylinder_double", "label": "Z axis: guided cylinder",
+ "on": "x_cyl.out", "mount": "flange_rear",
+ "pose": {"pos": [-300, 7, 76], "rot": [0, 0, -90]},
+ "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double", "body_len_mm": 120, "rod_out_mm": 10},
+ "timing": {"lag_ms": 30, "fwd_ms": 350, "back_ms": 300},
+ "basis": {"bore_mm": "guess", "stroke_mm": "user", "body_len_mm": "guess", "rod_out_mm": "guess", "pose": "guess"}}
+```
+
+`model_draft`는 경고 없이 저장했고 응답의 `facts`를 보면 `z_cyl`은 아래(`down`)를 향하고 로드 끝은 y 347 mm에서
+247 mm까지 움직입니다. `ask` 목록은 두 실린더의 보어, 벨트 크기, "실제 장비에서 잰 기준 치수 하나"를 묻습니다.
+
+**4. 한 사이클 시뮬레이션:** [`sim.json`](examples/pick-and-place/sim.json)의 이벤트(컨베이어 켬, 흡착하며 내림, 올림,
+이동, 내림, 흡착 끔, 올림, 복귀)로 `model_sim`을 돌린 결과입니다. `changes`와 `part_log`의 주요 줄:
+
+| t (ms) | 핀 또는 사건 | 값 | 뜻 |
+|---|---|---|---|
+| 300 | `pick_sen.output` | 1 | 부품이 엔드 스톱에 옴 |
+| 960 | pick | 부품 1 | 패드가 부품을 집음 |
+| 970 | `vac_sw.output` | 1 | 진공 도달 |
+| 980 | `z_cyl.sensor_fwd` | 1 | 패드가 내려감 |
+| 1380 | `z_cyl.sensor_back` | 1 | 패드가 올라옴 |
+| 2090 | `x_cyl.sensor_fwd` | 1 | 지그 위에 옴 |
+| 2520 | `nest_sen.output` | 1 | 부품이 지그에 들어감 |
+| 2600 | release | 부품 1, `place` | 흡착 끔 |
+| 3740 | `x_cyl.sensor_back` | 1 | 컨베이어 위로 돌아옴 |
+
+실행은 4200 ms에 알람 없이 끝납니다.
+
+**5. 화면**에서 모델을 그리고 실행을 재생합니다(1.95 s에서 멈춘 모습, 부품을 지그로 옮기는 중):
+
+![3D 화면의 픽앤플레이스 모델](examples/pick-and-place/picture.png)
+
+## 만들어진 방식
+
+- **실행 파일 하나, 프로세스 하나.** AI 클라이언트가 시작하고, 표준 입력이 끝나면 함께 끝납니다.
+- **표준 입출력 MCP 서버**이고 도구는 다섯 개입니다: `model_catalog`, `model_draft`, `model_get`, `model_sim`,
+  `model_render`.
+- **로컬 3D 화면**은 `127.0.0.1`에서만 듣고 three.js로 그립니다. 사람은 여기서 초안을 확정합니다.
+- **Rust**로 썼고 외부 크레이트는 `serde_json` 하나뿐입니다.
+- **크레이트 세 개**: `twin-engine`(모델과 시뮬레이션, OS 호출 없음), `twin-page`(모델 저장소와 화면),
+  `twin-modeling-mcp`(서버).
+- **스킬**은 `skills/twin-modeling`에 있습니다. 같은 글을 `model_catalog`가 `guide.modeling`으로도 돌려줍니다.
+
+```
+skills/twin-modeling  ->  AI client
+                             |  stdio, MCP, 5 tools
+          +------------------v------------------+
+          | twin-modeling-mcp.exe               |
+          |   twin-modeling-mcp   the server    |
+          |   twin-page           store, page   |
+          |   twin-engine         model, sim    |
+          +------------------+------------------+
+                             |  HTTP, 127.0.0.1
+                     browser: 3D page (three.js)
+```
+
 ## 들어 있는 것
 
 | 구성 | 하는 일 |
@@ -24,7 +261,7 @@
 | `twin-modeling-mcp` | 서버입니다. 도구 5개와 로컬 3D 화면(영어·한국어)을 제공합니다. |
 | `crates/twin-engine` | 모델 형식과 검사, 기계 엔진(관절, 연동, 구동기), 공작물, 플랜트가 있습니다. OS 호출은 없습니다. |
 | `crates/twin-page` | 화면 파일, 모델 저장소, 화면 경로가 있습니다. |
-| `examples/` | 스킬과 이 서버로 만든 모델 5개입니다. 모델마다 원리 시트, 시뮬레이션 입력, 그림이 있습니다(아래 "예시" 참고). |
+| `examples/` | 스킬과 이 서버로 만든 모델 5개입니다. 모델마다 원리 시트, 시뮬레이션 입력, 그림이 있습니다(위 "예시" 참고). |
 | `docs/` | 영어·한국어 정적 소개 페이지(`docs/index.html`, GitHub Pages용)입니다. |
 
 ## 설치
@@ -102,152 +339,6 @@ claude mcp add twin-modeling -- <실행파일-경로>/twin-modeling-mcp --dir <�
 
 시뮬레이션은 일정한 속도로 움직이는 운동학 모델입니다. 물리 계산은 없고 시뮬레이션을 통과했다고 실제 장비에서
 시험한 것은 아닙니다.
-
-## 모델을 만드는 순서
-
-함께 들어 있는 스킬 `skills/twin-modeling`의 단계입니다.
-
-**AI 클라이언트에서**
-
-1. 기계를 알아봅니다.
-2. 작동 원리를 찾습니다.
-3. 원리 시트(8개 항목)를 씁니다.
-4. 각 부분을 종류, 프리셋, 기본 요소에 대응시킵니다.
-5. 트윈 모델 JSON을 씁니다. 신호는 핀이고 PLC 주소는 없습니다.
-6. 직접 검사합니다.
-
-**서버와 함께**
-
-7. 초안: `model_draft`로 보내고 `facts`를 읽습니다.
-8. `model_sim`으로 시뮬레이션합니다.
-9. `model_render`와 3D 화면으로 그립니다.
-10. 사람이 초안을 확정합니다.
-
-## 예시: 말에서 모델까지
-
-아래 내용은 모두 `twin-modeling-mcp` 0.1.0이 실제로 낸 결과입니다. 파일은
-[`examples/pick-and-place/`](examples/pick-and-place/)에 있습니다.
-
-예시 설비는 설계 예시라서 치수와 시간, 속도는 예시를 위해 정한 추정값이고(각 시트 7번에 `guess`나 `user`로
-표시) 카탈로그 값이 아니며 어느 모델도 실제 설비와 같다고 주장하지 않습니다.
-
-**1. 사람이 쓴 말** (모델과 시트는 영어로 썼습니다):
-
-> It is a pneumatic pick-and-place station on an aluminium base plate. Two 45 mm profile posts carry a 45 x 90 cross
-> beam. On the front of the beam a guided rodless cylinder moves the head 200 mm in X; on its carriage a guided
-> cylinder with a 100 mm stroke lowers a vacuum pad. A small inline ejector and a vacuum switch sit on the carriage
-> bracket. Parts (orange plastic housings, about 40 x 40 x 25) come in on a short belt conveyor and stop against an
-> end stop, where a diffuse photo sensor sees them. The head picks a part and puts it into a nest on the right, which
-> has an inductive sensor. All cylinders have two air tubes and a reed switch at each end; the valves sit on a
-> terminal at the back of the plate. There is a tower light on the beam and a box with a start button and an
-> emergency stop at the front. Make a twin model of one cycle.
-
-(알루미늄 베이스판 위의 공압 픽앤플레이스 스테이션입니다. 45 mm 프로파일 기둥 두 개가 45 x 90 크로스빔을 받치고
-빔 앞면의 가이드 로드리스 실린더가 헤드를 X로 200 mm 옮깁니다. 캐리지에 붙은 행정 100 mm 가이드 실린더가 흡착
-패드를 내리고 캐리지 브래킷에는 소형 이젝터와 진공 스위치가 있습니다. 부품(주황색 플라스틱 하우징, 약 40 x 40 x 25)은
-짧은 벨트 컨베이어로 들어와 엔드 스톱에 멈추고 확산형 광센서가 이를 봅니다. 헤드는 부품을 집어 오른쪽 지그에 놓고
-지그에는 근접 센서가 있습니다. 실린더마다 에어 튜브가 두 개이고 양 끝에 리드 스위치가 달렸으며 밸브는 판 뒤쪽 매니폴드에
-모여 있습니다. 빔 위에 타워 램프가, 앞쪽에 시작 버튼과 비상 정지가 든 박스가 있습니다. 한 사이클의 트윈 모델을 만들어
-주세요.)
-
-**2. 원리 시트** ([`sheet.md`](examples/pick-and-place/sheet.md) 일부):
-
-```
-## 3. Motion path
-- Valve coils x_cyl.coil_fwd / coil_back (5/2 double) -> rodless piston -> carriage (kind cylinder_double,
-  frame out moves +x) -> carries the Z bracket, z_cyl, vac_sw and the ejector (on: x_cyl.out).
-- Valve coils z_cyl.coil_fwd / coil_back (5/2 double) -> piston rod and guide rods -> Z plate
-  (kind cylinder_double, pose.rot z -90, so fwd is down) -> carries pad (on: z_cyl.out).
-- Vacuum valve pad.coil -> ejector -> suction at the pad (kind vacuum_pad).
-- Motor contactor conv.run_fwd -> gear motor -> belt (kind conveyor). The end stop holds the first part.
-## 7. Numbers
-| X stroke | 200 | mm | user | words |
-| Z stroke | 100 | mm | user | words |
-| X bore   | 25  | mm | guess |      |
-```
-
-**3. 트윈 모델** ([`model.json`](examples/pick-and-place/model.json)의 장치 14개 중 하나, 외형은 뺐습니다. 전체 파일에는
-프레임, 컨베이어, 지그, 밸브 매니폴드, 타워 램프, 조작 박스와 외형 요소 264개가 들어 있습니다):
-
-```json
-{"id": "z_cyl", "kind": "cylinder_double", "label": "Z axis: guided cylinder",
- "on": "x_cyl.out", "mount": "flange_rear",
- "pose": {"pos": [-300, 7, 76], "rot": [0, 0, -90]},
- "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double", "body_len_mm": 120, "rod_out_mm": 10},
- "timing": {"lag_ms": 30, "fwd_ms": 350, "back_ms": 300},
- "basis": {"bore_mm": "guess", "stroke_mm": "user", "body_len_mm": "guess", "rod_out_mm": "guess", "pose": "guess"}}
-```
-
-`model_draft`는 경고 없이 저장했고 응답의 `facts`를 보면 `z_cyl`은 아래(`down`)를 향하고 로드 끝은 y 347 mm에서
-247 mm까지 움직입니다. `ask` 목록은 두 실린더의 보어, 벨트 크기, "실제 장비에서 잰 기준 치수 하나"를 묻습니다.
-
-**4. 한 사이클 시뮬레이션:** [`sim.json`](examples/pick-and-place/sim.json)의 이벤트(컨베이어 켬, 흡착하며 내림, 올림,
-이동, 내림, 흡착 끔, 올림, 복귀)로 `model_sim`을 돌린 결과입니다. `changes`와 `part_log`의 주요 줄:
-
-| t (ms) | 핀 또는 사건 | 값 | 뜻 |
-|---|---|---|---|
-| 300 | `pick_sen.output` | 1 | 부품이 엔드 스톱에 옴 |
-| 960 | pick | 부품 1 | 패드가 부품을 집음 |
-| 970 | `vac_sw.output` | 1 | 진공 도달 |
-| 980 | `z_cyl.sensor_fwd` | 1 | 패드가 내려감 |
-| 1380 | `z_cyl.sensor_back` | 1 | 패드가 올라옴 |
-| 2090 | `x_cyl.sensor_fwd` | 1 | 지그 위에 옴 |
-| 2520 | `nest_sen.output` | 1 | 부품이 지그에 들어감 |
-| 2600 | release | 부품 1, `place` | 흡착 끔 |
-| 3740 | `x_cyl.sensor_back` | 1 | 컨베이어 위로 돌아옴 |
-
-실행은 4200 ms에 알람 없이 끝납니다.
-
-**5. 화면**에서 모델을 그리고 실행을 재생합니다(1.95 s에서 멈춘 모습, 부품을 지그로 옮기는 중):
-
-![3D 화면의 픽앤플레이스 모델](examples/pick-and-place/picture.png)
-
-## 갤러리
-
-폴더마다 `sheet.md`, `model.json`, `sim.json`, 그림이 있습니다. 모든 모델은 이 서버로 초안을 만들고 확정하고
-시뮬레이션했습니다(`model_draft` 경고 없음, `model_sim` 알람 없음). 치수와 시간은 모두 설계 추정값입니다(각 시트의 7번 참고).
-
-움직이는 그림은 모두 그 모델의 마지막 `model_sim` 실행을 3D 화면에서 1×로, 100 ms씩 걸으며 재생한 것입니다.
-
-### 공압 픽앤플레이스
-
-![픽앤플레이스 스테이션의 시뮬레이션 한 사이클](docs/assets/pick-and-place.gif)
-
-로드리스 X 실린더, 가이드 Z 실린더, 흡착 패드를 단 갠트리와 공급 컨베이어, 지그, 밸브 매니폴드. 장치 14개.  
-시뮬레이션: 집기 960 ms, 놓기 2600 ms, 복귀 3740 ms.  
-폴더: [`examples/pick-and-place`](examples/pick-and-place/)
-
-### 볼나사 서보 축
-
-![볼나사 서보 축의 시뮬레이션 한 사이클](docs/assets/ball-screw-axis.gif)
-
-서보 모터, 커플링, 리드 10 mm 볼나사, 레일 두 줄 위의 캐리지, 케이블 체인, 원점·리밋 스위치. 장치 5개.  
-시뮬레이션: 목표 300, 150, 0 mm, busy는 1500, 2600, 3600 ms에 꺼짐.  
-폴더: [`examples/ball-screw-axis`](examples/ball-screw-axis/)
-
-### 8스테이션 인덱스 테이블
-
-![8스테이션 인덱스 테이블의 시뮬레이션 한 사이클](docs/assets/index-table.gif)
-
-기어드 모터가 달린 캠 인덱서 위의 다이얼, 부품이 든 지그 8개, 기둥에 단 압입 실린더, 부품 센서. 장치 8개.  
-시뮬레이션: 인포지션 640, 2340, 4040 ms, 압입 1050, 2750, 4450 ms.  
-폴더: [`examples/index-table`](examples/index-table/)
-
-### 로봇 셀
-
-![로봇 셀의 시뮬레이션 한 사이클](docs/assets/robot-arm.gif)
-
-받침대 위 6축 로봇(프리셋 `robot_6r`), 흡착 툴, 지그 테이블, 배출 벨트, 펜스. 장치 11개.  
-시뮬레이션: 집기 2900 ms, 벨트에 놓기 4950 ms, 원점 6400 ms.  
-폴더: [`examples/robot-arm`](examples/robot-arm/)
-
-### 캠 리프터
-
-![캠 리프터의 시뮬레이션 한 사이클](docs/assets/cam-lifter.gif)
-
-롤러 종동절이 붙은 배 모양 캠(27점 승강 표), 가이드 승강판, 기어드 모터, 상승·하강·원점 스위치. 장치 4개.  
-시뮬레이션: 상승 스위치 1540~1670 ms, 3090 ms에 다시 원점.  
-폴더: [`examples/cam-lifter`](examples/cam-lifter/)
 
 ## 도구
 
