@@ -1,16 +1,23 @@
 {
   "name": "robot-arm",
   "events": [
-    {"t_ms": 0, "pin": "robot.prog", "value": 2},
-    {"t_ms": 100, "pin": "robot.start", "value": 1},
-    {"t_ms": 200, "pin": "robot.start", "value": 0},
-    {"t_ms": 1500, "pin": "robot.prog", "value": 3},
-    {"t_ms": 1600, "pin": "robot.start", "value": 1},
-    {"t_ms": 1700, "pin": "robot.start", "value": 0},
-    {"t_ms": 3300, "pin": "robot.prog", "value": 1},
-    {"t_ms": 3400, "pin": "robot.start", "value": 1},
-    {"t_ms": 3500, "pin": "robot.start", "value": 0}
+    {"t_ms": 0, "pin": "tower.coil_green", "value": 1},
+    {"t_ms": 0, "pin": "outconv.run_fwd", "value": 1},
+    {"t_ms": 0, "pin": "robot.prog", "value": 1},
+    {"t_ms": 50, "pin": "robot.start", "value": 1},
+    {"t_ms": 150, "pin": "robot.start", "value": 0},
+    {"t_ms": 1400, "pin": "robot.prog", "value": 2},
+    {"t_ms": 1450, "pin": "robot.start", "value": 1},
+    {"t_ms": 1550, "pin": "robot.start", "value": 0},
+    {"t_ms": 2900, "pin": "pad.coil", "value": 1},
+    {"t_ms": 3000, "pin": "robot.prog", "value": 3},
+    {"t_ms": 3050, "pin": "robot.start", "value": 1},
+    {"t_ms": 3150, "pin": "robot.start", "value": 0},
+    {"t_ms": 4950, "pin": "pad.coil", "value": 0},
+    {"t_ms": 5050, "pin": "robot.prog", "value": 4},
+    {"t_ms": 5100, "pin": "robot.start", "value": 1},
+    {"t_ms": 5200, "pin": "robot.start", "value": 0}
   ],
-  "watch": ["robot.busy", "robot.done"],
-  "total_ms": 5200
+  "watch": ["robot.busy", "robot.done", "vac_sw.output"],
+  "total_ms": 6800
 }

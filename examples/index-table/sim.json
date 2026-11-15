@@ -1,13 +1,33 @@
 {
   "name": "index-table",
   "events": [
-    {"t_ms": 100, "pin": "table.run", "value": 1},
-    {"t_ms": 200, "pin": "table.run", "value": 0},
-    {"t_ms": 1000, "pin": "table.run", "value": 1},
-    {"t_ms": 1100, "pin": "table.run", "value": 0},
-    {"t_ms": 1900, "pin": "table.run", "value": 1},
-    {"t_ms": 2000, "pin": "table.run", "value": 0}
+    {"t_ms": 0, "pin": "table.run", "value": 1},
+    {"t_ms": 100, "pin": "table.run", "value": 0},
+    {"t_ms": 750, "pin": "press.coil_fwd", "value": 1},
+    {"t_ms": 1150, "pin": "press.coil_fwd", "value": 0},
+    {"t_ms": 1150, "pin": "press.coil_back", "value": 1},
+    {"t_ms": 1550, "pin": "press.coil_back", "value": 0},
+    {"t_ms": 1700, "pin": "table.run", "value": 1},
+    {"t_ms": 1800, "pin": "table.run", "value": 0},
+    {"t_ms": 2450, "pin": "press.coil_fwd", "value": 1},
+    {"t_ms": 2850, "pin": "press.coil_fwd", "value": 0},
+    {"t_ms": 2850, "pin": "press.coil_back", "value": 1},
+    {"t_ms": 3250, "pin": "press.coil_back", "value": 0},
+    {"t_ms": 3400, "pin": "table.run", "value": 1},
+    {"t_ms": 3500, "pin": "table.run", "value": 0},
+    {"t_ms": 4150, "pin": "press.coil_fwd", "value": 1},
+    {"t_ms": 4550, "pin": "press.coil_fwd", "value": 0},
+    {"t_ms": 4550, "pin": "press.coil_back", "value": 1},
+    {"t_ms": 4950, "pin": "press.coil_back", "value": 0}
   ],
-  "watch": ["table.home", "table.in_pos"],
-  "total_ms": 2800
+  "part_events": [
+    {"t_ms": 700, "remove": "n3"},
+    {"t_ms": 700, "at": "n7", "type": "blank"},
+    {"t_ms": 2400, "remove": "n2"},
+    {"t_ms": 2400, "at": "n6", "type": "blank"},
+    {"t_ms": 4100, "remove": "n1"},
+    {"t_ms": 4100, "at": "n5", "type": "blank"}
+  ],
+  "watch": ["table.home", "table.in_pos", "press.sensor_back", "press.sensor_fwd", "psens.output"],
+  "total_ms": 5200
 }

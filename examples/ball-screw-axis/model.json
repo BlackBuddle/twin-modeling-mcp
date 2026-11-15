@@ -3,35 +3,280 @@
   "name": "ball-screw servo axis",
   "devices": [
     {
-      "id": "screw",
-      "kind": "servo_axis",
-      "label": "Ball-screw axis",
-      "mount": "floor",
-      "params": {"stroke_mm": 300, "home_mm": 0, "home_at": "-x", "addr_grows": "away", "lead_mm": 16},
-      "basis": {"stroke_mm": "guess", "lead_mm": "label"},
+      "id": "screw", "kind": "servo_axis", "label": "Ball-screw axis", "mount": "floor",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 90, 0]},
+      "params": {"stroke_mm": 300, "home_mm": 0, "home_at": "-x", "addr_grows": "away", "lead_mm": 10,
+        "body_len_mm": 600, "body_w_mm": 220, "body_h_mm": 99, "carriage_len_mm": 140, "carriage_h_mm": 12},
+      "basis": {"stroke_mm": "user", "lead_mm": "user", "body_len_mm": "guess", "body_w_mm": "guess", "body_h_mm": "guess", "carriage_len_mm": "guess", "carriage_h_mm": "guess", "pose": "guess"},
       "signals": [
         {"name": "servo_on", "dir": "out", "type": "bit"},
         {"name": "target", "dir": "out", "type": "word"},
         {"name": "busy", "dir": "in", "type": "bit"},
-        {"name": "home_sw", "dir": "in", "type": "bit"}
+        {"name": "home_sw", "dir": "in", "type": "bit"},
+        {"name": "ot_minus", "dir": "in", "type": "bit", "active": "low"},
+        {"name": "ot_plus", "dir": "in", "type": "bit", "active": "low"}
       ],
       "mech": {
-        "preset": "servo_screw",
-        "args": {"word": "target", "per_mm": 10, "speed_mm_s": 100},
-        "sensors": [{"type": "window", "joint": "carriage", "at": 0, "window": 1.5, "out": "home_sw"}],
-        "basis": {"speed_mm_s": "guess", "per_mm": "guess"}
+        "joints": [
+          {"name": "carriage", "type": "form"},
+          {"name": "motor", "type": "revolute", "on": "base", "pos": [-290, 80, 0], "axis": "-x", "wrap": true},
+          {"name": "chain", "type": "prismatic", "on": "base", "pos": [90, 88.5, 129], "axis": "x", "min": 0, "max": 150}
+        ],
+        "couplings": [
+          {"type": "ratio", "from": "carriage", "to": "motor", "lead_mm": 10},
+          {"type": "ratio", "from": "carriage", "to": "chain", "k": 0.5}
+        ],
+        "drivers": [
+          {"type": "follow", "joint": "carriage", "word": "target", "width": 16, "per_unit": 10, "speed": 250, "enable": "servo_on", "busy": "busy"}
+        ],
+        "sensors": [
+          {"type": "window", "joint": "carriage", "at": 0, "window": 6, "out": "home_sw"},
+          {"type": "window", "joint": "carriage", "at": -20, "window": 2, "out": "ot_minus"},
+          {"type": "window", "joint": "carriage", "at": 320, "window": 2, "out": "ot_plus"}
+        ],
+        "basis": {"speed": "guess", "per_unit": "user", "lead_mm": "user", "k": "ref", "at": "guess", "window": "guess"}
       },
       "skin": {"groups": [
-        {"name": "body", "items": [
-          {"t": "box", "size": [500, 60, 80], "pos": [0, 30, 0], "tone": "metal"},
-          {"t": "box", "size": [480, 6, 24], "pos": [0, 63, 0], "tone": "dark"}]},
+        {"name": "bearings", "items": [
+          {"t": "box", "size": [25, 43, 60], "pos": [-262, 76.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 20, "len": 1, "axis": "x", "pos": [-249, 80, 0], "tone": "metal"},
+          {"t": "cyl", "d": 7, "len": 2, "axis": "x", "pos": [-248.5, 90, 20], "tone": "metal"},
+          {"t": "cyl", "d": 7, "len": 2, "axis": "x", "pos": [-248.5, 90, -20], "tone": "metal"},
+          {"t": "box", "size": [20, 43, 60], "pos": [262, 76.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 14, "len": 2, "axis": "x", "pos": [273, 80, 0], "tone": "metal"},
+          {"t": "cyl", "d": 7, "len": 2, "axis": "x", "pos": [251, 90, 20], "tone": "metal"},
+          {"t": "cyl", "d": 7, "len": 2, "axis": "x", "pos": [251, 90, -20], "tone": "metal"}]},
+        {"name": "bracket", "items": [
+          {"t": "box", "size": [15, 60, 90], "pos": [-317.5, 85, 0], "tone": "metal"},
+          {"t": "box", "size": [30, 50, 8], "pos": [-295, 80, 41], "tone": "metal"},
+          {"t": "box", "size": [30, 50, 8], "pos": [-295, 80, -41], "tone": "metal"}]},
+        {"name": "spindle", "frame": "motor", "items": [
+          {"t": "cyl", "d": 16, "len": 546, "axis": "x", "pos": [289, 0, 0], "tone": "metal"},
+          {"t": "cyl", "d": 22, "len": 8, "axis": "x", "pos": [11.5, 0, 0], "tone": "dark"},
+          {"t": "cyl", "d": 25, "len": 27, "axis": "x", "pos": [-6.5, 0, 0], "tone": "metal"},
+          {"t": "cyl", "d": 25.6, "len": 1.2, "axis": "x", "pos": [-13, 0, 0], "tone": "dark"},
+          {"t": "cyl", "d": 25.6, "len": 1.2, "axis": "x", "pos": [0, 0, 0], "tone": "dark"},
+          {"t": "box", "size": [5, 2, 5], "pos": [-16, 12.8, 0], "tone": "dark"},
+          {"t": "box", "size": [5, 2, 5], "pos": [3, -12.8, 0], "tone": "dark"}]},
+        {"name": "motor", "items": [
+          {"t": "box", "size": [10, 60, 60], "pos": [-330, 80, 0], "tone": "dark"},
+          {"t": "box", "size": [64, 56, 56], "pos": [-367, 80, 0], "tone": "black"},
+          {"t": "cyl", "d": 54, "len": 22, "axis": "x", "pos": [-410, 80, 0], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 3, "axis": "x", "pos": [-336.5, 104, 24], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 3, "axis": "x", "pos": [-336.5, 104, -24], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 3, "axis": "x", "pos": [-336.5, 56, 24], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 3, "axis": "x", "pos": [-336.5, 56, -24], "tone": "metal"},
+          {"t": "box", "size": [16, 14, 18], "pos": [-350, 115, 14], "tone": "black"},
+          {"t": "box", "size": [16, 14, 18], "pos": [-385, 115, 14], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 20, "axis": "z", "pos": [-350, 115, 33], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 32, "axis": "z", "pos": [-385, 115, 39], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 85, "axis": "y", "pos": [-350, 72.5, 40], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 85, "axis": "y", "pos": [-385, 72.5, 52], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 150, "axis": "x", "pos": [-275, 30, 40], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 185, "axis": "x", "pos": [-292.5, 30, 52], "tone": "black"},
+          {"t": "box", "size": [36, 16, 0.6], "pos": [-367, 80, 28.3], "tone": "white"}]},
         {"name": "carriage", "frame": "carriage", "items": [
-          {"t": "box", "size": [80, 20, 80], "pos": [0, -10, 0], "tone": "orange"},
-          {"t": "box", "size": [100, 8, 100], "pos": [0, 4, 0], "tone": "white"}]},
-        {"name": "motor", "frame": "motor", "items": [
-          {"t": "cyl", "d": 30, "len": 30, "axis": "y", "pos": [0, -15, 0], "tone": "metal"},
-          {"t": "cyl", "d": 56, "len": 90, "axis": "y", "pos": [0, 45, 0], "tone": "dark"},
-          {"t": "box", "size": [8, 80, 8], "pos": [24, 45, 0], "tone": "white"}]}
+          {"t": "box", "size": [140, 12, 170], "pos": [0, -6, 0], "tone": "metal"},
+          {"t": "box", "size": [56, 20, 34], "pos": [35, -22, 55], "tone": "metal"},
+          {"t": "box", "size": [56, 20, 34], "pos": [-35, -22, 55], "tone": "metal"},
+          {"t": "box", "size": [56, 20, 34], "pos": [35, -22, -55], "tone": "metal"},
+          {"t": "box", "size": [56, 20, 34], "pos": [-35, -22, -55], "tone": "metal"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [64.25, -22.5, 55], "tone": "dark"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [5.75, -22.5, 55], "tone": "dark"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [-5.75, -22.5, 55], "tone": "dark"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [-64.25, -22.5, 55], "tone": "dark"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [64.25, -22.5, -55], "tone": "dark"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [5.75, -22.5, -55], "tone": "dark"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [-5.75, -22.5, -55], "tone": "dark"},
+          {"t": "box", "size": [2.5, 17, 32], "pos": [-64.25, -22.5, -55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [55, 0.6, 55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [15, 0.6, 55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [-15, 0.6, 55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [-55, 0.6, 55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [55, 0.6, -55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [15, 0.6, -55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [-15, 0.6, -55], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.2, "axis": "y", "pos": [-55, 0.6, -55], "tone": "dark"},
+          {"t": "box", "size": [50, 36, 56], "pos": [0, -30, 0], "tone": "metal"},
+          {"t": "cyl", "d": 44, "len": 9, "axis": "x", "pos": [-29.5, -31, 0], "tone": "dark"},
+          {"t": "cyl", "d": 28, "len": 10, "axis": "x", "pos": [30, -31, 0], "tone": "dark"}]},
+        {"name": "flag", "frame": "carriage", "items": [
+          {"t": "box", "size": [16, 2, 18], "pos": [-40, -13, -93], "tone": "metal"},
+          {"t": "box", "size": [16, 22, 1.6], "pos": [-40, -25, -100], "tone": "metal"}]}
+      ]}
+    },
+    {
+      "id": "frame", "kind": "solid", "label": "Base plate on profiles", "on": "screw", "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [625, 15, 220], "pos": [-12.5, 47.5, 0]}],
+      "basis": {"shape": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "profiles", "items": [
+          {"t": "box", "size": [40, 40, 260], "pos": [-200, 20, 0], "tone": "metal"},
+          {"t": "box", "size": [40, 40, 260], "pos": [200, 20, 0], "tone": "metal"},
+          {"t": "box", "size": [0.8, 8, 256], "pos": [-220.4, 20, 0], "tone": "dark"},
+          {"t": "box", "size": [0.8, 8, 256], "pos": [-179.6, 20, 0], "tone": "dark"},
+          {"t": "box", "size": [0.8, 8, 256], "pos": [179.6, 20, 0], "tone": "dark"},
+          {"t": "box", "size": [0.8, 8, 256], "pos": [220.4, 20, 0], "tone": "dark"},
+          {"t": "box", "size": [40, 40, 3], "pos": [-200, 20, 131.5], "tone": "dark"},
+          {"t": "box", "size": [40, 40, 3], "pos": [-200, 20, -131.5], "tone": "dark"},
+          {"t": "box", "size": [40, 40, 3], "pos": [200, 20, 131.5], "tone": "dark"},
+          {"t": "box", "size": [40, 40, 3], "pos": [200, 20, -131.5], "tone": "dark"}]},
+        {"name": "plate", "items": [
+          {"t": "box", "size": [625, 15, 220], "pos": [-12.5, 47.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 10, "len": 1, "axis": "y", "pos": [-200, 55.5, 95], "tone": "dark"},
+          {"t": "cyl", "d": 10, "len": 1, "axis": "y", "pos": [-200, 55.5, -95], "tone": "dark"},
+          {"t": "cyl", "d": 10, "len": 1, "axis": "y", "pos": [200, 55.5, 95], "tone": "dark"},
+          {"t": "cyl", "d": 10, "len": 1, "axis": "y", "pos": [200, 55.5, -95], "tone": "dark"}]},
+        {"name": "rails", "items": [
+          {"t": "box", "size": [490, 20, 20], "pos": [0, 65, 55], "tone": "metal"},
+          {"t": "box", "size": [490, 20, 20], "pos": [0, 65, -55], "tone": "metal"},
+          {"t": "box", "size": [490, 15, 15], "pos": [0, 82.5, 55], "tone": "metal"},
+          {"t": "box", "size": [490, 15, 15], "pos": [0, 82.5, -55], "tone": "metal"},
+          {"t": "box", "size": [490, 1.4, 0.5], "pos": [0, 85, 62.7], "tone": "dark"},
+          {"t": "box", "size": [490, 1.4, 0.5], "pos": [0, 85, 47.3], "tone": "dark"},
+          {"t": "box", "size": [490, 1.4, 0.5], "pos": [0, 85, -47.3], "tone": "dark"},
+          {"t": "box", "size": [490, 1.4, 0.5], "pos": [0, 85, -62.7], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [-210, 90.3, 55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [-140, 90.3, 55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [-70, 90.3, 55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [0, 90.3, 55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [70, 90.3, 55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [140, 90.3, 55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [210, 90.3, 55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [-210, 90.3, -55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [-140, 90.3, -55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [-70, 90.3, -55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [0, 90.3, -55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [70, 90.3, -55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [140, 90.3, -55], "tone": "dark"},
+          {"t": "cyl", "d": 7.5, "len": 0.6, "axis": "y", "pos": [210, 90.3, -55], "tone": "dark"}]},
+        {"name": "stops", "items": [
+          {"t": "box", "size": [14, 56, 16], "pos": [-261, 83, 75], "tone": "metal"},
+          {"t": "box", "size": [14, 56, 16], "pos": [-261, 83, -75], "tone": "metal"},
+          {"t": "box", "size": [14, 56, 16], "pos": [261, 83, 75], "tone": "metal"},
+          {"t": "box", "size": [14, 56, 16], "pos": [261, 83, -75], "tone": "metal"},
+          {"t": "cyl", "d": 12, "len": 6, "axis": "x", "pos": [-251, 105, 75], "tone": "black"},
+          {"t": "cyl", "d": 12, "len": 6, "axis": "x", "pos": [-251, 105, -75], "tone": "black"},
+          {"t": "cyl", "d": 12, "len": 6, "axis": "x", "pos": [251, 105, 75], "tone": "black"},
+          {"t": "cyl", "d": 12, "len": 6, "axis": "x", "pos": [251, 105, -75], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 1.5, "axis": "y", "pos": [-261, 111.75, 75], "tone": "dark"},
+          {"t": "cyl", "d": 7, "len": 1.5, "axis": "y", "pos": [-261, 111.75, -75], "tone": "dark"},
+          {"t": "cyl", "d": 7, "len": 1.5, "axis": "y", "pos": [261, 111.75, 75], "tone": "dark"},
+          {"t": "cyl", "d": 7, "len": 1.5, "axis": "y", "pos": [261, 111.75, -75], "tone": "dark"}]},
+        {"name": "trough", "items": [
+          {"t": "box", "size": [370, 3, 36], "pos": [105, 51.5, 129], "tone": "metal"},
+          {"t": "box", "size": [370, 22, 2], "pos": [105, 61, 112], "tone": "metal"},
+          {"t": "box", "size": [370, 22, 2], "pos": [105, 61, 146], "tone": "metal"},
+          {"t": "box", "size": [20, 10, 45], "pos": [-60, 45, 120], "tone": "metal"},
+          {"t": "box", "size": [20, 10, 45], "pos": [105, 45, 120], "tone": "metal"},
+          {"t": "box", "size": [20, 10, 45], "pos": [270, 45, 120], "tone": "metal"}]},
+        {"name": "chainfix", "items": [
+          {"t": "box", "size": [10, 18, 32], "pos": [-66, 61, 129], "tone": "metal"},
+          {"t": "box", "size": [17, 15, 30], "pos": [-50.63, 60.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [-31.88, 60.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [-13.13, 60.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [5.63, 60.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [24.38, 60.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [43.13, 60.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [61.88, 60.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [80.63, 60.5, 129], "tone": "black"}]}
+      ]}
+    },
+    {
+      "id": "sensors", "kind": "solid", "label": "Home and over-travel sensors", "on": "screw", "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [380, 10, 14], "pos": [-40, 60, -100]}],
+      "basis": {"shape": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "rail", "items": [
+          {"t": "box", "size": [380, 10, 14], "pos": [-40, 60, -100], "tone": "metal"}]},
+        {"name": "heads", "items": [
+          {"t": "box", "size": [18, 9, 14], "pos": [-210, 69.5, -100], "tone": "black"},
+          {"t": "box", "size": [18, 13, 4.5], "pos": [-210, 80.5, -104.75], "tone": "black"},
+          {"t": "box", "size": [18, 13, 4.5], "pos": [-210, 80.5, -95.25], "tone": "black"},
+          {"t": "cyl", "d": 4, "len": 30, "axis": "z", "pos": [-210, 69.5, -122], "tone": "black"},
+          {"t": "box", "size": [18, 9, 14], "pos": [-190, 69.5, -100], "tone": "black"},
+          {"t": "box", "size": [18, 13, 4.5], "pos": [-190, 80.5, -104.75], "tone": "black"},
+          {"t": "box", "size": [18, 13, 4.5], "pos": [-190, 80.5, -95.25], "tone": "black"},
+          {"t": "cyl", "d": 4, "len": 30, "axis": "z", "pos": [-190, 69.5, -122], "tone": "black"},
+          {"t": "box", "size": [18, 9, 14], "pos": [130, 69.5, -100], "tone": "black"},
+          {"t": "box", "size": [18, 13, 4.5], "pos": [130, 80.5, -104.75], "tone": "black"},
+          {"t": "box", "size": [18, 13, 4.5], "pos": [130, 80.5, -95.25], "tone": "black"},
+          {"t": "cyl", "d": 4, "len": 30, "axis": "z", "pos": [130, 69.5, -122], "tone": "black"}]},
+        {"name": "led_ot_minus", "show": "screw.ot_minus", "items": [
+          {"t": "cyl", "d": 3.5, "len": 1.2, "axis": "y", "pos": [-205, 87.6, -104.75], "tone": "mark"}]},
+        {"name": "led_home", "show": "screw.home_sw", "items": [
+          {"t": "cyl", "d": 3.5, "len": 1.2, "axis": "y", "pos": [-185, 87.6, -104.75], "tone": "mark"}]},
+        {"name": "led_ot_plus", "show": "screw.ot_plus", "items": [
+          {"t": "cyl", "d": 3.5, "len": 1.2, "axis": "y", "pos": [135, 87.6, -104.75], "tone": "mark"}]}
+      ]}
+    },
+    {
+      "id": "chain", "kind": "solid", "label": "Cable chain (moving bend)", "on": "screw.chain", "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [36, 71, 30], "pos": [17.75, 0, 0]}],
+      "basis": {"shape": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "bend", "items": [
+          {"t": "box", "size": [15, 15.5, 30], "pos": [7.25, -27.05, 0], "rot": [0, 0, -75], "tone": "black"},
+          {"t": "box", "size": [15, 15.5, 30], "pos": [19.8, -19.8, 0], "rot": [0, 0, -45], "tone": "black"},
+          {"t": "box", "size": [15, 15.5, 30], "pos": [27.05, -7.25, 0], "rot": [0, 0, -15], "tone": "black"},
+          {"t": "box", "size": [15, 15.5, 30], "pos": [27.05, 7.25, 0], "rot": [0, 0, 15], "tone": "black"},
+          {"t": "box", "size": [15, 15.5, 30], "pos": [19.8, 19.8, 0], "rot": [0, 0, 45], "tone": "black"},
+          {"t": "box", "size": [15, 15.5, 30], "pos": [7.25, 27.05, 0], "rot": [0, 0, 75], "tone": "black"},
+          {"t": "cyl", "d": 4, "len": 31, "axis": "z", "pos": [14, -24.25, 0], "tone": "dark"},
+          {"t": "cyl", "d": 4, "len": 31, "axis": "z", "pos": [24.25, -14, 0], "tone": "dark"},
+          {"t": "cyl", "d": 4, "len": 31, "axis": "z", "pos": [28, 0, 0], "tone": "dark"},
+          {"t": "cyl", "d": 4, "len": 31, "axis": "z", "pos": [24.25, 14, 0], "tone": "dark"},
+          {"t": "cyl", "d": 4, "len": 31, "axis": "z", "pos": [14, 24.25, 0], "tone": "dark"}]},
+        {"name": "runs", "items": [
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-9.38, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-28.13, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-46.88, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-65.63, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-84.38, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-103.13, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-121.88, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-140.63, 28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-9.38, -28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-28.13, -28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-46.88, -28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-65.63, -28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-84.38, -28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-103.13, -28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-121.88, -28, 0], "tone": "black"},
+          {"t": "box", "size": [17, 14.4, 29.4], "pos": [-140.63, -28, 0], "tone": "black"}]}
+      ]}
+    },
+    {
+      "id": "load", "kind": "solid", "label": "Tooling plate, nest and part", "on": "screw.carriage", "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [90, 10, 80], "pos": [0, 5, 0]}],
+      "basis": {"shape": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "chainmount", "items": [
+          {"t": "box", "size": [20, 6, 40], "pos": [-65, 3, 98], "tone": "metal"},
+          {"t": "box", "size": [10, 20, 32], "pos": [-65, 5.5, 129], "tone": "metal"}]},
+        {"name": "upperlinks", "items": [
+          {"t": "box", "size": [17, 15, 30], "pos": [-50.63, 5.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [-31.88, 5.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [-13.13, 5.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [5.63, 5.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [24.38, 5.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [43.13, 5.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [61.88, 5.5, 129], "tone": "black"},
+          {"t": "box", "size": [17, 15, 30], "pos": [80.63, 5.5, 129], "tone": "black"}]},
+        {"name": "load", "items": [
+          {"t": "box", "size": [90, 10, 80], "pos": [0, 5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 7, "len": 1.2, "axis": "y", "pos": [38, 10.6, 32], "tone": "dark"},
+          {"t": "cyl", "d": 7, "len": 1.2, "axis": "y", "pos": [-38, 10.6, 32], "tone": "dark"},
+          {"t": "cyl", "d": 7, "len": 1.2, "axis": "y", "pos": [38, 10.6, -32], "tone": "dark"},
+          {"t": "cyl", "d": 7, "len": 1.2, "axis": "y", "pos": [-38, 10.6, -32], "tone": "dark"},
+          {"t": "box", "size": [60, 18, 60], "pos": [0, 19, 0], "tone": "white"},
+          {"t": "box", "size": [40, 14, 40], "pos": [0, 29, 0], "tone": "orange"},
+          {"t": "cyl", "d": 6, "len": 8, "axis": "y", "pos": [24, 32, 24], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 8, "axis": "y", "pos": [-24, 32, -24], "tone": "metal"}]}
       ]}
     }
   ]

@@ -1,21 +1,179 @@
-{"schema": 2, "name": "cam lifter", "devices": [
- {"id": "cam", "kind": "machine", "mount": "floor",
-  "signals": [
-   {"name": "run", "dir": "out", "type": "bit"}, {"name": "cam_home", "dir": "in", "type": "bit"},
-   {"name": "up_sw", "dir": "in", "type": "bit"}, {"name": "down_sw", "dir": "in", "type": "bit"}],
-  "mech": {
-   "joints": [
-    {"name": "shaft", "type": "revolute", "on": "base", "pos": [0, 100, 0], "axis": "z", "wrap": true},
-    {"name": "lift", "type": "prismatic", "on": "base", "pos": [0, 160, 0], "axis": "y", "min": 0, "max": 40}],
-   "drivers": [{"type": "coils", "joint": "shaft", "fwd": "run", "valve": "none", "speed": 100}],
-   "couplings": [{"type": "table", "from": "shaft", "to": "lift", "period": 360,
-    "points": [[0, 0], [60, 0], [150, 40], [210, 40], [300, 0], [360, 0]]}],
-   "sensors": [
-    {"type": "window", "joint": "shaft", "at": 0, "window": 1.5, "out": "cam_home"},
-    {"type": "window", "joint": "lift", "at": 40, "window": 1, "out": "up_sw"},
-    {"type": "window", "joint": "lift", "at": 0, "window": 1, "out": "down_sw"}],
-   "basis": {"points": "guess", "speed": "guess"}},
-  "skin": {"groups": [
-   {"name": "frame", "items": [{"t": "box", "size": [20, 200, 60], "pos": [-90, 100, 0], "tone": "metal"}]},
-   {"name": "disc", "frame": "shaft", "items": [{"t": "cyl", "d": 100, "len": 20, "axis": "z", "pos": [0, 0, 0], "tone": "dark"}]},
-   {"name": "plate", "frame": "lift", "items": [{"t": "box", "size": [120, 10, 60], "pos": [0, 5, 0], "tone": "orange"}]}]}}]}
+{
+  "schema": 2,
+  "name": "cam lifter",
+  "devices": [
+    {
+      "id": "cam", "kind": "machine", "label": "Cam lift unit", "mount": "floor",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 65, 0]},
+      "basis": {"pose": "guess"},
+      "signals": [
+        {"name": "run", "dir": "out", "type": "bit"},
+        {"name": "cam_home", "dir": "in", "type": "bit"},
+        {"name": "up_sw", "dir": "in", "type": "bit"},
+        {"name": "down_sw", "dir": "in", "type": "bit"}
+      ],
+      "mech": {
+        "joints": [
+          {"name": "shaft", "type": "revolute", "on": "base", "pos": [0, 115, 0], "axis": "z", "wrap": true},
+          {"name": "lift", "type": "prismatic", "on": "base", "pos": [0, 315, 0], "axis": "y", "min": 0, "max": 40}
+        ],
+        "drivers": [{"type": "coils", "joint": "shaft", "fwd": "run", "valve": "none", "speed": 120}],
+        "couplings": [{"type": "table", "from": "shaft", "to": "lift", "period": 360,
+          "points": [[0, 0], [108, 0], [114, 0.02], [120, 0.54], [126, 1.81], [132, 3.9], [138, 6.94], [144, 11.14], [150, 16.8], [156, 24.4], [162, 31.41], [168, 36.23], [174, 39.06], [180, 40], [186, 39.06], [192, 36.23], [198, 31.41], [204, 24.4], [210, 16.8], [216, 11.14], [222, 6.94], [228, 3.9], [234, 1.81], [240, 0.54], [246, 0.02], [252, 0], [360, 0]]}],
+        "sensors": [
+          {"type": "window", "joint": "shaft", "at": 0, "window": 1.5, "out": "cam_home"},
+          {"type": "window", "joint": "lift", "at": 40, "window": 2, "out": "up_sw"},
+          {"type": "window", "joint": "lift", "at": 0, "window": 1, "out": "down_sw"}
+        ],
+        "basis": {"points": "ref", "speed": "guess", "at": "guess", "window": "guess"}
+      },
+      "skin": {"groups": [
+        {"name": "shaft", "frame": "shaft", "items": [
+          {"t": "cyl", "d": 20, "len": 330, "axis": "z", "pos": [0, 0, 5], "tone": "metal"},
+          {"t": "cyl", "d": 100, "len": 20, "axis": "z", "pos": [0, 0, 0], "tone": "metal"},
+          {"t": "cyl", "d": 50, "len": 20, "axis": "z", "pos": [0, -65, 0], "tone": "metal"},
+          {"t": "box", "size": [60, 50, 19.6], "pos": [11.54, -37.31, 0], "rot": [0, 0, 67.38], "tone": "metal"},
+          {"t": "box", "size": [60, 50, 19.2], "pos": [-11.54, -37.31, 0], "rot": [0, 0, -67.38], "tone": "metal"},
+          {"t": "cyl", "d": 40, "len": 34, "axis": "z", "pos": [0, 0, 0], "tone": "dark"},
+          {"t": "box", "size": [6, 4, 6], "pos": [0, 21, 13], "tone": "black"},
+          {"t": "cyl", "d": 40, "len": 18, "axis": "z", "pos": [0, 0, -169], "tone": "metal"},
+          {"t": "cyl", "d": 40, "len": 10, "axis": "z", "pos": [0, 0, -183], "tone": "red"},
+          {"t": "cyl", "d": 40, "len": 18, "axis": "z", "pos": [0, 0, -197], "tone": "metal"},
+          {"t": "box", "size": [6, 4, 6], "pos": [0, 21, -169], "tone": "black"},
+          {"t": "box", "size": [6, 4, 6], "pos": [0, -21, -197], "tone": "black"},
+          {"t": "cyl", "d": 26, "len": 10, "axis": "z", "pos": [0, 0, 155], "tone": "dark"},
+          {"t": "box", "size": [26, 6, 2], "pos": [-30, 0, 155], "tone": "metal"}]},
+        {"name": "lift", "frame": "lift", "items": [
+          {"t": "box", "size": [200, 15, 140], "pos": [0, 7.5, 0], "tone": "metal"},
+          {"t": "box", "size": [120, 10, 100], "pos": [0, 20, 0], "tone": "white"},
+          {"t": "cyl", "d": 9, "len": 1.2, "axis": "y", "pos": [85, 15.6, 55], "tone": "dark"},
+          {"t": "cyl", "d": 9, "len": 1.2, "axis": "y", "pos": [-85, 15.6, 55], "tone": "dark"},
+          {"t": "cyl", "d": 9, "len": 1.2, "axis": "y", "pos": [85, 15.6, -55], "tone": "dark"},
+          {"t": "cyl", "d": 9, "len": 1.2, "axis": "y", "pos": [-85, 15.6, -55], "tone": "dark"},
+          {"t": "cyl", "d": 16, "len": 150, "axis": "y", "pos": [70, -75, 0], "tone": "metal"},
+          {"t": "cyl", "d": 16, "len": 150, "axis": "y", "pos": [-70, -75, 0], "tone": "metal"},
+          {"t": "cyl", "d": 22, "len": 6, "axis": "y", "pos": [70, -147, 0], "tone": "dark"},
+          {"t": "cyl", "d": 22, "len": 6, "axis": "y", "pos": [-70, -147, 0], "tone": "dark"},
+          {"t": "cyl", "d": 20, "len": 80, "axis": "y", "pos": [0, -40, 0], "tone": "metal"},
+          {"t": "box", "size": [36, 20, 24], "pos": [0, -90, 0], "tone": "dark"},
+          {"t": "box", "size": [36, 40, 5], "pos": [0, -120, 9.5], "tone": "dark"},
+          {"t": "box", "size": [36, 40, 5], "pos": [0, -120, -9.5], "tone": "dark"},
+          {"t": "cyl", "d": 30, "len": 14, "axis": "z", "pos": [0, -135, 0], "tone": "metal"},
+          {"t": "cyl", "d": 16, "len": 14.4, "axis": "z", "pos": [0, -135, 0], "tone": "dark"},
+          {"t": "cyl", "d": 10, "len": 2, "axis": "z", "pos": [0, -135, 13], "tone": "metal"},
+          {"t": "cyl", "d": 10, "len": 2, "axis": "z", "pos": [0, -135, -13], "tone": "metal"},
+          {"t": "box", "size": [8, 14, 30], "pos": [104, 7.5, 0], "tone": "metal"}]},
+        {"name": "bearings", "items": [
+          {"t": "box", "size": [70, 67, 50], "pos": [0, 48.5, 110], "tone": "metal"},
+          {"t": "box", "size": [70, 67, 50], "pos": [0, 48.5, -110], "tone": "metal"},
+          {"t": "box", "size": [127, 15, 38], "pos": [0, 89.5, 110], "tone": "dark"},
+          {"t": "box", "size": [127, 15, 38], "pos": [0, 89.5, -110], "tone": "dark"},
+          {"t": "cyl", "d": 64, "len": 38, "axis": "z", "pos": [0, 115, 110], "tone": "dark"},
+          {"t": "cyl", "d": 64, "len": 38, "axis": "z", "pos": [0, 115, -110], "tone": "dark"},
+          {"t": "cyl", "d": 32, "len": 42, "axis": "z", "pos": [0, 115, 110], "tone": "metal"},
+          {"t": "cyl", "d": 32, "len": 42, "axis": "z", "pos": [0, 115, -110], "tone": "metal"},
+          {"t": "cyl", "d": 12, "len": 4, "axis": "y", "pos": [48, 99, 110], "tone": "metal"},
+          {"t": "cyl", "d": 12, "len": 4, "axis": "y", "pos": [-48, 99, 110], "tone": "metal"},
+          {"t": "cyl", "d": 12, "len": 4, "axis": "y", "pos": [48, 99, -110], "tone": "metal"},
+          {"t": "cyl", "d": 12, "len": 4, "axis": "y", "pos": [-48, 99, -110], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 8, "axis": "y", "pos": [0, 151, 110], "tone": "yellow"},
+          {"t": "cyl", "d": 6, "len": 8, "axis": "y", "pos": [0, 151, -110], "tone": "yellow"}]}
+      ]}
+    },
+    {
+      "id": "frame", "kind": "solid", "label": "Base plate, uprights and bridge", "on": "cam", "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [360, 15, 500], "pos": [0, 7.5, -50]}],
+      "basis": {"shape": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "base", "items": [
+          {"t": "box", "size": [360, 15, 500], "pos": [0, 7.5, -50], "tone": "metal"},
+          {"t": "cyl", "d": 14, "len": 1, "axis": "y", "pos": [160, 15.5, 180], "tone": "dark"},
+          {"t": "cyl", "d": 14, "len": 1, "axis": "y", "pos": [-160, 15.5, 180], "tone": "dark"},
+          {"t": "cyl", "d": 14, "len": 1, "axis": "y", "pos": [160, 15.5, -280], "tone": "dark"},
+          {"t": "cyl", "d": 14, "len": 1, "axis": "y", "pos": [-160, 15.5, -280], "tone": "dark"}]},
+        {"name": "uprights", "items": [
+          {"t": "box", "size": [30, 265, 30], "pos": [115, 147.5, 45], "tone": "metal"},
+          {"t": "box", "size": [30, 265, 30], "pos": [115, 147.5, -45], "tone": "metal"},
+          {"t": "box", "size": [30, 265, 30], "pos": [-115, 147.5, 45], "tone": "metal"},
+          {"t": "box", "size": [30, 265, 30], "pos": [-115, 147.5, -45], "tone": "metal"},
+          {"t": "box", "size": [260, 15, 120], "pos": [0, 287.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 1.5, "axis": "y", "pos": [115, 295.7, 45], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.5, "axis": "y", "pos": [115, 295.7, -45], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.5, "axis": "y", "pos": [-115, 295.7, 45], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 1.5, "axis": "y", "pos": [-115, 295.7, -45], "tone": "dark"}]},
+        {"name": "bushings", "items": [
+          {"t": "cyl", "d": 48, "len": 8, "axis": "y", "pos": [70, 299, 0], "tone": "dark"},
+          {"t": "cyl", "d": 48, "len": 8, "axis": "y", "pos": [-70, 299, 0], "tone": "dark"},
+          {"t": "cyl", "d": 28, "len": 37, "axis": "y", "pos": [70, 261.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 28, "len": 37, "axis": "y", "pos": [-70, 261.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 34, "len": 6, "axis": "y", "pos": [0, 298, 0], "tone": "yellow"}]},
+        {"name": "sensorplate", "items": [
+          {"t": "box", "size": [6, 110, 50], "pos": [115, 350, 0], "tone": "metal"},
+          {"t": "box", "size": [16, 6, 50], "pos": [120, 298, 0], "tone": "metal"}]}
+      ]}
+    },
+    {
+      "id": "drive", "kind": "solid", "label": "Geared motor and coupling", "on": "cam", "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [90, 90, 45], "pos": [0, 115, -240.5]}],
+      "basis": {"shape": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "bracket", "items": [
+          {"t": "box", "size": [140, 175, 12], "pos": [0, 102.5, -212], "tone": "metal"},
+          {"t": "box", "size": [10, 80, 50], "pos": [60, 55, -181], "tone": "metal"},
+          {"t": "box", "size": [10, 80, 50], "pos": [-60, 55, -181], "tone": "metal"},
+          {"t": "box", "size": [140, 8, 40], "pos": [0, 19, -198], "tone": "metal"}]},
+        {"name": "motor", "items": [
+          {"t": "box", "size": [90, 90, 45], "pos": [0, 115, -240.5], "tone": "dark"},
+          {"t": "box", "size": [88, 88, 110], "pos": [0, 115, -318], "tone": "dark"},
+          {"t": "box", "size": [92, 3, 110], "pos": [0, 140, -318], "tone": "black"},
+          {"t": "box", "size": [92, 3, 110], "pos": [0, 90, -318], "tone": "black"},
+          {"t": "box", "size": [86, 86, 25], "pos": [0, 115, -385.5], "tone": "black"},
+          {"t": "box", "size": [50, 30, 60], "pos": [0, 174, -318], "tone": "dark"},
+          {"t": "cyl", "d": 14, "len": 10, "axis": "x", "pos": [30, 174, -318], "tone": "black"},
+          {"t": "cyl", "d": 8, "len": 40, "axis": "x", "pos": [55, 174, -318], "tone": "black"},
+          {"t": "cyl", "d": 8, "len": 160, "axis": "y", "pos": [75, 94, -318], "tone": "black"},
+          {"t": "box", "size": [0.6, 30, 60], "pos": [44.3, 115, -318], "tone": "white"}]}
+      ]}
+    },
+    {
+      "id": "sensors", "kind": "solid", "label": "Up, down and home sensors", "on": "cam", "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [10, 92, 14], "pos": [-56, 61, 155]}],
+      "basis": {"shape": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "updown", "items": [
+          {"t": "cyl", "d": 12, "len": 50, "axis": "x", "pos": [137, 322.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 12, "len": 50, "axis": "x", "pos": [137, 362.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 11.5, "len": 1.5, "axis": "x", "pos": [111.8, 322.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 11.5, "len": 1.5, "axis": "x", "pos": [111.8, 362.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 17, "len": 4, "axis": "x", "pos": [120, 322.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 17, "len": 4, "axis": "x", "pos": [120, 362.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 5, "len": 30, "axis": "x", "pos": [178, 322.5, 0], "tone": "black"},
+          {"t": "cyl", "d": 5, "len": 30, "axis": "x", "pos": [178, 362.5, 0], "tone": "black"},
+          {"t": "cyl", "d": 5, "len": 150, "axis": "y", "pos": [193, 247.5, 3], "tone": "black"},
+          {"t": "cyl", "d": 5, "len": 190, "axis": "y", "pos": [193, 267.5, -3], "tone": "black"}]},
+        {"name": "home", "items": [
+          {"t": "box", "size": [10, 92, 14], "pos": [-56, 61, 155], "tone": "metal"},
+          {"t": "box", "size": [14, 18, 14], "pos": [-54, 115, 155], "tone": "black"},
+          {"t": "box", "size": [14, 18, 4.5], "pos": [-40, 115, 159.75], "tone": "black"},
+          {"t": "box", "size": [14, 18, 4.5], "pos": [-40, 115, 150.25], "tone": "black"},
+          {"t": "cyl", "d": 4, "len": 40, "axis": "x", "pos": [-81, 110, 155], "tone": "black"}]},
+        {"name": "led_up", "show": "cam.up_sw", "items": [
+          {"t": "cyl", "d": 9, "len": 2, "axis": "x", "pos": [163, 362.5, 0], "tone": "mark"}]},
+        {"name": "led_down", "show": "cam.down_sw", "items": [
+          {"t": "cyl", "d": 9, "len": 2, "axis": "x", "pos": [163, 322.5, 0], "tone": "mark"}]},
+        {"name": "led_home", "show": "cam.cam_home", "items": [
+          {"t": "box", "size": [4, 1.2, 4], "pos": [-54, 124.6, 155], "tone": "mark"}]}
+      ]}
+    }
+  ],
+  "points": [
+    {"name": "plate", "on": "cam.lift", "pos": [0, 25, 0], "catch_mm": 5, "basis": "guess"}
+  ],
+  "workpieces": {
+    "types": {"tray": {"shape": "square", "side_mm": 70, "h_mm": 35, "material": "plastic", "tone": "orange", "basis": "guess"}},
+    "start": [{"type": "tray", "at": "plate"}]
+  }
+}

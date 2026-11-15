@@ -104,67 +104,92 @@ claude mcp add twin-modeling -- <실행파일-경로>/twin-modeling-mcp --dir <�
 아래 내용은 모두 `twin-modeling-mcp` 0.1.0이 실제로 낸 결과입니다. 파일은
 [`examples/pick-and-place/`](examples/pick-and-place/)에 있습니다.
 
+예시 설비는 설계 예시라서 치수와 시간, 속도는 예시를 위해 정한 추정값이고(각 시트 7번에 `guess`나 `user`로
+표시) 카탈로그 값이 아니며 어느 모델도 실제 설비와 같다고 주장하지 않습니다.
+
 **1. 사람이 쓴 말** (모델과 시트는 영어로 썼습니다):
 
-> A pick-and-place unit: a horizontal air cylinder with 200 mm stroke carries a vertical air cylinder with 100 mm
-> stroke. A suction cup sits at the end of the vertical rod. Both cylinders have two air tubes and a switch at each
-> end. Make a twin model.
+> It is a pneumatic pick-and-place station on an aluminium base plate. Two 45 mm profile posts carry a 45 x 90 cross
+> beam. On the front of the beam a guided rodless cylinder moves the head 200 mm in X; on its carriage a guided
+> cylinder with a 100 mm stroke lowers a vacuum pad. A small inline ejector and a vacuum switch sit on the carriage
+> bracket. Parts (orange plastic housings, about 40 x 40 x 25) come in on a short belt conveyor and stop against an
+> end stop, where a diffuse photo sensor sees them. The head picks a part and puts it into a nest on the right, which
+> has an inductive sensor. All cylinders have two air tubes and a reed switch at each end; the valves sit on a
+> terminal at the back of the plate. There is a tower light on the beam and a box with a start button and an
+> emergency stop at the front. Make a twin model of one cycle.
 
-(가로 공압 실린더(행정 200 mm)가 세로 공압 실린더(행정 100 mm)를 싣고 세로 로드 끝에 흡착 패드가 달린 픽앤플레이스
-장치입니다. 두 실린더 모두 에어 튜브가 두 개이고 양 끝에 스위치가 있습니다.)
+(알루미늄 베이스판 위의 공압 픽앤플레이스 스테이션입니다. 45 mm 프로파일 기둥 두 개가 45 x 90 크로스빔을 받치고
+빔 앞면의 가이드 로드리스 실린더가 헤드를 X로 200 mm 옮깁니다. 캐리지에 붙은 행정 100 mm 가이드 실린더가 흡착
+패드를 내리고 캐리지 브래킷에는 소형 이젝터와 진공 스위치가 있습니다. 부품(주황색 플라스틱 하우징, 약 40 x 40 x 25)은
+짧은 벨트 컨베이어로 들어와 엔드 스톱에 멈추고 확산형 광센서가 이를 봅니다. 헤드는 부품을 집어 오른쪽 지그에 놓고
+지그에는 근접 센서가 있습니다. 실린더마다 에어 튜브가 두 개이고 양 끝에 리드 스위치가 달렸으며 밸브는 판 뒤쪽 매니폴드에
+모여 있습니다. 빔 위에 타워 램프가, 앞쪽에 시작 버튼과 비상 정지가 든 박스가 있습니다. 한 사이클의 트윈 모델을 만들어
+주세요.)
 
 **2. 원리 시트** ([`sheet.md`](examples/pick-and-place/sheet.md) 일부):
 
 ```
-3. Motion path:
-   - Valve coils x_cyl.coil_fwd / coil_back -> x_cyl rod (kind cylinder_double, 5/2 double valve) -> carries z_cyl (on: x_cyl.out).
-   - Valve coils z_cyl.coil_fwd / coil_back -> z_cyl rod, pointing down (pose.rot z -90) -> carries pad (on: z_cyl.out).
-   - Vacuum valve pad.coil -> suction at the cup (kind vacuum_pad).
-7. Numbers: stroke of x_cyl 200 mm (user), stroke of z_cyl 100 mm (user), bores and times (guess).
+## 3. Motion path
+- Valve coils x_cyl.coil_fwd / coil_back (5/2 double) -> rodless piston -> carriage (kind cylinder_double,
+  frame out moves +x) -> carries the Z bracket, z_cyl, vac_sw and the ejector (on: x_cyl.out).
+- Valve coils z_cyl.coil_fwd / coil_back (5/2 double) -> piston rod and guide rods -> Z plate
+  (kind cylinder_double, pose.rot z -90, so fwd is down) -> carries pad (on: z_cyl.out).
+- Vacuum valve pad.coil -> ejector -> suction at the pad (kind vacuum_pad).
+- Motor contactor conv.run_fwd -> gear motor -> belt (kind conveyor). The end stop holds the first part.
+## 7. Numbers
+| X stroke | 200 | mm | user | words |
+| Z stroke | 100 | mm | user | words |
+| X bore   | 25  | mm | guess |      |
 ```
 
-**3. 트윈 모델** ([`model.json`](examples/pick-and-place/model.json) 일부. 전체 파일에는 받침대, 흡착 패드, 외형도
-들어 있습니다):
+**3. 트윈 모델** ([`model.json`](examples/pick-and-place/model.json)의 장치 14개 중 하나, 외형은 뺐습니다. 전체 파일에는
+프레임, 컨베이어, 지그, 밸브 매니폴드, 타워 램프, 조작 박스와 외형 요소 264개가 들어 있습니다):
 
 ```json
-{"id": "z_cyl", "kind": "cylinder_double", "on": "x_cyl.out", "mount": "surface",
- "pose": {"pos": [40, 0, 0], "rot": [0, 0, -90]},
- "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double"},
- "timing": {"lag_ms": 30, "fwd_ms": 300, "back_ms": 280},
- "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"}}
+{"id": "z_cyl", "kind": "cylinder_double", "label": "Z axis: guided cylinder",
+ "on": "x_cyl.out", "mount": "flange_rear",
+ "pose": {"pos": [-300, 7, 76], "rot": [0, 0, -90]},
+ "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double", "body_len_mm": 120, "rod_out_mm": 10},
+ "timing": {"lag_ms": 30, "fwd_ms": 350, "back_ms": 300},
+ "basis": {"bore_mm": "guess", "stroke_mm": "user", "body_len_mm": "guess", "rod_out_mm": "guess", "pose": "guess"}}
 ```
 
-`model_draft`는 경고 없이 저장했으며 응답의 `facts`에 따르면 `z_cyl`은 아래(`down`)를 향하고, 로드 끝은 y 241.5 mm에서
-141.5 mm까지 움직입니다.
+`model_draft`는 경고 없이 저장했고 응답의 `facts`를 보면 `z_cyl`은 아래(`down`)를 향하고 로드 끝은 y 347 mm에서
+247 mm까지 움직입니다. `ask` 목록은 두 실린더의 보어, 벨트 크기, "실제 장비에서 잰 기준 치수 하나"를 묻습니다.
 
-**4. 한 사이클 시뮬레이션:** [`sim.json`](examples/pick-and-place/sim.json)의 이벤트(내림, 흡착, 올림, 이동, 내림, 흡착 끔,
-올림, 복귀)로 `model_sim`을 돌린 결과입니다. `changes`의 주요 줄:
+**4. 한 사이클 시뮬레이션:** [`sim.json`](examples/pick-and-place/sim.json)의 이벤트(컨베이어 켬, 흡착하며 내림, 올림,
+이동, 내림, 흡착 끔, 올림, 복귀)로 `model_sim`을 돌린 결과입니다. `changes`와 `part_log`의 주요 줄:
 
-| t (ms) | 핀 | 값 | 뜻 |
+| t (ms) | 핀 또는 사건 | 값 | 뜻 |
 |---|---|---|---|
-| 330 | `z_cyl.sensor_fwd` | 1 | 패드가 내려감 |
-| 500 | `pad.coil` | 1 | 흡착 켬 |
-| 1010 | `z_cyl.sensor_back` | 1 | 패드가 올라옴 |
-| 1630 | `x_cyl.sensor_fwd` | 1 | 놓을 자리 위에 옴 |
-| 2030 | `z_cyl.sensor_fwd` | 1 | 다시 내려감 |
-| 3180 | `x_cyl.sensor_back` | 1 | 처음 자리로 돌아옴 |
+| 300 | `pick_sen.output` | 1 | 부품이 엔드 스톱에 옴 |
+| 960 | pick | 부품 1 | 패드가 부품을 집음 |
+| 970 | `vac_sw.output` | 1 | 진공 도달 |
+| 980 | `z_cyl.sensor_fwd` | 1 | 패드가 내려감 |
+| 1380 | `z_cyl.sensor_back` | 1 | 패드가 올라옴 |
+| 2090 | `x_cyl.sensor_fwd` | 1 | 지그 위에 옴 |
+| 2520 | `nest_sen.output` | 1 | 부품이 지그에 들어감 |
+| 2600 | release | 부품 1, `place` | 흡착 끔 |
+| 3740 | `x_cyl.sensor_back` | 1 | 컨베이어 위로 돌아옴 |
 
-**5. 화면**에서 모델을 그리고 실행을 재생합니다(1.95 s에서 멈춘 모습):
+실행은 4200 ms에 알람 없이 끝납니다.
+
+**5. 화면**에서 모델을 그리고 실행을 재생합니다(1.95 s에서 멈춘 모습, 부품을 지그로 옮기는 중):
 
 ![3D 화면의 픽앤플레이스 모델](examples/pick-and-place/picture.png)
 
 ### 갤러리
 
-폴더마다 `sheet.md`, `model.json`, `sim.json`, 그림이 있고 모든 모델은 이 서버로 초안을 만들고 확정하고
-시뮬레이션했습니다. 수치는 추정값입니다(각 시트의 7번 참고).
+폴더마다 `sheet.md`, `model.json`, `sim.json`, 그림이 있습니다. 모든 모델은 이 서버로 초안을 만들고 확정하고
+시뮬레이션했습니다(`model_draft` 경고 없음, `model_sim` 알람 없음). 치수와 시간은 모두 설계 추정값입니다(각 시트의 7번 참고).
 
 | 모델 | 보여 주는 것 | 그림 |
 |---|---|---|
-| [`pick-and-place`](examples/pick-and-place/) | 한 실린더가 다른 실린더를 싣는 복동 실린더 두 개와 흡착 패드. | <img src="examples/pick-and-place/picture.png" width="240" alt="픽앤플레이스"> |
-| [`ball-screw-axis`](examples/ball-screw-axis/) | 프리셋 `servo_screw`: 캐리지가 목표 워드를 따라가고 모터는 1 mm마다 22.5° 돕니다. 2100 ms에 목표 200 mm 도달. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="볼나사 축"> |
-| [`index-table`](examples/index-table/) | 프리셋 `index_table`, 8스테이션: 펄스 하나에 600 ms 동안 한 칸 돕니다. | <img src="examples/index-table/picture.png" width="240" alt="인덱스 테이블"> |
-| [`robot-arm`](examples/robot-arm/) | 프리셋 `robot_6r`, 프로그램 번호로 고르는 티칭 자세 세 개. `done`이 1300, 3100, 4900 ms에 켜짐. | <img src="examples/robot-arm/picture.png" width="240" alt="로봇 팔"> |
-| [`cam-lifter`](examples/cam-lifter/) | 기본 요소만 씀: 도는 축, 캠 표, 승강 관절(스킬의 예시 2). `up_sw`가 1580 ms부터 2230 ms까지 켜짐. | <img src="examples/cam-lifter/picture.png" width="240" alt="캠 리프터"> |
+| [`pick-and-place`](examples/pick-and-place/) | 갠트리형 스테이션: 로드리스 X 실린더, 가이드 Z 실린더, 흡착 패드, 광센서 달린 공급 컨베이어, 근접 센서 달린 지그, 밸브 매니폴드. 장치 14개. 960 ms에 집고 2600 ms에 놓음. | <img src="examples/pick-and-place/picture.png" width="240" alt="픽앤플레이스 스테이션"> |
+| [`ball-screw-axis`](examples/ball-screw-axis/) | 레일 두 줄 위의 서보 축: 모터, 커플링, 리드 10 mm 볼나사, 캐리지, 케이블 체인, 원점·리밋 스위치. 장치 5개. 목표 300, 150, 0 mm이고 `busy`는 1500, 2600, 3600 ms에 꺼짐. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="볼나사 축"> |
+| [`index-table`](examples/index-table/) | 기어드 모터가 달린 캠 인덱서 위 8스테이션 다이얼, 부품이 든 지그 8개, 기둥에 단 압입 실린더, 부품 센서. 장치 8개. `in_pos`는 640, 2340, 4040 ms에 켜지고 압입은 1050, 2750, 4450 ms에 내려감. | <img src="examples/index-table/picture.png" width="240" alt="인덱스 테이블"> |
+| [`robot-arm`](examples/robot-arm/) | 로봇 셀: 받침대 위 6축 로봇(프리셋 `robot_6r`), 흡착 툴, 지그 테이블, 배출 벨트, 펜스, 타워 램프. 장치 11개. 2900 ms에 집고 4950 ms에 벨트에 놓고 6400 ms에 원점 복귀. | <img src="examples/robot-arm/picture.png" width="240" alt="로봇 셀"> |
+| [`cam-lifter`](examples/cam-lifter/) | 롤러 종동절이 붙은 배 모양 캠(27점 승강 표), 가이드 승강판, 기어드 모터, 상승·하강·원점 스위치. 장치 4개. `up_sw`는 1540 ms부터 1670 ms까지 켜지고 한 바퀴는 3090 ms에 끝남. | <img src="examples/cam-lifter/picture.png" width="240" alt="캠 리프터"> |
 
 ## 도구
 

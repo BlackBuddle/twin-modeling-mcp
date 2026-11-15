@@ -1,21 +1,23 @@
 {
   "name": "pick-and-place",
   "events": [
-    {"t_ms": 0, "pin": "z_cyl.coil_fwd", "value": 1},
-    {"t_ms": 500, "pin": "pad.coil", "value": 1},
-    {"t_ms": 700, "pin": "z_cyl.coil_fwd", "value": 0},
-    {"t_ms": 700, "pin": "z_cyl.coil_back", "value": 1},
-    {"t_ms": 1100, "pin": "z_cyl.coil_back", "value": 0},
-    {"t_ms": 1100, "pin": "x_cyl.coil_fwd", "value": 1},
-    {"t_ms": 1700, "pin": "x_cyl.coil_fwd", "value": 0},
-    {"t_ms": 1700, "pin": "z_cyl.coil_fwd", "value": 1},
-    {"t_ms": 2100, "pin": "pad.coil", "value": 0},
-    {"t_ms": 2300, "pin": "z_cyl.coil_fwd", "value": 0},
-    {"t_ms": 2300, "pin": "z_cyl.coil_back", "value": 1},
-    {"t_ms": 2700, "pin": "z_cyl.coil_back", "value": 0},
-    {"t_ms": 2700, "pin": "x_cyl.coil_back", "value": 1},
-    {"t_ms": 3300, "pin": "x_cyl.coil_back", "value": 0}
+    {"t_ms": 0, "pin": "tower.coil_green", "value": 1},
+    {"t_ms": 0, "pin": "conv.run_fwd", "value": 1},
+    {"t_ms": 600, "pin": "pad.coil", "value": 1},
+    {"t_ms": 600, "pin": "z_cyl.coil_fwd", "value": 1},
+    {"t_ms": 1050, "pin": "z_cyl.coil_fwd", "value": 0},
+    {"t_ms": 1050, "pin": "z_cyl.coil_back", "value": 1},
+    {"t_ms": 1450, "pin": "z_cyl.coil_back", "value": 0},
+    {"t_ms": 1450, "pin": "x_cyl.coil_fwd", "value": 1},
+    {"t_ms": 2150, "pin": "x_cyl.coil_fwd", "value": 0},
+    {"t_ms": 2150, "pin": "z_cyl.coil_fwd", "value": 1},
+    {"t_ms": 2600, "pin": "pad.coil", "value": 0},
+    {"t_ms": 2700, "pin": "z_cyl.coil_fwd", "value": 0},
+    {"t_ms": 2700, "pin": "z_cyl.coil_back", "value": 1},
+    {"t_ms": 3100, "pin": "z_cyl.coil_back", "value": 0},
+    {"t_ms": 3100, "pin": "x_cyl.coil_back", "value": 1},
+    {"t_ms": 3800, "pin": "x_cyl.coil_back", "value": 0}
   ],
-  "watch": ["x_cyl.sensor_back", "x_cyl.sensor_fwd", "z_cyl.sensor_back", "z_cyl.sensor_fwd", "pad.coil"],
-  "total_ms": 3500
+  "watch": ["pick_sen.output", "z_cyl.sensor_back", "z_cyl.sensor_fwd", "vac_sw.output", "x_cyl.sensor_back", "x_cyl.sensor_fwd", "nest_sen.output"],
+  "total_ms": 4200
 }

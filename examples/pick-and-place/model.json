@@ -1,71 +1,537 @@
 {
   "schema": 2,
-  "name": "pneumatic pick and place",
+  "name": "pneumatic pick and place station",
   "devices": [
     {
-      "id": "stand",
+      "id": "frame",
       "kind": "solid",
-      "label": "Stand",
+      "label": "Base plate and profile frame",
       "mount": "floor",
-      "pose": {"pos": [-260, 0, 0], "rot": [0, 0, 0]},
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
       "shape": [
-        {"t": "box", "size": [160, 20, 160], "pos": [0, 10, 0]},
-        {"t": "box", "size": [60, 310, 60], "pos": [0, 175, 0]}
+        {"t": "box", "size": [1000, 15, 520], "pos": [0, 67.5, 0]},
+        {"t": "box", "size": [45, 350, 45], "pos": [-420, 250, -100]},
+        {"t": "box", "size": [45, 350, 45], "pos": [420, 250, -100]},
+        {"t": "box", "size": [890, 90, 45], "pos": [0, 470, -100]}
       ],
-      "basis": {"pose": "guess", "shape": "guess"}
+      "basis": {"pose": "guess", "shape": "guess"},
+      "skin": {"groups": [
+        {"name": "plate", "items": [
+          {"t": "box", "size": [1000, 15, 520], "pos": [0, 67.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 50, "len": 8, "axis": "y", "pos": [-460, 4, 220], "tone": "black"},
+          {"t": "cyl", "d": 50, "len": 8, "axis": "y", "pos": [460, 4, 220], "tone": "black"},
+          {"t": "cyl", "d": 50, "len": 8, "axis": "y", "pos": [-460, 4, -220], "tone": "black"},
+          {"t": "cyl", "d": 50, "len": 8, "axis": "y", "pos": [460, 4, -220], "tone": "black"},
+          {"t": "cyl", "d": 16, "len": 52, "axis": "y", "pos": [-460, 34, 220], "tone": "metal"},
+          {"t": "cyl", "d": 16, "len": 52, "axis": "y", "pos": [460, 34, 220], "tone": "metal"},
+          {"t": "cyl", "d": 16, "len": 52, "axis": "y", "pos": [-460, 34, -220], "tone": "metal"},
+          {"t": "cyl", "d": 16, "len": 52, "axis": "y", "pos": [460, 34, -220], "tone": "metal"},
+          {"t": "box", "size": [24, 8, 24], "pos": [-460, 56, 220], "tone": "dark"},
+          {"t": "box", "size": [24, 8, 24], "pos": [460, 56, 220], "tone": "dark"},
+          {"t": "box", "size": [24, 8, 24], "pos": [-460, 56, -220], "tone": "dark"},
+          {"t": "box", "size": [24, 8, 24], "pos": [460, 56, -220], "tone": "dark"}
+        ]},
+        {"name": "posts", "items": [
+          {"t": "box", "size": [45, 350, 45], "pos": [-420, 250, -100], "tone": "metal"},
+          {"t": "box", "size": [45, 350, 45], "pos": [420, 250, -100], "tone": "metal"},
+          {"t": "box", "size": [8, 340, 1.2], "pos": [-420, 250, -77.2], "tone": "dark"},
+          {"t": "box", "size": [8, 340, 1.2], "pos": [420, 250, -77.2], "tone": "dark"},
+          {"t": "box", "size": [1.2, 340, 8], "pos": [-442.8, 250, -100], "tone": "dark"},
+          {"t": "box", "size": [1.2, 340, 8], "pos": [442.8, 250, -100], "tone": "dark"},
+          {"t": "box", "size": [40, 40, 6], "pos": [-420, 95, -74.5], "tone": "metal"},
+          {"t": "box", "size": [40, 40, 6], "pos": [420, 95, -74.5], "tone": "metal"},
+          {"t": "box", "size": [6, 40, 40], "pos": [-394.5, 95, -100], "tone": "metal"},
+          {"t": "box", "size": [6, 40, 40], "pos": [394.5, 95, -100], "tone": "metal"},
+          {"t": "box", "size": [6, 40, 40], "pos": [-394.5, 405, -100], "tone": "metal"},
+          {"t": "box", "size": [6, 40, 40], "pos": [394.5, 405, -100], "tone": "metal"}
+        ]},
+        {"name": "beam", "items": [
+          {"t": "box", "size": [890, 90, 45], "pos": [0, 470, -100], "tone": "metal"},
+          {"t": "box", "size": [880, 1.2, 8], "pos": [0, 515.6, -111], "tone": "dark"},
+          {"t": "box", "size": [880, 1.2, 8], "pos": [0, 515.6, -89], "tone": "dark"},
+          {"t": "box", "size": [4, 90, 45], "pos": [-447, 470, -100], "tone": "black"},
+          {"t": "box", "size": [4, 90, 45], "pos": [447, 470, -100], "tone": "black"}
+        ]},
+        {"name": "chain", "items": [
+          {"t": "box", "size": [330, 4, 44], "pos": [-75, 517, -100], "tone": "metal"},
+          {"t": "box", "size": [300, 16, 30], "pos": [-80, 527, -100], "tone": "dark"},
+          {"t": "box", "size": [1, 16, 31], "pos": [-200, 527, -100], "tone": "black"},
+          {"t": "box", "size": [1, 16, 31], "pos": [-140, 527, -100], "tone": "black"},
+          {"t": "box", "size": [1, 16, 31], "pos": [-80, 527, -100], "tone": "black"},
+          {"t": "box", "size": [1, 16, 31], "pos": [-20, 527, -100], "tone": "black"},
+          {"t": "box", "size": [30, 26, 40], "pos": [85, 532, -100], "tone": "metal"}
+        ]},
+        {"name": "harness", "items": [
+          {"t": "cyl", "d": 16, "len": 440, "axis": "y", "pos": [452, 306, -115], "tone": "blue"},
+          {"t": "cyl", "d": 16, "len": 350, "axis": "x", "pos": [276, 523, -112], "tone": "blue"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "y", "pos": [452, 160, -115], "tone": "black"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "y", "pos": [452, 260, -115], "tone": "black"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "y", "pos": [452, 360, -115], "tone": "black"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "y", "pos": [452, 460, -115], "tone": "black"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "x", "pos": [300, 523, -112], "tone": "black"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "x", "pos": [180, 523, -112], "tone": "black"}
+        ]}
+      ]}
     },
     {
       "id": "x_cyl",
       "kind": "cylinder_double",
-      "label": "X cylinder",
+      "label": "X axis: guided rodless cylinder",
       "mount": "floor",
-      "pose": {"pos": [-110, 330, 0], "rot": [0, 0, 0]},
-      "params": {"bore_mm": 25, "stroke_mm": 200, "valve": "5/2-double"},
-      "timing": {"lag_ms": 30, "fwd_ms": 500, "back_ms": 450},
-      "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"},
+      "datum": "mid",
+      "pose": {"pos": [0, 470, -52.5], "rot": [0, 0, 0]},
+      "params": {"bore_mm": 25, "stroke_mm": 200, "valve": "5/2-double", "body_len_mm": 400, "body_dia_mm": 50, "rod_out_mm": 0},
+      "timing": {"lag_ms": 40, "fwd_ms": 600, "back_ms": 600},
+      "basis": {"bore_mm": "guess", "stroke_mm": "user", "body_len_mm": "guess", "body_dia_mm": "guess", "rod_out_mm": "guess", "pose": "guess"},
       "skin": {"groups": [
-        {"name": "body", "items": [
-          {"t": "box", "size": [275, 35, 35], "pos": [0, 17.5, 0], "tone": "blue"},
-          {"t": "box", "size": [20, 41, 41], "pos": [-127.5, 17.5, 0], "tone": "dark"},
-          {"t": "box", "size": [20, 41, 41], "pos": [127.5, 17.5, 0], "tone": "dark"}]},
-        {"name": "rod", "frame": "out", "items": [
-          {"t": "cyl", "d": 10, "len": 250, "axis": "x", "pos": [-125, 0, 0], "tone": "metal"},
-          {"t": "box", "size": [16, 30, 30], "pos": [-8, 0, 0], "tone": "dark"}]}
+        {"name": "body", "frame": "mid", "items": [
+          {"t": "box", "size": [368, 46, 50], "pos": [0, 0, 0], "tone": "metal"},
+          {"t": "box", "size": [360, 1.2, 6], "pos": [0, 23.4, 0], "tone": "dark"},
+          {"t": "box", "size": [360, 1.2, 6], "pos": [0, -23.4, 0], "tone": "dark"},
+          {"t": "box", "size": [360, 14, 8], "pos": [0, 0, 29], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [-150, 0, 33.5], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [-75, 0, 33.5], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [0, 0, 33.5], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [75, 0, 33.5], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [150, 0, 33.5], "tone": "dark"}
+        ]},
+        {"name": "heads", "frame": "mid", "items": [
+          {"t": "box", "size": [16, 60, 75], "pos": [-192, 0, 12.5], "tone": "dark"},
+          {"t": "box", "size": [16, 60, 75], "pos": [192, 0, 12.5], "tone": "dark"},
+          {"t": "cyl", "d": 10, "len": 14, "axis": "x", "pos": [-177, 0, 40.5], "tone": "metal"},
+          {"t": "cyl", "d": 10, "len": 14, "axis": "x", "pos": [177, 0, 40.5], "tone": "metal"},
+          {"t": "box", "size": [5, 14, 14], "pos": [-181.5, 0, 40.5], "tone": "dark"},
+          {"t": "box", "size": [5, 14, 14], "pos": [181.5, 0, 40.5], "tone": "dark"},
+          {"t": "cyl", "d": 10, "len": 8, "axis": "y", "pos": [-192, 34, 0], "tone": "metal"},
+          {"t": "cyl", "d": 10, "len": 8, "axis": "y", "pos": [192, 34, 0], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 40, "axis": "y", "pos": [-192, 58, 0], "tone": "blue"},
+          {"t": "cyl", "d": 6, "len": 40, "axis": "y", "pos": [192, 58, 0], "tone": "blue"},
+          {"t": "cyl", "d": 7, "len": 1, "axis": "x", "pos": [200.5, 20, -10], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 1, "axis": "x", "pos": [200.5, -20, -10], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 1, "axis": "x", "pos": [200.5, 20, 35], "tone": "black"},
+          {"t": "cyl", "d": 7, "len": 1, "axis": "x", "pos": [200.5, -20, 35], "tone": "black"}
+        ]},
+        {"name": "switches", "frame": "mid", "items": [
+          {"t": "box", "size": [24, 5, 4], "pos": [-100, 25.5, 0], "tone": "dark"},
+          {"t": "box", "size": [24, 5, 4], "pos": [100, 25.5, 0], "tone": "dark"},
+          {"t": "cyl", "d": 3, "len": 40, "axis": "x", "pos": [-132, 25.5, 0], "tone": "black"},
+          {"t": "cyl", "d": 3, "len": 40, "axis": "x", "pos": [132, 25.5, 0], "tone": "black"}
+        ]},
+        {"name": "led_back", "frame": "mid", "show": "x_cyl.sensor_back", "items": [
+          {"t": "box", "size": [5, 1.5, 3], "pos": [-92, 28.7, 0], "tone": "mark"}
+        ]},
+        {"name": "led_fwd", "frame": "mid", "show": "x_cyl.sensor_fwd", "items": [
+          {"t": "box", "size": [5, 1.5, 3], "pos": [108, 28.7, 0], "tone": "mark"}
+        ]},
+        {"name": "carriage", "frame": "out", "items": [
+          {"t": "box", "size": [140, 70, 15], "pos": [-300, 0, 40.5], "tone": "metal"},
+          {"t": "box", "size": [6, 26, 10], "pos": [-373, 0, 38], "tone": "black"},
+          {"t": "box", "size": [6, 26, 10], "pos": [-227, 0, 38], "tone": "black"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "z", "pos": [-355, 25, 49], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "z", "pos": [-245, 25, 49], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "z", "pos": [-355, -25, 49], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "z", "pos": [-245, -25, 49], "tone": "dark"}
+        ]},
+        {"name": "bracket", "frame": "out", "items": [
+          {"t": "box", "size": [150, 148, 12], "pos": [-275, -39, 54], "tone": "metal"},
+          {"t": "box", "size": [8, 70, 18], "pos": [-346, -75, 39], "tone": "metal"},
+          {"t": "box", "size": [8, 70, 18], "pos": [-204, -75, 39], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "z", "pos": [-340, 22, 61], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "z", "pos": [-210, 22, 61], "tone": "dark"}
+        ]},
+        {"name": "ejector", "frame": "out", "items": [
+          {"t": "box", "size": [26, 60, 22], "pos": [-240, -45, 71], "tone": "dark"},
+          {"t": "box", "size": [26, 10, 22], "pos": [-240, -10, 71], "tone": "blue"},
+          {"t": "cyl", "d": 14, "len": 30, "axis": "y", "pos": [-240, -90, 71], "tone": "white"},
+          {"t": "cyl", "d": 8, "len": 10, "axis": "y", "pos": [-240, 0, 71], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 60, "axis": "y", "pos": [-240, 35, 71], "tone": "blue"},
+          {"t": "cyl", "d": 8, "len": 12, "axis": "x", "pos": [-259, -55, 71], "tone": "metal"}
+        ]},
+        {"name": "chain_run", "frame": "out", "items": [
+          {"t": "box", "size": [30, 74, 12], "pos": [-260, 72, 40.5], "tone": "metal"},
+          {"t": "box", "size": [30, 8, 100], "pos": [-260, 113, -9.5], "tone": "metal"},
+          {"t": "box", "size": [140, 16, 30], "pos": [-330, 109, -47.5], "tone": "dark"},
+          {"t": "cyl", "d": 66, "len": 30, "axis": "z", "pos": [-400, 84, -47.5], "tone": "dark"},
+          {"t": "box", "size": [1, 16, 31], "pos": [-370, 109, -47.5], "tone": "black"},
+          {"t": "box", "size": [1, 16, 31], "pos": [-330, 109, -47.5], "tone": "black"},
+          {"t": "box", "size": [1, 16, 31], "pos": [-290, 109, -47.5], "tone": "black"}
+        ]}
       ]}
     },
     {
       "id": "z_cyl",
       "kind": "cylinder_double",
-      "label": "Z cylinder",
+      "label": "Z axis: guided cylinder",
       "on": "x_cyl.out",
-      "mount": "surface",
-      "pose": {"pos": [40, 0, 0], "rot": [0, 0, -90]},
-      "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double"},
-      "timing": {"lag_ms": 30, "fwd_ms": 300, "back_ms": 280},
-      "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"},
+      "mount": "flange_rear",
+      "pose": {"pos": [-300, 7, 76], "rot": [0, 0, -90]},
+      "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double", "body_len_mm": 120, "rod_out_mm": 10},
+      "timing": {"lag_ms": 30, "fwd_ms": 350, "back_ms": 300},
+      "basis": {"bore_mm": "guess", "stroke_mm": "user", "body_len_mm": "guess", "rod_out_mm": "guess", "pose": "guess"},
       "skin": {"groups": [
-        {"name": "body", "items": [
-          {"t": "box", "size": [148, 22.4, 22.4], "pos": [0, 11.2, 0], "tone": "blue"},
-          {"t": "box", "size": [14, 28, 28], "pos": [-67, 11.2, 0], "tone": "dark"},
-          {"t": "box", "size": [14, 28, 28], "pos": [67, 11.2, 0], "tone": "dark"}]},
-        {"name": "rod", "frame": "out", "items": [
-          {"t": "cyl", "d": 6.4, "len": 132, "axis": "x", "pos": [-66, 0, 0], "tone": "metal"}]}
+        {"name": "body", "frame": "cap_end", "items": [
+          {"t": "box", "size": [120, 70, 32], "pos": [60, 0, 0], "tone": "metal"},
+          {"t": "cyl", "d": 14, "len": 3, "axis": "x", "pos": [-1.5, 25, 0], "tone": "dark"},
+          {"t": "cyl", "d": 14, "len": 3, "axis": "x", "pos": [-1.5, -25, 0], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1.5, "axis": "z", "pos": [12, 27, 16.7], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1.5, "axis": "z", "pos": [12, -27, 16.7], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1.5, "axis": "z", "pos": [108, 27, 16.7], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1.5, "axis": "z", "pos": [108, -27, 16.7], "tone": "dark"},
+          {"t": "box", "size": [110, 1.2, 5], "pos": [60, 35.4, 8], "tone": "dark"},
+          {"t": "cyl", "d": 9, "len": 9, "axis": "y", "pos": [15, -39.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 9, "len": 9, "axis": "y", "pos": [105, -39.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 60, "axis": "x", "pos": [-15, -44, 0], "tone": "blue"},
+          {"t": "cyl", "d": 6, "len": 150, "axis": "x", "pos": [30, -44, 7], "tone": "blue"}
+        ]},
+        {"name": "switches", "frame": "cap_end", "items": [
+          {"t": "box", "size": [22, 4, 5], "pos": [18, 37, 8], "tone": "dark"},
+          {"t": "box", "size": [22, 4, 5], "pos": [102, 37, 8], "tone": "dark"},
+          {"t": "cyl", "d": 3, "len": 30, "axis": "x", "pos": [-8, 37.5, 8], "tone": "black"},
+          {"t": "cyl", "d": 3, "len": 60, "axis": "x", "pos": [61, 38, 11], "tone": "black"}
+        ]},
+        {"name": "led_back", "frame": "cap_end", "show": "z_cyl.sensor_back", "items": [
+          {"t": "box", "size": [4, 1.5, 3], "pos": [25, 39.7, 8], "tone": "mark"}
+        ]},
+        {"name": "led_fwd", "frame": "cap_end", "show": "z_cyl.sensor_fwd", "items": [
+          {"t": "box", "size": [4, 1.5, 3], "pos": [109, 39.7, 8], "tone": "mark"}
+        ]},
+        {"name": "plate", "frame": "out", "items": [
+          {"t": "box", "size": [12, 80, 40], "pos": [6, 0, 0], "tone": "metal"},
+          {"t": "cyl", "d": 10, "len": 250, "axis": "x", "pos": [-125, 25, 0], "tone": "metal"},
+          {"t": "cyl", "d": 10, "len": 250, "axis": "x", "pos": [-125, -25, 0], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 120, "axis": "x", "pos": [-60, 0, 0], "tone": "metal"},
+          {"t": "cyl", "d": 11, "len": 3, "axis": "x", "pos": [-251, 25, 0], "tone": "dark"},
+          {"t": "cyl", "d": 11, "len": 3, "axis": "x", "pos": [-251, -25, 0], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "x", "pos": [12.5, 30, 12], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "x", "pos": [12.5, -30, 12], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "x", "pos": [12.5, 30, -12], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "x", "pos": [12.5, -30, -12], "tone": "dark"}
+        ]}
       ]}
     },
     {
       "id": "pad",
       "kind": "vacuum_pad",
-      "label": "Suction cup",
+      "label": "Vacuum pad with buffer",
       "on": "z_cyl.out",
       "mount": "surface",
-      "pose": {"pos": [40, 0, 0], "rot": [0, 0, 90]},
-      "params": {"reach_mm": 40},
+      "pose": {"pos": [47, 0, 0], "rot": [0, 0, 90]},
+      "params": {"reach_mm": 4},
       "basis": {"reach_mm": "guess", "pose": "guess"},
       "skin": {"groups": [
         {"name": "cup", "items": [
-          {"t": "cyl", "d": 8, "len": 28, "axis": "y", "pos": [0, 26, 0], "tone": "metal"},
-          {"t": "cyl", "d": 34, "d2": 14, "len": 12, "axis": "y", "pos": [0, 6, 0], "tone": "black"}]}
+          {"t": "cyl", "d": 32, "d2": 26, "len": 4, "axis": "y", "pos": [0, 2, 0], "tone": "black"},
+          {"t": "cyl", "d": 22, "len": 4, "axis": "y", "pos": [0, 6, 0], "tone": "black"},
+          {"t": "cyl", "d": 27, "len": 3, "axis": "y", "pos": [0, 9.5, 0], "tone": "black"},
+          {"t": "cyl", "d": 16, "len": 9, "axis": "y", "pos": [0, 15.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 14, "len": 10, "axis": "y", "pos": [0, 25, 0], "tone": "metal"},
+          {"t": "box", "size": [17, 5, 17], "pos": [0, 32.5, 0], "tone": "metal"},
+          {"t": "box", "size": [17, 5, 17], "pos": [0, 49.5, 0], "tone": "metal"},
+          {"t": "cyl", "d": 10, "len": 22, "axis": "y", "pos": [0, 63, 0], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 14, "axis": "z", "pos": [0, 16, 12], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 8, "axis": "y", "pos": [0, 22, 22], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 50, "axis": "y", "pos": [0, 50, 22], "tone": "blue"}
+        ]}
+      ]}
+    },
+    {
+      "id": "vac_sw",
+      "kind": "prox_sensor",
+      "label": "Vacuum switch",
+      "on": "x_cyl.out",
+      "mount": "surface",
+      "pose": {"pos": [-210, -5, 60], "rot": [0, 0, 0]},
+      "sense": {"held_by": "pad"},
+      "basis": {"pose": "guess"},
+      "skin": {"groups": [
+        {"name": "body", "items": [
+          {"t": "box", "size": [30, 36, 2], "pos": [0, 0, 1], "tone": "metal"},
+          {"t": "box", "size": [26, 26, 14], "pos": [0, 0, 9], "tone": "black"},
+          {"t": "box", "size": [18, 10, 1], "pos": [2, 4, 16.5], "tone": "dark"},
+          {"t": "box", "size": [6, 4, 1], "pos": [0, -7, 16.5], "tone": "dark"},
+          {"t": "cyl", "d": 6, "len": 8, "axis": "y", "pos": [0, -17, 9], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 10, "axis": "y", "pos": [0, 18, 9], "tone": "dark"},
+          {"t": "cyl", "d": 4, "len": 40, "axis": "y", "pos": [0, 43, 9], "tone": "black"}
+        ]},
+        {"name": "led", "show": "vac_sw.output", "items": [
+          {"t": "box", "size": [3, 3, 1], "pos": [-10, 9, 16.6], "tone": "mark"}
+        ]}
+      ]}
+    },
+    {
+      "id": "conv",
+      "kind": "conveyor",
+      "label": "Infeed belt conveyor",
+      "mount": "floor",
+      "pose": {"pos": [-270, 75, 23.5], "rot": [0, 0, 0]},
+      "params": {"speed_mm_s": 150, "length_mm": 380, "width_mm": 60, "height_mm": 100, "motor_at": "end"},
+      "basis": {"speed_mm_s": "guess", "length_mm": "guess", "width_mm": "guess", "height_mm": "guess", "pose": "guess"},
+      "stop": {"at": "pick"},
+      "skin": {"groups": [
+        {"name": "frame", "items": [
+          {"t": "box", "size": [400, 40, 14], "pos": [0, 78, 37], "tone": "metal"},
+          {"t": "box", "size": [400, 40, 14], "pos": [0, 78, -37], "tone": "metal"},
+          {"t": "box", "size": [392, 6, 1.2], "pos": [0, 78, 44.4], "tone": "dark"},
+          {"t": "box", "size": [392, 6, 1.2], "pos": [0, 78, -44.4], "tone": "dark"},
+          {"t": "box", "size": [8, 50, 88], "pos": [-204, 80, 0], "tone": "dark"},
+          {"t": "box", "size": [8, 50, 88], "pos": [204, 80, 0], "tone": "dark"},
+          {"t": "box", "size": [6, 42, 70], "pos": [194, 118, 0], "tone": "metal"}
+        ]},
+        {"name": "belt", "items": [
+          {"t": "box", "size": [376, 4, 60], "pos": [0, 98, 0], "tone": "black"},
+          {"t": "box", "size": [376, 4, 60], "pos": [0, 62, 0], "tone": "black"},
+          {"t": "cyl", "d": 40, "len": 60, "axis": "z", "pos": [-188, 80, 0], "tone": "black"},
+          {"t": "cyl", "d": 40, "len": 60, "axis": "z", "pos": [188, 80, 0], "tone": "black"},
+          {"t": "cyl", "d": 14, "len": 96, "axis": "z", "pos": [-188, 80, 0], "tone": "metal"}
+        ]},
+        {"name": "guides", "items": [
+          {"t": "box", "size": [360, 14, 3], "pos": [-8, 113, 24], "tone": "white"},
+          {"t": "box", "size": [360, 14, 3], "pos": [-8, 113, -24], "tone": "white"},
+          {"t": "box", "size": [8, 22, 16], "pos": [-120, 106, 35], "tone": "metal"},
+          {"t": "box", "size": [8, 22, 16], "pos": [80, 106, 35], "tone": "metal"},
+          {"t": "box", "size": [8, 22, 16], "pos": [-120, 106, -35], "tone": "metal"},
+          {"t": "box", "size": [8, 22, 16], "pos": [80, 106, -35], "tone": "metal"}
+        ]},
+        {"name": "drive", "items": [
+          {"t": "box", "size": [56, 56, 36], "pos": [188, 80, -62], "tone": "black"},
+          {"t": "cyl", "d": 50, "len": 100, "axis": "z", "pos": [188, 80, -130], "tone": "black"},
+          {"t": "cyl", "d": 52, "len": 8, "axis": "z", "pos": [188, 80, -184], "tone": "dark"},
+          {"t": "box", "size": [30, 18, 40], "pos": [188, 114, -125], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 30, "axis": "y", "pos": [188, 138, -125], "tone": "black"}
+        ]},
+        {"name": "legs", "items": [
+          {"t": "box", "size": [30, 58, 12], "pos": [-150, 29, 37], "tone": "metal"},
+          {"t": "box", "size": [30, 58, 12], "pos": [-150, 29, -37], "tone": "metal"},
+          {"t": "box", "size": [30, 58, 12], "pos": [130, 29, 37], "tone": "metal"},
+          {"t": "box", "size": [30, 58, 12], "pos": [130, 29, -37], "tone": "metal"},
+          {"t": "box", "size": [50, 6, 100], "pos": [-150, 3, 0], "tone": "metal"},
+          {"t": "box", "size": [50, 6, 100], "pos": [130, 3, 0], "tone": "metal"}
+        ]}
+      ]}
+    },
+    {
+      "id": "pick_sen",
+      "kind": "photo_sensor",
+      "label": "Part present at the pick place",
+      "on": "conv",
+      "mount": "surface",
+      "pose": {"pos": [170, 0, 0], "rot": [0, 0, 0]},
+      "sense": {"point": "pick", "within_mm": 5},
+      "basis": {"pose": "guess"},
+      "skin": {"groups": [
+        {"name": "body", "items": [
+          {"t": "box", "size": [26, 50, 3], "pos": [0, 88, 45.5], "tone": "metal"},
+          {"t": "box", "size": [26, 3, 22], "pos": [0, 101.5, 56], "tone": "metal"},
+          {"t": "box", "size": [12, 32, 22], "pos": [0, 119, 52], "tone": "dark"},
+          {"t": "box", "size": [9, 9, 1], "pos": [0, 112, 40.5], "tone": "black"},
+          {"t": "cyl", "d": 4, "len": 36, "axis": "z", "pos": [0, 110, 81], "tone": "black"}
+        ]},
+        {"name": "led", "show": "pick_sen.output", "items": [
+          {"t": "box", "size": [4, 1.5, 4], "pos": [0, 135.7, 56], "tone": "mark"}
+        ]}
+      ]}
+    },
+    {
+      "id": "nest",
+      "kind": "solid",
+      "label": "Outfeed nest",
+      "mount": "floor",
+      "pose": {"pos": [100, 75, 23.5], "rot": [0, 0, 0]},
+      "shape": [
+        {"t": "box", "size": [45, 70, 45], "pos": [0, 35, 0]},
+        {"t": "box", "size": [110, 30, 110], "pos": [0, 85, 0]}
+      ],
+      "basis": {"pose": "guess", "shape": "guess"},
+      "skin": {"groups": [
+        {"name": "stand", "items": [
+          {"t": "box", "size": [90, 8, 90], "pos": [0, 4, 0], "tone": "metal"},
+          {"t": "box", "size": [45, 62, 45], "pos": [0, 39, 0], "tone": "metal"},
+          {"t": "box", "size": [8, 58, 1.2], "pos": [0, 39, 22.8], "tone": "dark"},
+          {"t": "box", "size": [1.2, 58, 8], "pos": [22.8, 39, 0], "tone": "dark"},
+          {"t": "box", "size": [110, 15, 110], "pos": [0, 77.5, 0], "tone": "metal"},
+          {"t": "box", "size": [90, 10, 90], "pos": [0, 90, 0], "tone": "white"},
+          {"t": "box", "size": [8, 10, 30], "pos": [25, 100, 0], "tone": "white"},
+          {"t": "box", "size": [8, 10, 30], "pos": [-25, 100, 0], "tone": "white"},
+          {"t": "box", "size": [30, 10, 8], "pos": [0, 100, 25], "tone": "white"},
+          {"t": "box", "size": [30, 10, 8], "pos": [0, 100, -25], "tone": "white"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "y", "pos": [45, 86, 45], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "y", "pos": [-45, 86, 45], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "y", "pos": [45, 86, -45], "tone": "dark"},
+          {"t": "cyl", "d": 8, "len": 2, "axis": "y", "pos": [-45, 86, -45], "tone": "dark"}
+        ]}
+      ]}
+    },
+    {
+      "id": "nest_sen",
+      "kind": "prox_sensor",
+      "label": "Part present in the nest",
+      "on": "nest",
+      "mount": "surface",
+      "pose": {"pos": [0, 0, 0], "rot": [0, 0, 0]},
+      "sense": {"point": "place", "within_mm": 5},
+      "basis": {"pose": "guess"},
+      "skin": {"groups": [
+        {"name": "body", "items": [
+          {"t": "cyl", "d": 12, "len": 38, "axis": "z", "pos": [0, 90,63], "tone": "metal"},
+          {"t": "cyl", "d": 18, "len": 4, "axis": "z", "pos": [0, 90,48], "tone": "metal"},
+          {"t": "cyl", "d": 18, "len": 4, "axis": "z", "pos": [0, 90,70], "tone": "metal"},
+          {"t": "cyl", "d": 12, "len": 4, "axis": "z", "pos": [0, 90,84], "tone": "dark"},
+          {"t": "cyl", "d": 5, "len": 40, "axis": "z", "pos": [0, 90,106], "tone": "black"}
+        ]},
+        {"name": "led", "show": "nest_sen.output", "items": [
+          {"t": "cyl", "d": 12.6, "len": 2, "axis": "z", "pos": [0, 90,83], "tone": "mark"}
+        ]}
+      ]}
+    },
+    {
+      "id": "valves",
+      "kind": "solid",
+      "label": "Valve terminal",
+      "mount": "floor",
+      "pose": {"pos": [260, 75, -185], "rot": [0, 0, 0]},
+      "shape": [
+        {"t": "box", "size": [150, 4, 70], "pos": [0, 2, 0]},
+        {"t": "box", "size": [130, 50, 60], "pos": [0, 27, 0]}
+      ],
+      "basis": {"pose": "guess", "shape": "guess"},
+      "skin": {"groups": [
+        {"name": "manifold", "items": [
+          {"t": "box", "size": [150, 4, 70], "pos": [0, 2, 0], "tone": "metal"},
+          {"t": "box", "size": [90, 22, 60], "pos": [0, 15, 0], "tone": "metal"},
+          {"t": "box", "size": [24, 46, 60], "pos": [-57, 27, 0], "tone": "dark"},
+          {"t": "box", "size": [10, 16, 30], "pos": [-74, 32, 0], "tone": "black"},
+          {"t": "cyl", "d": 10, "len": 50, "axis": "x", "pos": [-104, 32, 0], "tone": "black"},
+          {"t": "box", "size": [10, 30, 60], "pos": [50, 19, 0], "tone": "dark"},
+          {"t": "cyl", "d": 12, "len": 22, "axis": "x", "pos": [66, 15, 0], "tone": "white"},
+          {"t": "box", "size": [16, 26, 44], "pos": [-27, 39, 0], "tone": "black"},
+          {"t": "box", "size": [16, 26, 44], "pos": [-9, 39, 0], "tone": "black"},
+          {"t": "box", "size": [16, 26, 44], "pos": [9, 39, 0], "tone": "black"},
+          {"t": "box", "size": [16, 6, 50], "pos": [27, 29, 0], "tone": "metal"},
+          {"t": "box", "size": [16, 22, 10], "pos": [-27, 41, 27], "tone": "dark"},
+          {"t": "box", "size": [16, 22, 10], "pos": [-27, 41, -27], "tone": "dark"},
+          {"t": "box", "size": [16, 22, 10], "pos": [-9, 41, 27], "tone": "dark"},
+          {"t": "box", "size": [16, 22, 10], "pos": [-9, 41, -27], "tone": "dark"},
+          {"t": "box", "size": [16, 22, 10], "pos": [9, 41, 27], "tone": "dark"},
+          {"t": "cyl", "d": 4, "len": 1, "axis": "y", "pos": [-27, 52.5, 14], "tone": "yellow"},
+          {"t": "cyl", "d": 4, "len": 1, "axis": "y", "pos": [-9, 52.5, 14], "tone": "yellow"},
+          {"t": "cyl", "d": 4, "len": 1, "axis": "y", "pos": [9, 52.5, 14], "tone": "yellow"},
+          {"t": "cyl", "d": 8, "len": 10, "axis": "z", "pos": [-31, 15, 35], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 10, "axis": "z", "pos": [-23, 15, 35], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 10, "axis": "z", "pos": [-13, 15, 35], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 10, "axis": "z", "pos": [-5, 15, 35], "tone": "metal"},
+          {"t": "cyl", "d": 8, "len": 10, "axis": "z", "pos": [9, 15, 35], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 30, "axis": "z", "pos": [-31, 15, 55], "tone": "blue"},
+          {"t": "cyl", "d": 6, "len": 30, "axis": "z", "pos": [-23, 15, 55], "tone": "blue"},
+          {"t": "cyl", "d": 6, "len": 30, "axis": "z", "pos": [-13, 15, 55], "tone": "blue"},
+          {"t": "cyl", "d": 6, "len": 30, "axis": "z", "pos": [-5, 15, 55], "tone": "blue"},
+          {"t": "cyl", "d": 6, "len": 30, "axis": "z", "pos": [9, 15, 55], "tone": "blue"},
+          {"t": "cyl", "d": 16, "len": 190, "axis": "x", "pos": [97, 15, 70], "tone": "blue"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "x", "pos": [60, 15, 70], "tone": "black"},
+          {"t": "cyl", "d": 19, "len": 4, "axis": "x", "pos": [140, 15, 70], "tone": "black"}
+        ]},
+        {"name": "led_x_fwd", "show": "x_cyl.coil_fwd", "items": [{"t": "box", "size": [5, 1, 4], "pos": [-27, 52.5, 27], "tone": "mark"}]},
+        {"name": "led_x_back", "show": "x_cyl.coil_back", "items": [{"t": "box", "size": [5, 1, 4], "pos": [-27, 52.5, -27], "tone": "mark"}]},
+        {"name": "led_z_fwd", "show": "z_cyl.coil_fwd", "items": [{"t": "box", "size": [5, 1, 4], "pos": [-9, 52.5, 27], "tone": "mark"}]},
+        {"name": "led_z_back", "show": "z_cyl.coil_back", "items": [{"t": "box", "size": [5, 1, 4], "pos": [-9, 52.5, -27], "tone": "mark"}]},
+        {"name": "led_vac", "show": "pad.coil", "items": [{"t": "box", "size": [5, 1, 4], "pos": [9, 52.5, 27], "tone": "mark"}]}
+      ]}
+    },
+    {
+      "id": "tower",
+      "kind": "tower_light",
+      "label": "Tower light",
+      "on": "frame",
+      "mount": "surface",
+      "pose": {"pos": [-400, 515, -100], "rot": [0, 0, 0]},
+      "basis": {"pose": "guess"},
+      "skin": {"groups": [
+        {"name": "body", "items": [
+          {"t": "cyl", "d": 50, "len": 8, "axis": "y", "pos": [0, 4, 0], "tone": "dark"},
+          {"t": "cyl", "d": 22, "len": 60, "axis": "y", "pos": [0, 38, 0], "tone": "metal"},
+          {"t": "cyl", "d": 42, "len": 14, "axis": "y", "pos": [0, 75, 0], "tone": "dark"},
+          {"t": "cyl", "d": 40, "len": 33, "axis": "y", "pos": [0, 99, 0], "tone": "clear"},
+          {"t": "cyl", "d": 40, "len": 33, "axis": "y", "pos": [0, 133, 0], "tone": "clear"},
+          {"t": "cyl", "d": 40, "len": 33, "axis": "y", "pos": [0, 167, 0], "tone": "clear"},
+          {"t": "cyl", "d": 42, "len": 2, "axis": "y", "pos": [0, 116, 0], "tone": "dark"},
+          {"t": "cyl", "d": 42, "len": 2, "axis": "y", "pos": [0, 150, 0], "tone": "dark"},
+          {"t": "cyl", "d": 42, "len": 12, "axis": "y", "pos": [0, 190, 0], "tone": "dark"}
+        ]},
+        {"name": "green", "show": "tower.coil_green", "items": [{"t": "cyl", "d": 39, "len": 31, "axis": "y", "pos": [0, 99, 0], "tone": "green"}]},
+        {"name": "yellow", "show": "tower.coil_yellow", "items": [{"t": "cyl", "d": 39, "len": 31, "axis": "y", "pos": [0, 133, 0], "tone": "yellow"}]},
+        {"name": "red", "show": "tower.coil_red", "items": [{"t": "cyl", "d": 39, "len": 31, "axis": "y", "pos": [0, 167, 0], "tone": "red"}]}
+      ]}
+    },
+    {
+      "id": "panel",
+      "kind": "solid",
+      "label": "Operator box",
+      "mount": "floor",
+      "pose": {"pos": [370, 75, 200], "rot": [0, 0, 0]},
+      "shape": [{"t": "box", "size": [180, 100, 60], "pos": [0, 50, 0]}],
+      "basis": {"pose": "guess", "shape": "guess"},
+      "skin": {"groups": [
+        {"name": "box", "items": [
+          {"t": "box", "size": [180, 100, 60], "pos": [0, 50, 0], "tone": "white"},
+          {"t": "box", "size": [184, 4, 64], "pos": [0, 102, 0], "tone": "white"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [-82, 92, 30.5], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [82, 92, 30.5], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [-82, 8, 30.5], "tone": "metal"},
+          {"t": "cyl", "d": 6, "len": 1, "axis": "z", "pos": [82, 8, 30.5], "tone": "metal"},
+          {"t": "box", "size": [40, 12, 1], "pos": [-45, 82, 30.5], "tone": "black"},
+          {"t": "cyl", "d": 18, "len": 10, "axis": "x", "pos": [95, 40, 0], "tone": "black"},
+          {"t": "cyl", "d": 12, "len": 60, "axis": "x", "pos": [130, 40, 0], "tone": "black"}
+        ]}
+      ]}
+    },
+    {
+      "id": "start",
+      "kind": "button",
+      "label": "Start button",
+      "on": "panel",
+      "mount": "surface",
+      "pose": {"pos": [-45, 50, 30], "rot": [0, 0, 0]},
+      "params": {"color": "green", "action": "momentary", "contact": "no"},
+      "basis": {"pose": "guess"},
+      "skin": {"groups": [
+        {"name": "button", "items": [
+          {"t": "cyl", "d": 30, "len": 4, "axis": "z", "pos": [0, 0, 2], "tone": "metal"},
+          {"t": "cyl", "d": 22, "len": 6, "axis": "z", "pos": [0, 0, 5], "tone": "green"}
+        ]}
+      ]}
+    },
+    {
+      "id": "estop",
+      "kind": "estop",
+      "label": "Emergency stop",
+      "on": "panel",
+      "mount": "surface",
+      "pose": {"pos": [35, 50, 30], "rot": [0, 0, 0]},
+      "params": {"contact": "nc"},
+      "basis": {"pose": "guess"},
+      "skin": {"groups": [
+        {"name": "button", "items": [
+          {"t": "cyl", "d": 64, "len": 2, "axis": "z", "pos": [0, 0, 1], "tone": "yellow"},
+          {"t": "cyl", "d": 26, "len": 8, "axis": "z", "pos": [0, 0, 6], "tone": "black"},
+          {"t": "cyl", "d": 40, "len": 10, "axis": "z", "pos": [0, 0, 15], "tone": "red"}
+        ]}
       ]}
     }
-  ]
+  ],
+  "points": [
+    {"name": "q3", "on": "conv.surface", "pos": [20, 0, 0], "catch_mm": 5, "basis": "guess"},
+    {"name": "q2", "on": "conv.surface", "pos": [70, 0, 0], "catch_mm": 5, "basis": "guess"},
+    {"name": "q1", "on": "conv.surface", "pos": [120, 0, 0], "catch_mm": 5, "basis": "guess"},
+    {"name": "pick", "on": "conv.surface", "pos": [170, 0, 0], "catch_mm": 5, "basis": "guess"},
+    {"name": "place", "on": "nest", "pos": [0, 95, 0], "catch_mm": 5, "basis": "guess"}
+  ],
+  "workpieces": {
+    "types": {
+      "housing": {"shape": "square", "side_mm": 40, "h_mm": 25, "material": "plastic", "tone": "orange", "basis": "guess"}
+    },
+    "start": [
+      {"type": "housing", "at": "q1"},
+      {"type": "housing", "at": "q2"},
+      {"type": "housing", "at": "q3"}
+    ]
+  }
 }

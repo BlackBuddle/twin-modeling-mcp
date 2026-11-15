@@ -104,64 +104,86 @@ A simulation is a kinematic model with constant speeds. There is no physics. A p
 All of this is the real output of `twin-modeling-mcp` 0.1.0. The files are in
 [`examples/pick-and-place/`](examples/pick-and-place/).
 
+The machines are design examples. Every size, time and speed in them is a guess for the example (each sheet tags
+it `guess` or `user` in part 7), not a catalogue value, and no model is claimed to match a real machine.
+
 **1. What the person types:**
 
-> A pick-and-place unit: a horizontal air cylinder with 200 mm stroke carries a vertical air cylinder with 100 mm
-> stroke. A suction cup sits at the end of the vertical rod. Both cylinders have two air tubes and a switch at each
-> end. Make a twin model.
+> It is a pneumatic pick-and-place station on an aluminium base plate. Two 45 mm profile posts carry a 45 x 90 cross
+> beam. On the front of the beam a guided rodless cylinder moves the head 200 mm in X; on its carriage a guided
+> cylinder with a 100 mm stroke lowers a vacuum pad. A small inline ejector and a vacuum switch sit on the carriage
+> bracket. Parts (orange plastic housings, about 40 x 40 x 25) come in on a short belt conveyor and stop against an
+> end stop, where a diffuse photo sensor sees them. The head picks a part and puts it into a nest on the right, which
+> has an inductive sensor. All cylinders have two air tubes and a reed switch at each end; the valves sit on a
+> terminal at the back of the plate. There is a tower light on the beam and a box with a start button and an
+> emergency stop at the front. Make a twin model of one cycle.
 
 **2. The principle sheet** (excerpt of [`sheet.md`](examples/pick-and-place/sheet.md)):
 
 ```
-3. Motion path:
-   - Valve coils x_cyl.coil_fwd / coil_back -> x_cyl rod (kind cylinder_double, 5/2 double valve) -> carries z_cyl (on: x_cyl.out).
-   - Valve coils z_cyl.coil_fwd / coil_back -> z_cyl rod, pointing down (pose.rot z -90) -> carries pad (on: z_cyl.out).
-   - Vacuum valve pad.coil -> suction at the cup (kind vacuum_pad).
-7. Numbers: stroke of x_cyl 200 mm (user), stroke of z_cyl 100 mm (user), bores and times (guess).
+## 3. Motion path
+- Valve coils x_cyl.coil_fwd / coil_back (5/2 double) -> rodless piston -> carriage (kind cylinder_double,
+  frame out moves +x) -> carries the Z bracket, z_cyl, vac_sw and the ejector (on: x_cyl.out).
+- Valve coils z_cyl.coil_fwd / coil_back (5/2 double) -> piston rod and guide rods -> Z plate
+  (kind cylinder_double, pose.rot z -90, so fwd is down) -> carries pad (on: z_cyl.out).
+- Vacuum valve pad.coil -> ejector -> suction at the pad (kind vacuum_pad).
+- Motor contactor conv.run_fwd -> gear motor -> belt (kind conveyor). The end stop holds the first part.
+## 7. Numbers
+| X stroke | 200 | mm | user | words |
+| Z stroke | 100 | mm | user | words |
+| X bore   | 25  | mm | guess |      |
 ```
 
-**3. The twin model** (excerpt of [`model.json`](examples/pick-and-place/model.json); the full file also has the stand,
-the suction cup and the skins):
+**3. The twin model** (one of 14 devices in [`model.json`](examples/pick-and-place/model.json), skin left out; the full
+file has the frame, the conveyor, the nest, the valve terminal, the tower light, the operator box and 264 skin items):
 
 ```json
-{"id": "z_cyl", "kind": "cylinder_double", "on": "x_cyl.out", "mount": "surface",
- "pose": {"pos": [40, 0, 0], "rot": [0, 0, -90]},
- "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double"},
- "timing": {"lag_ms": 30, "fwd_ms": 300, "back_ms": 280},
- "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"}}
+{"id": "z_cyl", "kind": "cylinder_double", "label": "Z axis: guided cylinder",
+ "on": "x_cyl.out", "mount": "flange_rear",
+ "pose": {"pos": [-300, 7, 76], "rot": [0, 0, -90]},
+ "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double", "body_len_mm": 120, "rod_out_mm": 10},
+ "timing": {"lag_ms": 30, "fwd_ms": 350, "back_ms": 300},
+ "basis": {"bore_mm": "guess", "stroke_mm": "user", "body_len_mm": "guess", "rod_out_mm": "guess", "pose": "guess"}}
 ```
 
 `model_draft` saved it with no warning. Its `facts` say that `z_cyl` points `down` and that its rod tip goes from
-y 241.5 to 141.5 mm.
+y 347 to 247 mm. Its `ask` list asks for the bores of both cylinders, the belt size and "one reference dimension measured
+on the real rig".
 
-**4. One simulated cycle:** `model_sim` with the events of [`sim.json`](examples/pick-and-place/sim.json) (down, vacuum
-on, up, over, down, vacuum off, up, back). Key lines of `changes`:
+**4. One simulated cycle:** `model_sim` with the events of [`sim.json`](examples/pick-and-place/sim.json) (conveyor on,
+down with vacuum, up, over, down, vacuum off, up, back). Key lines of `changes` and `part_log`:
 
-| t (ms) | Pin | Value | Meaning |
+| t (ms) | Pin or event | Value | Meaning |
 |---|---|---|---|
-| 330 | `z_cyl.sensor_fwd` | 1 | cup is down |
-| 500 | `pad.coil` | 1 | vacuum on |
-| 1010 | `z_cyl.sensor_back` | 1 | cup is up |
-| 1630 | `x_cyl.sensor_fwd` | 1 | over the place point |
-| 2030 | `z_cyl.sensor_fwd` | 1 | down again |
-| 3180 | `x_cyl.sensor_back` | 1 | back at the start |
+| 300 | `pick_sen.output` | 1 | a part is at the end stop |
+| 960 | pick | part 1 | the pad takes the part |
+| 970 | `vac_sw.output` | 1 | vacuum reached |
+| 980 | `z_cyl.sensor_fwd` | 1 | pad is down |
+| 1380 | `z_cyl.sensor_back` | 1 | pad is up |
+| 2090 | `x_cyl.sensor_fwd` | 1 | over the nest |
+| 2520 | `nest_sen.output` | 1 | the part is in the nest |
+| 2600 | release | part 1 at `place` | vacuum off |
+| 3740 | `x_cyl.sensor_back` | 1 | back over the conveyor |
 
-**5. The page** draws the model and plays the run (paused at 1.95 s):
+The run ends at 4200 ms with no alarm.
+
+**5. The page** draws the model and plays the run (paused at 1.95 s, the part on the way to the nest):
 
 ![The pick-and-place model on the 3D page](examples/pick-and-place/picture.png)
 
 ### Gallery
 
 Each folder holds `sheet.md`, `model.json`, `sim.json` and the picture. Every model was drafted, confirmed and
-simulated with this server; the numbers are guesses (see part 7 of each sheet).
+simulated with this server (`model_draft` with no warning, `model_sim` with no alarm). All sizes and times are design
+guesses (see part 7 of each sheet).
 
 | Model | What it shows | Picture |
 |---|---|---|
-| [`pick-and-place`](examples/pick-and-place/) | Two double-acting cylinders, one carried by the other, and a suction cup. | <img src="examples/pick-and-place/picture.png" width="240" alt="pick and place"> |
-| [`ball-screw-axis`](examples/ball-screw-axis/) | Preset `servo_screw`: the carriage follows a target word; the motor turns 22.5° for each mm. Target 200 mm reached at 2100 ms. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="ball-screw axis"> |
-| [`index-table`](examples/index-table/) | Preset `index_table`, 8 stations: one pulse turns one station in 600 ms. | <img src="examples/index-table/picture.png" width="240" alt="index table"> |
-| [`robot-arm`](examples/robot-arm/) | Preset `robot_6r` with three taught poses chosen by a program number; `done` at 1300, 3100 and 4900 ms. | <img src="examples/robot-arm/picture.png" width="240" alt="robot arm"> |
-| [`cam-lifter`](examples/cam-lifter/) | Primitives only: a turning shaft, a cam table and a lift (Example 2 of the skill). `up_sw` on from 1580 to 2230 ms. | <img src="examples/cam-lifter/picture.png" width="240" alt="cam lifter"> |
+| [`pick-and-place`](examples/pick-and-place/) | Gantry station: rodless X cylinder, guided Z cylinder, vacuum pad, infeed conveyor with a photo sensor, nest with a prox sensor, valve terminal. 14 devices. Pick at 960 ms, place at 2600 ms. | <img src="examples/pick-and-place/picture.png" width="240" alt="pick and place station"> |
+| [`ball-screw-axis`](examples/ball-screw-axis/) | Servo axis on two rails: motor, coupling, 10 mm lead screw, carriage, cable chain, home and limit switches. 5 devices. Targets 300, 150 and 0 mm; `busy` ends at 1500, 2600 and 3600 ms. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="ball-screw axis"> |
+| [`index-table`](examples/index-table/) | Eight-station dial on a cam indexer with a geared motor, eight nests with parts, press cylinder on a column, part sensor. 8 devices. `in_pos` on at 640, 2340 and 4040 ms; press down at 1050, 2750 and 4450 ms. | <img src="examples/index-table/picture.png" width="240" alt="index table"> |
+| [`robot-arm`](examples/robot-arm/) | Robot cell: six-axis arm (preset `robot_6r`) on a pedestal, vacuum tool, fixture table, outfeed belt, fence, tower light. 11 devices. Pick at 2900 ms, place on the belt at 4950 ms, home at 6400 ms. | <img src="examples/robot-arm/picture.png" width="240" alt="robot cell"> |
+| [`cam-lifter`](examples/cam-lifter/) | Pear cam with a roller follower (a 27-point lift table), guided lift plate, geared motor, up, down and home switches. 4 devices. `up_sw` on from 1540 to 1670 ms; one turn ends at 3090 ms. | <img src="examples/cam-lifter/picture.png" width="240" alt="cam lifter"> |
 
 ## The tools
 

@@ -2,9 +2,11 @@
   "name": "ball-screw-axis",
   "events": [
     {"t_ms": 0, "pin": "screw.servo_on", "value": 1},
-    {"t_ms": 100, "pin": "screw.target", "value": 2000},
-    {"t_ms": 2500, "pin": "screw.target", "value": 0}
+    {"t_ms": 300, "pin": "screw.target", "value": 3000},
+    {"t_ms": 2000, "pin": "screw.target", "value": 1500},
+    {"t_ms": 3000, "pin": "screw.target", "value": 0},
+    {"t_ms": 4400, "pin": "screw.servo_on", "value": 0}
   ],
-  "watch": ["screw.home_sw", "screw.busy"],
-  "total_ms": 5000
+  "watch": ["screw.busy", "screw.home_sw", "screw.ot_minus", "screw.ot_plus"],
+  "total_ms": 4600
 }

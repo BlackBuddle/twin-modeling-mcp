@@ -1,6 +1,9 @@
 {
   "name": "cam-lifter",
-  "events": [{"t_ms": 100, "pin": "cam.run", "value": 1}],
+  "events": [
+    {"t_ms": 100, "pin": "cam.run", "value": 1},
+    {"t_ms": 3090, "pin": "cam.run", "value": 0}
+  ],
   "watch": ["cam.cam_home", "cam.up_sw", "cam.down_sw"],
-  "total_ms": 4000
+  "total_ms": 3600
 }
