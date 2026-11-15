@@ -53,7 +53,17 @@ The data in `docs/replay/*.json` comes from this program's own page simulation o
 
 The pictures in `examples/` and `docs/assets/` are screenshots of this program's own 3D page, made for this
 repository. The animations in `docs/assets/*.gif` are frames of the same page, joined by a small script written for
-this repository. No third-party image is used.
+this repository. The only third-party image is the photo below.
+
+### Photo of the example `xyz-dispenser`
+
+| File | Source | Author | Licence | Changes |
+|---|---|---|---|---|
+| `examples/xyz-dispenser/photo.png` (also shown on the intro page) | Wikimedia Commons, [File:A Cartesian Coordinate Robot for Dispensing Fruit Fly Food - Figure 3 - System overview.png](https://commons.wikimedia.org/wiki/File:A_Cartesian_Coordinate_Robot_for_Dispensing_Fruit_Fly_Food_-_Figure_3_-_System_overview.png), from Wayland, M.T. and Landgraf, M., 2018. A Cartesian Coordinate Robot for Dispensing Fruit Fly Food. Journal of Open Hardware, 2(1), p.3. DOI [10.5334/joh.9](https://doi.org/10.5334/joh.9) | Matthew T. Wayland; Matthias Landgraf | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) | Cropped to the robot (the kettle on the left is cut off). The inset pictures (user interface, two circuit boards), their names and the arrows to them are painted out in white. |
+
+The original file is 640 x 450, 85,259 bytes, SHA-256 `434ac98511998f8283508d39b225ae4a4338454a243e8eac1493e0d5e189b7e0`.
+The model of the example is made from this photo and the Commons description only; it is not part of the photo's
+licence and the authors do not endorse it.
 
 ## Design values (no code): Anatomy
 

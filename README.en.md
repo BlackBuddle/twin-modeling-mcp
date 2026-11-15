@@ -92,6 +92,16 @@ Pear cam with a roller follower (27-point lift table), guided lift plate, geared
 Sim: up switch 1540 to 1670 ms, home again at 3090 ms.  
 Folder: [`examples/cam-lifter`](examples/cam-lifter/)
 
+### XYZ vial dispenser (a model made from a photo)
+
+![One simulated cycle of the XYZ vial dispenser](docs/assets/xyz-dispenser.gif)
+
+A three-axis cartesian robot made from one public photo: a gantry along the long rails (y), a carriage on the beam (x),
+a z column with the nozzle, a peristaltic pump and two boxes of vials. 11 devices.  
+Simulation: x arrives at 640 ms, y at 1810 ms; the pump runs 2650-3150 ms and 4900-5400 ms to fill two vials.  
+Folder: [`examples/xyz-dispenser`](examples/xyz-dispenser/) · Every size is scaled from the photo (`ref`) or a guess
+(`guess`). How it was made is in [From a photo](#from-a-photo).
+
 ### Machine kinds in the catalog
 
 The 27 kinds and 4 presets that `model_catalog` returns, in groups. A preset expands to joints, couplings, drivers
@@ -268,6 +278,58 @@ A photo of the machine works in place of the words, with the same steps.
 The photo stays a file of the person; the model file does not hold it. Most sizes of a model from a photo are
 `guess`. With one measured length, the skill scales the other sizes in the photo from it and tags them `ref`.
 
+#### Example: from one public photo to a model
+
+<table>
+<tr>
+<td width="50%"><img src="examples/xyz-dispenser/photo.png" alt="A three-axis cartesian robot on an aluminium profile frame, a peristaltic pump and two boxes of vials"></td>
+<td width="50%"><img src="examples/xyz-dispenser/render.png" alt="The twin model of the same machine, drawn by model_render"></td>
+</tr>
+<tr>
+<td>The photo that the person gives (cropped)</td>
+<td>The model drawn by <code>model_render</code> (<code>view: "iso"</code>, cropped to the model)</td>
+</tr>
+</table>
+
+Photo: Matthew T. Wayland and Matthias Landgraf, Figure 3 of "A Cartesian Coordinate Robot for Dispensing Fruit Fly
+Food" (Journal of Open Hardware 2(1), 2018, DOI [10.5334/joh.9](https://doi.org/10.5334/joh.9)),
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), via
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:A_Cartesian_Coordinate_Robot_for_Dispensing_Fruit_Fly_Food_-_Figure_3_-_System_overview.png).
+Cropped to the robot; the inset pictures of the original (a screen, two circuit boards) and their arrows are removed. The
+model uses only this photo and the Commons description, not the sizes in the paper.
+
+**What the skill read from the photo** (parts 1 to 4 of [`sheet.md`](examples/xyz-dispenser/sheet.md)):
+
+- The machine: a cartesian robot that fills vials with fly food. Certainty `likely`.
+- The reference part: the stepper motor on top of the z column, taken as a NEMA 17 (42.3 mm face). That gives about
+  2.1 mm per pixel at that depth, and parts at the same depth (the 20 mm profiles, the 80 mm end rail with 4 slots, the
+  24 mm vials) are scaled from it. The long base is seen at a strong angle and cannot be scaled: `guess`.
+- Three axes: a gantry on the long rails (y), a carriage on the beam (x), and a column that moves up and down with its
+  motor and the nozzle (z). The catalog has no stepper kind, so each axis is a `servo_axis` that follows a position word.
+- 13 pins: `enable`, `target`, `busy` and `home_sw` for each axis, and `pump.run`. The description names limit switch
+  lines, so each axis has a home switch (its place is a `guess`).
+
+**The `model_draft` reply** (0 warnings; excerpt of `facts` and `ask`):
+
+```json
+"facts": {
+  "basis_counts": {"guess": 34, "ref": 2},
+  "devices": [{"id": "z_axis", "on": "x_axis.carriage", "axis_word": "down",
+               "axis": {"range": [0, 150], "tip_at_0": [-290, 260, 150], "tip_at_max": [-290, 110, 150]}}]
+},
+"ask": [
+  {"device": "y_axis", "what": "dims", "names": ["stroke_mm"]},
+  {"device": "z_axis", "what": "mech", "names": ["lead_mm", "speed"]},
+  {"what": "one reference dimension measured on the real rig"}
+]
+```
+
+`ask` has 7 items: the strokes of the three axes, the pulley diameter and speed of y and x, the lead and speed of z, and
+one reference size measured on the machine. **`model_sim`** moves the nozzle over a vial, lowers it, runs the pump,
+stops it and raises the nozzle, two times (`"ran": "scene"`, no alarm), and ends at 6.4 s. The 7 questions at the end of
+the sheet are what a person must measure or check on the machine: the travel and the switch places of each axis, the
+belts and the lead, whether the gantry has a second upright at the back, and more.
+
 ## How it is built
 
 - **One executable, one process.** The AI client starts it; it ends when its standard input ends.
@@ -299,7 +361,7 @@ skills/twin-modeling  ->  AI client
 | `twin-modeling-mcp` | The server: 5 tools plus the local 3D page (English and Korean). |
 | `crates/twin-engine` | The model format, its checks, the machine engine (joints, couplings, drivers), workpieces and the plant. No OS call. |
 | `crates/twin-page` | The page files, the model store and the page routes. |
-| `examples/` | Five models made with the skill and this server, each with its principle sheet, simulation input and picture (see "Example" above). |
+| `examples/` | Six models made with the skill and this server (one of them from a public photo), each with its principle sheet, simulation input and picture (see "Example" above). |
 | `docs/` | A static intro page in English and Korean (`docs/index.html`, for GitHub Pages). |
 
 ## Install

@@ -1,0 +1,21 @@
+{
+  "name": "xyz-dispenser",
+  "events": [
+    {"t_ms": 0, "pin": "y_axis.enable", "value": 1},
+    {"t_ms": 0, "pin": "x_axis.enable", "value": 1},
+    {"t_ms": 0, "pin": "z_axis.enable", "value": 1},
+    {"t_ms": 100, "pin": "y_axis.target", "value": 4260},
+    {"t_ms": 100, "pin": "x_axis.target", "value": 1080},
+    {"t_ms": 1900, "pin": "z_axis.target", "value": 1000},
+    {"t_ms": 2650, "pin": "pump.run", "value": 1},
+    {"t_ms": 3150, "pin": "pump.run", "value": 0},
+    {"t_ms": 3200, "pin": "z_axis.target", "value": 0},
+    {"t_ms": 3950, "pin": "y_axis.target", "value": 4540},
+    {"t_ms": 4150, "pin": "z_axis.target", "value": 1000},
+    {"t_ms": 4900, "pin": "pump.run", "value": 1},
+    {"t_ms": 5400, "pin": "pump.run", "value": 0},
+    {"t_ms": 5450, "pin": "z_axis.target", "value": 0}
+  ],
+  "watch": ["y_axis.busy", "x_axis.busy", "z_axis.busy", "y_axis.home_sw", "x_axis.home_sw", "z_axis.home_sw"],
+  "total_ms": 6400
+}

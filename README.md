@@ -92,6 +92,16 @@
 시뮬레이션: 상승 스위치 1540~1670 ms, 3090 ms에 다시 원점.  
 폴더: [`examples/cam-lifter`](examples/cam-lifter/)
 
+### XYZ 바이알 분주기 (사진으로 만든 모델)
+
+![XYZ 바이알 분주기의 시뮬레이션 한 사이클](docs/assets/xyz-dispenser.gif)
+
+공개 사진 한 장으로 만든 3축 직교 로봇입니다. 긴 레일을 따라 가는 갠트리(y), 빔 위의 캐리지(x), 노즐을 단 Z 기둥,
+연동 펌프, 바이알 상자 두 개로 이뤄집니다. 장치 11개.  
+시뮬레이션: x 도착 640 ms, y 도착 1810 ms, 펌프 2650~3150 ms와 4900~5400 ms로 바이알 두 개를 채움.  
+폴더: [`examples/xyz-dispenser`](examples/xyz-dispenser/) · 치수는 사진에서 비례로 잡은 값(`ref`)과 추정값(`guess`)뿐입니다.
+만든 과정은 [사진으로 만들기](#사진으로-만들기)에 있습니다.
+
 ### 카탈로그의 기계 종류
 
 `model_catalog`가 돌려주는 종류 27개와 프리셋 4개를 묶어 보였습니다. 프리셋은 관절, 연동, 구동기, 센서로
@@ -272,6 +282,57 @@
 사진은 사람의 파일로 남고 모델 파일에는 들어가지 않습니다. 사진으로 만든 모델은 치수가 대부분 `guess`입니다. 잰 길이를
 하나 주면 스킬이 사진 속 다른 치수를 그 길이에 비례해 다시 잡고 `ref`로 표시합니다.
 
+#### 예시: 공개 사진 한 장에서 모델까지
+
+<table>
+<tr>
+<td width="50%"><img src="examples/xyz-dispenser/photo.png" alt="알루미늄 프로파일 틀 위의 3축 직교 로봇, 연동 펌프, 바이알 상자 두 개"></td>
+<td width="50%"><img src="examples/xyz-dispenser/render.png" alt="같은 기계를 model_render로 그린 트윈 모델"></td>
+</tr>
+<tr>
+<td>사람이 준 사진(잘라 냄)</td>
+<td><code>model_render</code>가 그린 모델(<code>view: "iso"</code>, 모델 부분만 잘라 냄)</td>
+</tr>
+</table>
+
+사진: Matthew T. Wayland, Matthias Landgraf, "A Cartesian Coordinate Robot for Dispensing Fruit Fly Food"의
+Figure 3(Journal of Open Hardware 2(1), 2018, DOI [10.5334/joh.9](https://doi.org/10.5334/joh.9)),
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/),
+[위키미디어 공용](https://commons.wikimedia.org/wiki/File:A_Cartesian_Coordinate_Robot_for_Dispensing_Fruit_Fly_Food_-_Figure_3_-_System_overview.png).
+로봇만 남기고 잘라 냈습니다(cropped). 원문의 삽입 그림(화면, 기판 두 장)과 그 화살표는 지웠습니다. 모델의 근거는 이 사진과
+공용의 설명 글뿐이고 논문 본문의 치수는 쓰지 않았습니다.
+
+**스킬이 사진에서 읽은 것** ([`sheet.md`](examples/xyz-dispenser/sheet.md) 1~4번):
+
+- 기계: 바이알에 초파리 먹이를 채우는 직교 로봇입니다. 확실한 정도는 `likely`입니다.
+- 기준 부품: Z 기둥 위 스테핑 모터를 NEMA 17(면 42.3 mm)로 가정했습니다. 그 깊이에서 약 2.1 mm/px이고 같은 깊이의
+  부품(20 mm 프로파일, 4슬롯 끝 레일 80 mm, 지름 24 mm 바이알)은 이 비율로 잡았습니다. 긴 베이스는 비스듬히 보여서
+  비례로 잴 수 없어 `guess`입니다.
+- 축 셋: 긴 레일 위의 갠트리(y), 빔 위의 캐리지(x), 모터와 노즐이 함께 오르내리는 기둥(z)이고 카탈로그에 스테핑 모터
+  종류가 없어 위치 명령을 따르는 `servo_axis`로 적었습니다.
+- 핀 13개: 축마다 `enable`, `target`, `busy`, `home_sw`와 `pump.run`입니다. 설명 글이 리밋 스위치 선을 말하므로 축마다
+  원점 스위치를 두었습니다(위치는 `guess`).
+
+**`model_draft`의 답** (경고 0개, `facts`와 `ask` 발췌):
+
+```json
+"facts": {
+  "basis_counts": {"guess": 34, "ref": 2},
+  "devices": [{"id": "z_axis", "on": "x_axis.carriage", "axis_word": "down",
+               "axis": {"range": [0, 150], "tip_at_0": [-290, 260, 150], "tip_at_max": [-290, 110, 150]}}]
+},
+"ask": [
+  {"device": "y_axis", "what": "dims", "names": ["stroke_mm"]},
+  {"device": "z_axis", "what": "mech", "names": ["lead_mm", "speed"]},
+  {"what": "one reference dimension measured on the real rig"}
+]
+```
+
+`ask`는 7개입니다. 세 축의 행정, y와 x의 풀리 지름과 속도, z의 리드와 속도, 실물에서 잰 기준 치수 하나입니다.
+**`model_sim`**은 노즐을 바이알 위로 옮기고 내리고 펌프를 켰다 끄고 올리는 일을 두 번 하며(`"ran": "scene"`, 알람 없음)
+6.4 s에 끝납니다. 시트 끝의 질문 7개는 축마다 행정과 스위치 위치, 벨트와 리드, 갠트리 뒤쪽 기둥이 있는지 등
+사람이 실물에서 재거나 확인할 것을 묻습니다.
+
 ## 만들어진 방식
 
 - **실행 파일 하나, 프로세스 하나.** AI 클라이언트가 시작하고, 표준 입력이 끝나면 함께 끝납니다.
@@ -304,7 +365,7 @@ skills/twin-modeling  ->  AI client
 | `twin-modeling-mcp` | 서버입니다. 도구 5개와 로컬 3D 화면(영어·한국어)을 제공합니다. |
 | `crates/twin-engine` | 모델 형식과 검사, 기계 엔진(관절, 연동, 구동기), 공작물, 플랜트가 있습니다. OS 호출은 없습니다. |
 | `crates/twin-page` | 화면 파일, 모델 저장소, 화면 경로가 있습니다. |
-| `examples/` | 스킬과 이 서버로 만든 모델 5개입니다. 모델마다 원리 시트, 시뮬레이션 입력, 그림이 있습니다(위 "예시" 참고). |
+| `examples/` | 스킬과 이 서버로 만든 모델 6개입니다(그중 하나는 공개 사진으로 만들었습니다). 모델마다 원리 시트, 시뮬레이션 입력, 그림이 있습니다(위 "예시" 참고). |
 | `docs/` | 영어·한국어 정적 소개 페이지(`docs/index.html`, GitHub Pages용)입니다. |
 
 ## 설치
