@@ -299,8 +299,8 @@ pre code { font-size: inherit; }
   <div class="intro">
     <div class="wrap">
       <h1>twin-modeling-mcp</h1>
-      <p class="lead" data-l="en">Turn words or photos of a machine into a twin model you can check, simulate and draw.</p>
-      <p class="lead" data-l="ko" lang="ko">기계를 말이나 사진으로 설명하면, 확인하고 시뮬레이션하고 그려 볼 수 있는 트윈 모델로 만듭니다.</p>
+      <p class="lead" data-l="en">An MCP server that turns a description or a photo of a machine into a twin model, then checks it, simulates its motion and draws it in 3D.</p>
+      <p class="lead" data-l="ko" lang="ko">기계의 설명이나 사진을 근거로 트윈 모델을 작성하고 모델 검사, 동작 시뮬레이션, 3D 표시를 수행하는 MCP 서버입니다.</p>
       <div class="acts">
         <a class="btn primary" href="https://github.com/BlackBuddle/twin-modeling-mcp/releases/latest">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
@@ -318,43 +318,43 @@ pre code { font-size: inherit; }
 
 <section id="make" aria-labelledby="h-make">
   <div class="wrap">
-    <h2 id="h-make"><span data-l="en">What you can make</span><span data-l="ko" lang="ko">만들 수 있는 것</span></h2>
-    <p class="sub" data-l="en">Six models in <code>examples/</code>, each with its sheet, model, simulation input and picture; the last one is made from a public photo. They are design examples: every size, time and speed is a guess for the example (or scaled from the photo), not a catalogue value, and no model is claimed to match a real machine.</p>
-    <p class="sub" data-l="ko" lang="ko"><code>examples/</code>의 모델 여섯 개이고 마지막 것은 공개 사진으로 만들었습니다. 모델마다 원리 시트, 모델, 시뮬레이션 입력, 그림이 있습니다. 모두 설계 예시라서 치수와 시간, 속도는 예시를 위해 정한 추정값(또는 사진에서 비례로 잡은 값)이며 카탈로그 값이 아니고 어느 모델도 실제 설비와 같다고 주장하지 않습니다.</p>
+    <h2 id="h-make"><span data-l="en">Example models</span><span data-l="ko" lang="ko">작성 예</span></h2>
+    <p class="sub" data-l="en">Six models in <code>examples/</code>. Each has a principle sheet (<code>sheet.md</code>), the model (<code>model.json</code>), the simulation input (<code>sim.json</code>) and a picture; the sixth is based on a public photo. They are design examples: sizes, times and speeds are assumed values (or scaled from the photo), not catalogue data, and no model is stated to match a real machine.</p>
+    <p class="sub" data-l="ko" lang="ko"><code>examples/</code>에 모델 6개가 있습니다. 각 모델은 원리 시트(<code>sheet.md</code>), 모델(<code>model.json</code>), 시뮬레이션 입력(<code>sim.json</code>), 그림으로 구성되며 6번째 모델은 공개 사진을 근거로 작성했습니다. 모두 설계 예시이므로 치수, 시간, 속도는 가정값이거나 사진에서 비례로 산출한 값이고 카탈로그 값이 아닙니다. 실제 설비와의 일치는 보장하지 않습니다.</p>
     <ul class="cards">
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/pick-and-place">
-          <div class="pic"><picture><source srcset="assets/pick-and-place.png" media="(prefers-reduced-motion: reduce)"><img src="assets/pick-and-place.gif" width="640" height="360" loading="lazy" alt="Pneumatic pick-and-place station: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 공압 픽앤플레이스 스테이션: 시뮬레이션 한 사이클"></picture></div>
+          <div class="pic"><picture><source srcset="assets/pick-and-place.png" media="(prefers-reduced-motion: reduce)"><img src="assets/pick-and-place.gif" width="640" height="360" loading="lazy" alt="Pneumatic pick-and-place station: one simulated cycle on the 3D page" data-alt-ko="공압 픽앤플레이스 스테이션의 시뮬레이션 1사이클(3D 화면)"></picture></div>
           <div class="body">
             <h3><span data-l="en">Pneumatic pick and place</span><span data-l="ko" lang="ko">공압 픽앤플레이스</span></h3>
             <p data-l="en">Gantry with a rodless X cylinder, a guided Z cylinder and a vacuum pad; infeed conveyor, nest, valve terminal. 14 devices.</p>
-            <p data-l="ko" lang="ko">로드리스 X 실린더, 가이드 Z 실린더, 흡착 패드를 단 갠트리와 공급 컨베이어, 지그, 밸브 매니폴드. 장치 14개.</p>
-            <p class="sim mono" data-l="en">Sim: pick 960 ms, place 2600 ms, back 3740 ms</p>
-            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 집기 960 ms, 놓기 2600 ms, 복귀 3740 ms</p>
+            <p data-l="ko" lang="ko">로드리스 X 실린더, 가이드 Z 실린더, 흡착 패드로 구성된 갠트리와 공급 컨베이어, 지그, 밸브 매니폴드. 장치 14개.</p>
+            <p class="sim mono" data-l="en">Sim: pick 960 ms, place 2600 ms, return 3740 ms</p>
+            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 픽 960 ms, 플레이스 2600 ms, 복귀 3740 ms</p>
             <span class="go">examples/pick-and-place</span>
           </div>
         </a>
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/ball-screw-axis">
-          <div class="pic"><picture><source srcset="assets/ball-screw-axis.png" media="(prefers-reduced-motion: reduce)"><img src="assets/ball-screw-axis.gif" width="640" height="360" loading="lazy" alt="Ball-screw servo axis: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 볼나사 서보 축: 시뮬레이션 한 사이클"></picture></div>
+          <div class="pic"><picture><source srcset="assets/ball-screw-axis.png" media="(prefers-reduced-motion: reduce)"><img src="assets/ball-screw-axis.gif" width="640" height="360" loading="lazy" alt="Ball-screw servo axis: one simulated cycle on the 3D page" data-alt-ko="볼나사 서보 축의 시뮬레이션 1사이클(3D 화면)"></picture></div>
           <div class="body">
             <h3><span data-l="en">Ball-screw servo axis</span><span data-l="ko" lang="ko">볼나사 서보 축</span></h3>
             <p data-l="en">Servo motor, coupling, ball screw with 10 mm lead, carriage on two rails, cable chain, home and limit switches. 5 devices.</p>
-            <p data-l="ko" lang="ko">서보 모터, 커플링, 리드 10 mm 볼나사, 레일 두 줄 위의 캐리지, 케이블 체인, 원점·리밋 스위치. 장치 5개.</p>
-            <p class="sim mono" data-l="en">Sim: targets 300, 150, 0 mm; busy ends at 1500, 2600, 3600 ms</p>
-            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 목표 300, 150, 0 mm, busy는 1500, 2600, 3600 ms에 꺼짐</p>
+            <p data-l="ko" lang="ko">서보 모터, 커플링, 리드 10 mm 볼나사, LM 레일 2열 위의 캐리지, 케이블 체인, 원점·리밋 스위치. 장치 5개.</p>
+            <p class="sim mono" data-l="en">Sim: targets 300, 150, 0 mm; busy OFF at 1500, 2600, 3600 ms</p>
+            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 목표 300, 150, 0 mm, busy OFF 1500, 2600, 3600 ms</p>
             <span class="go">examples/ball-screw-axis</span>
           </div>
         </a>
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/index-table">
-          <div class="pic"><picture><source srcset="assets/index-table.png" media="(prefers-reduced-motion: reduce)"><img src="assets/index-table.gif" width="640" height="360" loading="lazy" alt="Eight-station index table: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 8스테이션 인덱스 테이블: 시뮬레이션 한 사이클"></picture></div>
+          <div class="pic"><picture><source srcset="assets/index-table.png" media="(prefers-reduced-motion: reduce)"><img src="assets/index-table.gif" width="640" height="360" loading="lazy" alt="Eight-station index table: one simulated cycle on the 3D page" data-alt-ko="8스테이션 인덱스 테이블의 시뮬레이션 1사이클(3D 화면)"></picture></div>
           <div class="body">
             <h3><span data-l="en">Eight-station index table</span><span data-l="ko" lang="ko">8스테이션 인덱스 테이블</span></h3>
             <p data-l="en">Dial on a cam indexer with a geared motor, eight nests with parts, press cylinder on a column, part sensor. 8 devices.</p>
-            <p data-l="ko" lang="ko">기어드 모터가 달린 캠 인덱서 위의 다이얼, 부품이 든 지그 8개, 기둥에 단 압입 실린더, 부품 센서. 장치 8개.</p>
+            <p data-l="ko" lang="ko">기어드 모터 구동 캠 인덱서 위의 다이얼, 부품을 실은 지그 8개, 기둥에 고정한 압입 실린더, 부품 감지 센서. 장치 8개.</p>
             <p class="sim mono" data-l="en">Sim: in-position at 640, 2340, 4040 ms; press down at 1050, 2750, 4450 ms</p>
             <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 인포지션 640, 2340, 4040 ms, 압입 1050, 2750, 4450 ms</p>
             <span class="go">examples/index-table</span>
@@ -363,39 +363,39 @@ pre code { font-size: inherit; }
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/robot-arm">
-          <div class="pic"><picture><source srcset="assets/robot-arm.png" media="(prefers-reduced-motion: reduce)"><img src="assets/robot-arm.gif" width="640" height="360" loading="lazy" alt="Robot cell with a six-axis arm: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 6축 로봇 셀: 시뮬레이션 한 사이클"></picture></div>
+          <div class="pic"><picture><source srcset="assets/robot-arm.png" media="(prefers-reduced-motion: reduce)"><img src="assets/robot-arm.gif" width="640" height="360" loading="lazy" alt="Robot cell with a six-axis arm: one simulated cycle on the 3D page" data-alt-ko="6축 로봇 셀의 시뮬레이션 1사이클(3D 화면)"></picture></div>
           <div class="body">
             <h3><span data-l="en">Robot cell</span><span data-l="ko" lang="ko">로봇 셀</span></h3>
             <p data-l="en">Six-axis arm (preset <code>robot_6r</code>) on a pedestal, vacuum tool, fixture table, outfeed belt, fence. 11 devices.</p>
             <p data-l="ko" lang="ko">받침대 위 6축 로봇(프리셋 <code>robot_6r</code>), 흡착 툴, 지그 테이블, 배출 벨트, 펜스. 장치 11개.</p>
             <p class="sim mono" data-l="en">Sim: pick 2900 ms, place on the belt 4950 ms, home 6400 ms</p>
-            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 집기 2900 ms, 벨트에 놓기 4950 ms, 원점 6400 ms</p>
+            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 픽 2900 ms, 벨트 플레이스 4950 ms, 원점 복귀 6400 ms</p>
             <span class="go">examples/robot-arm</span>
           </div>
         </a>
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/cam-lifter">
-          <div class="pic"><picture><source srcset="assets/cam-lifter.png" media="(prefers-reduced-motion: reduce)"><img src="assets/cam-lifter.gif" width="640" height="360" loading="lazy" alt="Cam lifter: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 캠 리프터: 시뮬레이션 한 사이클"></picture></div>
+          <div class="pic"><picture><source srcset="assets/cam-lifter.png" media="(prefers-reduced-motion: reduce)"><img src="assets/cam-lifter.gif" width="640" height="360" loading="lazy" alt="Cam lifter: one simulated cycle on the 3D page" data-alt-ko="캠 리프터의 시뮬레이션 1사이클(3D 화면)"></picture></div>
           <div class="body">
             <h3><span data-l="en">Cam lifter</span><span data-l="ko" lang="ko">캠 리프터</span></h3>
             <p data-l="en">Pear cam with a roller follower (27-point lift table), guided lift plate, geared motor, up, down and home switches. 4 devices.</p>
-            <p data-l="ko" lang="ko">롤러 종동절이 붙은 배 모양 캠(27점 승강 표), 가이드 승강판, 기어드 모터, 상승·하강·원점 스위치. 장치 4개.</p>
-            <p class="sim mono" data-l="en">Sim: up switch 1540 to 1670 ms, home again at 3090 ms</p>
-            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 상승 스위치 1540~1670 ms, 3090 ms에 다시 원점</p>
+            <p data-l="ko" lang="ko">롤러 종동절을 가진 서양배형 캠(27점 변위표), 가이드 승강판, 기어드 모터, 상승·하강·원점 스위치. 장치 4개.</p>
+            <p class="sim mono" data-l="en">Sim: up switch ON 1540 to 1670 ms, back home at 3090 ms</p>
+            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 상승 스위치 ON 1540~1670 ms, 원점 복귀 3090 ms</p>
             <span class="go">examples/cam-lifter</span>
           </div>
         </a>
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/xyz-dispenser">
-          <div class="pic"><picture><source srcset="assets/xyz-dispenser.png" media="(prefers-reduced-motion: reduce)"><img src="assets/xyz-dispenser.gif" width="640" height="360" loading="lazy" alt="XYZ vial dispenser made from a photo: one simulated cycle on the 3D page" data-alt-ko="사진으로 만든 XYZ 바이알 분주기: 3D 화면의 시뮬레이션 한 사이클"></picture></div>
+          <div class="pic"><picture><source srcset="assets/xyz-dispenser.png" media="(prefers-reduced-motion: reduce)"><img src="assets/xyz-dispenser.gif" width="640" height="360" loading="lazy" alt="XYZ vial dispenser based on a photo: one simulated cycle on the 3D page" data-alt-ko="사진 기반 XYZ 바이알 분주기의 시뮬레이션 1사이클(3D 화면)"></picture></div>
           <div class="body">
-            <h3><span data-l="en">XYZ vial dispenser (from a photo)</span><span data-l="ko" lang="ko">XYZ 바이알 분주기 (사진으로 만듦)</span></h3>
-            <p data-l="en">Cartesian robot made from one public photo: gantry, carriage, z column with the nozzle, peristaltic pump, two boxes of vials. 11 devices.</p>
-            <p data-l="ko" lang="ko">공개 사진 한 장으로 만든 직교 로봇: 갠트리, 캐리지, 노즐을 단 Z 기둥, 연동 펌프, 바이알 상자 두 개. 장치 11개.</p>
-            <p class="sim mono" data-l="en">Sim: pump 2650 to 3150 ms and 4900 to 5400 ms, two vials</p>
-            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 펌프 2650~3150 ms와 4900~5400 ms, 바이알 두 개</p>
+            <h3><span data-l="en">XYZ vial dispenser (photo-based)</span><span data-l="ko" lang="ko">XYZ 바이알 분주기 (사진 기반)</span></h3>
+            <p data-l="en">Cartesian robot modelled from one public photo: gantry, carriage, z column with the nozzle, peristaltic pump, two vial boxes. 11 devices.</p>
+            <p data-l="ko" lang="ko">공개 사진 한 장을 근거로 작성한 직교 로봇: 갠트리, 캐리지, 노즐이 달린 Z 기둥, 연동 펌프, 바이알 상자 2개. 장치 11개.</p>
+            <p class="sim mono" data-l="en">Sim: pump ON 2650 to 3150 ms and 4900 to 5400 ms (two vials)</p>
+            <p class="sim mono" data-l="ko" lang="ko">시뮬레이션: 펌프 ON 2650~3150 ms, 4900~5400 ms(바이알 2개)</p>
             <span class="go">examples/xyz-dispenser</span>
           </div>
         </a>
@@ -403,12 +403,12 @@ pre code { font-size: inherit; }
     </ul>
 
     <div class="blk" id="replay">
-      <h3><span data-l="en">Replay a cycle in 3D</span><span data-l="ko" lang="ko">3D로 한 사이클 돌려 보기</span></h3>
-      <p class="sub" data-l="en">One recorded simulation cycle, drawn by the same renderer as the program's 3D page. Drag to turn the view; pinch or scroll to zoom. The code and the data load only when you press the button.</p>
-      <p class="sub" data-l="ko" lang="ko">기록해 둔 시뮬레이션 한 사이클을 프로그램의 3D 화면과 같은 렌더러로 그립니다. 끌면 시점이 돌아가고 두 손가락이나 휠로 확대합니다. 코드와 자료는 버튼을 눌러야 받습니다.</p>
+      <h3><span data-l="en">3D cycle replay</span><span data-l="ko" lang="ko">3D 사이클 재생</span></h3>
+      <p class="sub" data-l="en">One recorded simulation cycle, drawn by the same renderer as the program's 3D page. Drag to rotate the view; pinch or scroll to zoom. The renderer code and the data load only when you press the button.</p>
+      <p class="sub" data-l="ko" lang="ko">기록된 시뮬레이션 1사이클을 프로그램의 3D 화면과 같은 렌더러로 재생합니다. 드래그하면 시점이 회전하고 두 손가락이나 마우스 휠로 확대·축소합니다. 렌더러 코드와 데이터는 버튼을 누를 때 내려받습니다.</p>
       <div class="rp">
         <div class="rp-view" id="rpView">
-          <picture><source srcset="assets/pick-and-place.png" media="(prefers-reduced-motion: reduce)"><img id="rpPoster" src="assets/pick-and-place.gif" width="640" height="360" loading="lazy" alt="Preview of the chosen example" data-alt-ko="고른 예제의 미리 보기"></picture>
+          <picture><source srcset="assets/pick-and-place.png" media="(prefers-reduced-motion: reduce)"><img id="rpPoster" src="assets/pick-and-place.gif" width="640" height="360" loading="lazy" alt="Preview of the chosen example" data-alt-ko="선택한 예제의 미리 보기"></picture>
         </div>
         <div class="rp-bar">
           <label class="rp-pick"><span data-l="en">Example</span><span data-l="ko" lang="ko">예제</span>
@@ -440,15 +440,15 @@ pre code { font-size: inherit; }
     <div class="blk">
       <h3><span data-l="en">Machine kinds in the catalog</span><span data-l="ko" lang="ko">카탈로그의 기계 종류</span></h3>
       <p class="sub" data-l="en">The 27 kinds and 4 presets that <code>model_catalog</code> returns, in groups. A machine that no kind fits is built from primitives.</p>
-      <p class="sub" data-l="ko" lang="ko"><code>model_catalog</code>가 돌려주는 종류 27개와 프리셋 4개를 묶어 보였습니다. 맞는 종류가 없는 기계는 기본 요소로 짭니다.</p>
-      <div class="key"><span><code>name</code><span data-l="en">kind</span><span data-l="ko" lang="ko">종류</span></span><span><code class="pre">name</code><span data-l="en">preset (expands to joints, couplings, drivers and sensors)</span><span data-l="ko" lang="ko">프리셋(관절, 연동, 구동기, 센서로 펼쳐짐)</span></span></div>
+      <p class="sub" data-l="ko" lang="ko"><code>model_catalog</code>가 반환하는 종류 27개와 프리셋 4개를 분류했습니다. 해당하는 종류가 없는 기계는 기본 요소(관절, 연동, 구동기, 센서)로 구성합니다.</p>
+      <div class="key"><span><code>name</code><span data-l="en">kind</span><span data-l="ko" lang="ko">종류</span></span><span><code class="pre">name</code><span data-l="en">preset (expands to joints, couplings, drivers and sensors)</span><span data-l="ko" lang="ko">프리셋(관절·연동·구동기·센서로 전개)</span></span></div>
       <ul class="kinds">
         <li><h4><span data-l="en">Cylinders and rotary actuators</span><span data-l="ko" lang="ko">실린더와 로터리 액추에이터</span></h4><p class="n"><code>cylinder_double</code><code>cylinder_single</code><code>rotary_actuator</code></p></li>
         <li><h4><span data-l="en">Conveyors, motors and pumps</span><span data-l="ko" lang="ko">컨베이어, 모터, 펌프</span></h4><p class="n"><code>conveyor</code><code>motor</code><code>pump</code></p></li>
         <li><h4><span data-l="en">Servo axis</span><span data-l="ko" lang="ko">서보 축</span></h4><p class="n"><code>servo_axis</code><code class="pre">servo_screw</code></p></li>
         <li><h4><span data-l="en">Index table</span><span data-l="ko" lang="ko">인덱스 테이블</span></h4><p class="n"><code>index_table</code><code class="pre">index_table</code></p></li>
         <li><h4><span data-l="en">Robot arm</span><span data-l="ko" lang="ko">로봇 팔</span></h4><p class="n"><code>robot_arm</code><code class="pre">robot_6r</code></p></li>
-        <li><h4><span data-l="en">Cams and other mechanisms from primitives</span><span data-l="ko" lang="ko">캠과 그 밖의 기구(기본 요소로)</span></h4><p class="n"><code>machine</code><code>solid</code><code class="pre">wheeled_base</code></p><p class="x" data-l="en">A cam or a linkage is a coupling <code>table</code>; a screw, a rack or gears is a coupling <code>ratio</code>.</p><p class="x" data-l="ko" lang="ko">캠이나 링크는 연동 <code>table</code>로, 나사, 랙, 기어는 연동 <code>ratio</code>로 적습니다.</p></li>
+        <li><h4><span data-l="en">Cams and other mechanisms from primitives</span><span data-l="ko" lang="ko">캠 등 기타 기구(기본 요소로 구성)</span></h4><p class="n"><code>machine</code><code>solid</code><code class="pre">wheeled_base</code></p><p class="x" data-l="en">A cam or a linkage is a coupling <code>table</code>; a screw, a rack or gears is a coupling <code>ratio</code>.</p><p class="x" data-l="ko" lang="ko">캠과 링크는 연동 <code>table</code>, 나사·랙·기어는 연동 <code>ratio</code>로 표현합니다.</p></li>
         <li><h4><span data-l="en">Grippers and vacuum pads</span><span data-l="ko" lang="ko">그리퍼와 흡착 패드</span></h4><p class="n"><code>gripper</code><code>vacuum_pad</code></p></li>
         <li><h4><span data-l="en">Sensors</span><span data-l="ko" lang="ko">센서</span></h4><p class="n"><code>photo_sensor</code><code>prox_sensor</code><code>reed_sensor</code><code>zone_sensor</code><code>level_sensor</code></p></li>
         <li><h4><span data-l="en">Lamps, buttons and switches</span><span data-l="ko" lang="ko">램프, 버튼, 스위치</span></h4><p class="n"><code>lamp</code><code>tower_light</code><code>buzzer</code><code>button</code><code>selector</code><code>estop</code></p></li>
@@ -460,82 +460,82 @@ pre code { font-size: inherit; }
 
 <section id="use" aria-labelledby="h-use">
   <div class="wrap">
-    <h2 id="h-use"><span data-l="en">What you can do with it</span><span data-l="ko" lang="ko">이것으로 할 수 있는 일</span></h2>
+    <h2 id="h-use"><span data-l="en">Uses</span><span data-l="ko" lang="ko">활용</span></h2>
     <ul class="uses">
-      <li><div><h3><span data-l="en">Get a 3D model of a machine</span><span data-l="ko" lang="ko">기계의 3D 모델 얻기</span></h3>
-        <p data-l="en">Describe the machine in words or attach a photo. The AI client writes the model with the skill; the server checks it and draws it on the 3D page.</p>
-        <p data-l="ko" lang="ko">기계를 말로 설명하거나 사진을 붙이면 AI 클라이언트가 스킬을 따라 모델을 쓰고 서버는 그 모델을 검사해서 3D 화면에 그립니다.</p></div></li>
-      <li><div><h3><span data-l="en">Play one cycle</span><span data-l="ko" lang="ko">한 사이클 돌려 보기</span></h3>
-        <p data-l="en">Put events on pins and run them with <code>model_sim</code>. The result says when each sensor turns on, which joint moves when, and what happens to each part.</p>
-        <p data-l="ko" lang="ko">핀에 이벤트를 넣어 <code>model_sim</code>으로 돌립니다. 결과를 보면 센서가 켜지는 시각, 관절이 움직이는 때, 부품마다 일어난 일을 알 수 있습니다.</p></div></li>
-      <li><div><h3><span data-l="en">See the motion before you build</span><span data-l="ko" lang="ko">만들기 전에 움직임 보기</span></h3>
-        <p data-l="en">Draw the motion and the order of the steps before you buy or build parts. Sizes and times stay guesses until someone measures them.</p>
-        <p data-l="ko" lang="ko">부품을 사거나 만들기 전에 움직임과 동작 순서를 그려 봅니다. 치수와 시간은 누가 재기 전까지 추정값입니다.</p></div></li>
-      <li><div><h3><span data-l="en">Explain or teach a machine</span><span data-l="ko" lang="ko">기계를 설명하고 가르치기</span></h3>
-        <p data-l="en">Play the run on the 3D page while you explain it, or let the client get pictures with <code>model_render</code> from six views.</p>
-        <p data-l="ko" lang="ko">3D 화면에서 실행을 재생하며 설명하거나, 클라이언트가 <code>model_render</code>로 여섯 방향에서 본 그림을 받게 합니다.</p></div></li>
+      <li><div><h3><span data-l="en">3D model from a description</span><span data-l="ko" lang="ko">설명으로 3D 모델 작성</span></h3>
+        <p data-l="en">Describe the machine in words or attach a photo. The AI client writes the model by the skill's procedure; the server checks it and draws it on the 3D page.</p>
+        <p data-l="ko" lang="ko">기계를 글로 설명하거나 사진을 제공하면 AI 클라이언트가 스킬 절차에 따라 모델을 작성하고 서버가 이를 검사한 뒤 3D 화면에 표시합니다.</p></div></li>
+      <li><div><h3><span data-l="en">One-cycle simulation</span><span data-l="ko" lang="ko">1사이클 시뮬레이션</span></h3>
+        <p data-l="en">Put events on pins and run them with <code>model_sim</code>. The result gives the ON time of each sensor, the motion interval of each joint and the events of each part.</p>
+        <p data-l="ko" lang="ko">핀에 이벤트를 입력하고 <code>model_sim</code>으로 실행합니다. 결과에서 센서별 ON 시각, 관절별 이동 구간, 부품별 이벤트를 확인할 수 있습니다.</p></div></li>
+      <li><div><h3><span data-l="en">Motion review before build</span><span data-l="ko" lang="ko">제작 전 동작 검토</span></h3>
+        <p data-l="en">Review the motion and the sequence in 3D before you order or make parts. Sizes and times are assumed values until they are measured.</p>
+        <p data-l="ko" lang="ko">부품 발주나 제작 전에 동작과 시퀀스를 3D로 검토합니다. 치수와 시간은 실측 전까지 가정값입니다.</p></div></li>
+      <li><div><h3><span data-l="en">Explanation and training</span><span data-l="ko" lang="ko">설명과 교육</span></h3>
+        <p data-l="en">Replay the run on the 3D page during an explanation, or let the client get images from six views with <code>model_render</code>.</p>
+        <p data-l="ko" lang="ko">3D 화면에서 실행 결과를 재생하며 설명하거나 클라이언트가 <code>model_render</code>로 6방향 그림을 받아 활용합니다.</p></div></li>
     </ul>
-    <p class="note" data-l="en">The simulation is a kinematic model with constant speeds. It has no physics and no collision, and a pass is not a test on real equipment.</p>
-    <p class="note" data-l="ko" lang="ko">시뮬레이션은 일정한 속도로 움직이는 운동학 모델입니다. 물리와 충돌은 계산하지 않으며 통과했다고 실제 장비에서 시험한 것은 아닙니다.</p>
+    <p class="note" data-l="en">The simulation is a kinematic model with constant speeds. It computes no dynamics and no collision, and a pass does not replace a test on real equipment.</p>
+    <p class="note" data-l="ko" lang="ko">시뮬레이션은 등속 운동학 모델입니다. 동역학과 충돌은 계산하지 않으며 시뮬레이션 통과가 실제 장비 시험을 대신하지는 않습니다.</p>
   </div>
 </section>
 
 <section id="how" aria-labelledby="h-how">
   <div class="wrap">
-    <h2 id="h-how"><span data-l="en">How it works</span><span data-l="ko" lang="ko">작동 원리</span></h2>
+    <h2 id="h-how"><span data-l="en">How it works</span><span data-l="ko" lang="ko">동작 원리</span></h2>
 
     <div class="blk" style="margin-top: 28px">
-      <h3><span data-l="en">What a model is made of</span><span data-l="ko" lang="ko">모델을 이루는 것</span></h3>
-      <p class="sub" data-l="en">A twin model is one JSON object with a list of devices. Each device has a kind from the catalog; motion that no kind covers is written out in its <code>mech</code>.</p>
-      <p class="sub" data-l="ko" lang="ko">트윈 모델은 장치 목록을 담은 JSON 객체 하나입니다. 장치마다 카탈로그의 종류가 있고 종류로 나타낼 수 없는 움직임은 그 장치의 <code>mech</code>에 직접 적습니다.</p>
+      <h3><span data-l="en">Model structure</span><span data-l="ko" lang="ko">모델 구성</span></h3>
+      <p class="sub" data-l="en">A twin model is one JSON object with a list of devices. Each device has a kind from the catalog; motion that no kind covers is defined in its <code>mech</code>.</p>
+      <p class="sub" data-l="ko" lang="ko">트윈 모델은 장치 목록을 담은 JSON 객체 하나입니다. 각 장치는 카탈로그의 종류(kind)를 가지며 종류로 표현할 수 없는 동작은 해당 장치의 <code>mech</code>에 직접 정의합니다.</p>
       <dl class="parts">
-        <div><dt><span data-l="en">Frames</span><span data-l="ko" lang="ko">프레임</span></dt><dd><span data-l="en">Each device sits on a parent frame (<code>on</code>, <code>mount</code>, <code>pose</code> in mm and degrees), so all frames form one tree.</span><span data-l="ko" lang="ko">장치는 모두 부모 프레임 위에 놓입니다(<code>on</code>, <code>mount</code>, mm와 도 단위의 <code>pose</code>). 그래서 프레임 전체가 트리 하나를 이룹니다.</span></dd></div>
-        <div><dt><span data-l="en">Joints</span><span data-l="ko" lang="ko">관절</span></dt><dd><span data-l="en"><code>fixed</code>, <code>prismatic</code> (a slide), <code>revolute</code> (a turn), <code>planar</code> (a base on the floor).</span><span data-l="ko" lang="ko"><code>fixed</code>, <code>prismatic</code>(직선 이동), <code>revolute</code>(회전), <code>planar</code>(바닥을 달리는 베이스)가 있습니다.</span></dd></div>
-        <div><dt><span data-l="en">Couplings</span><span data-l="ko" lang="ko">연동</span></dt><dd><span data-l="en">One joint moves another: <code>ratio</code> (screw, rack, gears), <code>table</code> (a cam or a linkage curve), <code>diff_drive</code> (two wheels).</span><span data-l="ko" lang="ko">한 관절이 다른 관절을 움직입니다. <code>ratio</code>(나사, 랙, 기어), <code>table</code>(캠이나 링크의 곡선), <code>diff_drive</code>(바퀴 두 개)가 있습니다.</span></dd></div>
-        <div><dt><span data-l="en">Drivers</span><span data-l="ko" lang="ko">구동기</span></dt><dd><span data-l="en">Pins move a joint: <code>coils</code> (valve coils), <code>follow</code> (a commanded position), <code>step</code> (one step per pulse), <code>playback</code> (poses picked by a program number).</span><span data-l="ko" lang="ko">핀으로 관절을 움직입니다. <code>coils</code>(밸브 코일), <code>follow</code>(지령 위치), <code>step</code>(펄스 하나에 한 칸), <code>playback</code>(프로그램 번호로 고른 자세)가 있습니다.</span></dd></div>
-        <div><dt><span data-l="en">Sensors</span><span data-l="ko" lang="ko">센서</span></dt><dd><span data-l="en">A <code>window</code> at a joint value (an end, a home or an in-position switch), or a sensor kind that sees parts.</span><span data-l="ko" lang="ko">관절 값의 한 구간에서 켜지는 <code>window</code>(끝, 원점, 인포지션 스위치)이거나, 부품을 보는 센서 종류입니다.</span></dd></div>
-        <div><dt><span data-l="en">Skin</span><span data-l="ko" lang="ko">외형</span></dt><dd><span data-l="en">The look only: groups of <code>box</code> and <code>cyl</code> items on a frame, each with a tone. It does not change the motion.</span><span data-l="ko" lang="ko">겉모습만 정합니다. 프레임 위에 <code>box</code>와 <code>cyl</code> 요소를 묶어 놓고 저마다 색조를 줄 뿐 움직임은 바꾸지 않습니다.</span></dd></div>
-        <div><dt><span data-l="en">Pins</span><span data-l="ko" lang="ko">핀</span></dt><dd><span data-l="en">Named signals <code>&lt;id&gt;.&lt;slot&gt;</code>. Events go in on pins, and sensors answer on pins.</span><span data-l="ko" lang="ko">이름 붙은 신호 <code>&lt;id&gt;.&lt;slot&gt;</code>입니다. 이벤트는 핀으로 들어가고 센서는 핀으로 답합니다.</span></dd></div>
+        <div><dt><span data-l="en">Frames</span><span data-l="ko" lang="ko">프레임</span></dt><dd><span data-l="en">Each device sits on a parent frame (<code>on</code>, <code>mount</code>, <code>pose</code> in mm and degrees), so all frames form one tree.</span><span data-l="ko" lang="ko">모든 장치는 부모 프레임 위에 배치됩니다(<code>on</code>, <code>mount</code>, mm·도 단위의 <code>pose</code>). 따라서 전체 프레임은 하나의 트리를 이룹니다.</span></dd></div>
+        <div><dt><span data-l="en">Joints</span><span data-l="ko" lang="ko">관절</span></dt><dd><span data-l="en"><code>fixed</code>, <code>prismatic</code> (a slide), <code>revolute</code> (a turn), <code>planar</code> (a base on the floor).</span><span data-l="ko" lang="ko"><code>fixed</code>, <code>prismatic</code>(직선 이동), <code>revolute</code>(회전), <code>planar</code>(바닥 위 주행 베이스)가 있습니다.</span></dd></div>
+        <div><dt><span data-l="en">Couplings</span><span data-l="ko" lang="ko">연동</span></dt><dd><span data-l="en">One joint moves another: <code>ratio</code> (screw, rack, gears), <code>table</code> (a cam or a linkage curve), <code>diff_drive</code> (two wheels).</span><span data-l="ko" lang="ko">한 관절의 값으로 다른 관절을 구동합니다. <code>ratio</code>(나사, 랙, 기어), <code>table</code>(캠·링크의 변위 곡선), <code>diff_drive</code>(2륜 차동 구동)가 있습니다.</span></dd></div>
+        <div><dt><span data-l="en">Drivers</span><span data-l="ko" lang="ko">구동기</span></dt><dd><span data-l="en">Pins move a joint: <code>coils</code> (valve coils), <code>follow</code> (a commanded position), <code>step</code> (one step per pulse), <code>playback</code> (poses picked by a program number).</span><span data-l="ko" lang="ko">핀 신호로 관절을 구동합니다. <code>coils</code>(밸브 코일), <code>follow</code>(위치 지령 추종), <code>step</code>(펄스당 1스텝), <code>playback</code>(프로그램 번호로 선택한 자세)가 있습니다.</span></dd></div>
+        <div><dt><span data-l="en">Sensors</span><span data-l="ko" lang="ko">센서</span></dt><dd><span data-l="en">A <code>window</code> at a joint value (an end, a home or an in-position switch), or a sensor kind that sees parts.</span><span data-l="ko" lang="ko">관절 값이 지정 구간에 있을 때 ON 되는 <code>window</code>(끝단, 원점, 인포지션 스위치) 또는 부품을 감지하는 센서 종류입니다.</span></dd></div>
+        <div><dt><span data-l="en">Skin</span><span data-l="ko" lang="ko">외형</span></dt><dd><span data-l="en">The look only: groups of <code>box</code> and <code>cyl</code> items on a frame, each with a tone. It does not change the motion.</span><span data-l="ko" lang="ko">외관만 정의합니다. 프레임 위의 <code>box</code>·<code>cyl</code> 요소를 그룹으로 묶고 요소마다 색조를 지정하며 동작에는 영향을 주지 않습니다.</span></dd></div>
+        <div><dt><span data-l="en">Pins</span><span data-l="ko" lang="ko">핀</span></dt><dd><span data-l="en">Named signals <code>&lt;id&gt;.&lt;slot&gt;</code>. Events go in on pins, and sensors answer on pins.</span><span data-l="ko" lang="ko">이름이 붙은 신호 <code>&lt;id&gt;.&lt;slot&gt;</code>입니다. 이벤트는 핀으로 입력되고 센서 상태도 핀으로 출력됩니다.</span></dd></div>
       </dl>
     </div>
 
     <div class="blk">
-      <h3><span data-l="en">What the simulation does in each tick</span><span data-l="ko" lang="ko">시뮬레이션이 한 tick마다 하는 일</span></h3>
-      <p class="sub" data-l="en"><code>model_sim</code> moves time forward in fixed ticks (<code>scan_ms</code>, 10&nbsp;ms unless you set 1 to 100). Each tick runs these steps in this order:</p>
-      <p class="sub" data-l="ko" lang="ko"><code>model_sim</code>은 정해진 간격(<code>scan_ms</code>, 따로 정하지 않으면 10&nbsp;ms, 1~100)으로 시간을 나아가게 합니다. tick마다 아래 단계를 이 순서대로 실행합니다.</p>
+      <h3><span data-l="en">Processing order in each tick</span><span data-l="ko" lang="ko">tick당 처리 순서</span></h3>
+      <p class="sub" data-l="en"><code>model_sim</code> advances time in fixed ticks (<code>scan_ms</code>, default 10&nbsp;ms, range 1 to 100). Each tick runs these steps in this order:</p>
+      <p class="sub" data-l="ko" lang="ko"><code>model_sim</code>은 고정 주기(<code>scan_ms</code>, 기본 10&nbsp;ms, 범위 1~100)로 시간을 진행합니다. 매 tick 아래 단계를 순서대로 실행합니다.</p>
       <ol class="seq">
-        <li><span><span data-l="en">Pin events whose time has come set their pins. Part events of the run put, move or remove parts.</span><span data-l="ko" lang="ko">때가 된 핀 이벤트가 핀 값을 바꿉니다. 실행에 적은 부품 이벤트가 부품을 놓거나 옮기거나 치웁니다.</span><span class="src">twin-engine/src/model.rs · sim</span></span></li>
-        <li><span><span data-l="en">Cylinders, conveyors and motors read their coils or run pins. After the lag they move at their set speed, and their end sensors turn on inside the sensor window.</span><span data-l="ko" lang="ko">실린더, 컨베이어, 모터가 코일이나 운전 핀을 읽습니다. 지연 시간이 지나면 정한 속도로 움직이고 끝 센서는 센서 구간 안에서 켜집니다.</span><span class="src">twin-engine/src/plant.rs · Plant::tick</span></span></li>
-        <li><span><span data-l="en">Devices with <code>mech</code>, in the order of their id: drivers move their joints, couplings move the joints that follow, limits clip the values, window sensors are checked, then <code>busy</code> and <code>done</code> are set.</span><span data-l="ko" lang="ko"><code>mech</code>가 있는 장치를 id 순서로 돌립니다. 구동기가 관절을 움직이고 연동이 따라가는 관절을 움직이고 한계를 넘은 값은 잘라 내고 창 센서를 본 뒤 <code>busy</code>와 <code>done</code>을 정합니다.</span><span class="src">twin-engine/src/mech.rs · Machine::tick</span></span></li>
-        <li><span><span data-l="en">The workpiece rules R1 to R9 run in a fixed order: parts follow their points, pads release and pick, rods push, belts carry, magazines drop, part sensors are set.</span><span data-l="ko" lang="ko">공작물 규칙 R1~R9를 정해진 순서로 실행합니다. 부품이 점을 따라가고 패드가 놓고 집고 로드가 밀고 벨트가 실어 나르고 매거진에서 부품이 떨어지고, 부품 센서 값이 정해집니다.</span><span class="src">twin-engine/src/work.rs · Rt::tick</span></span></li>
-        <li><span><span data-l="en">Lamps and tank levels follow their pins.</span><span data-l="ko" lang="ko">램프와 탱크 수위가 핀을 따라갑니다.</span><span class="src">twin-engine/src/plant.rs · Plant::tick</span></span></li>
+        <li><span><span data-l="en">Pin events whose time has come set their pins. Part events of the run put, move or remove parts.</span><span data-l="ko" lang="ko">해당 시각의 핀 이벤트가 핀 값을 바꿉니다. 실행에 정의한 부품 이벤트가 부품을 배치, 이동, 제거합니다.</span><span class="src">twin-engine/src/model.rs · sim</span></span></li>
+        <li><span><span data-l="en">Cylinders, conveyors and motors read their coils or run pins. After the lag they move at their set speed, and their end sensors turn on inside the sensor window.</span><span data-l="ko" lang="ko">실린더, 컨베이어, 모터가 코일 또는 운전 핀을 읽습니다. 지연 시간 뒤 설정 속도로 이동하고 끝단 센서는 센서 구간 안에서 ON 됩니다.</span><span class="src">twin-engine/src/plant.rs · Plant::tick</span></span></li>
+        <li><span><span data-l="en">Devices with <code>mech</code>, in the order of their id: drivers move their joints, couplings move the joints that follow, limits clip the values, window sensors are checked, then <code>busy</code> and <code>done</code> are set.</span><span data-l="ko" lang="ko"><code>mech</code>가 있는 장치를 id 순서로 처리합니다. 구동기가 관절을 움직이면 연동이 종속 관절을 움직이고 한계를 넘는 값은 제한한 뒤 window 센서를 판정하고 <code>busy</code>와 <code>done</code>을 설정합니다.</span><span class="src">twin-engine/src/mech.rs · Machine::tick</span></span></li>
+        <li><span><span data-l="en">The workpiece rules R1 to R9 run in a fixed order: parts follow their points, pads release and pick, rods push, belts carry, magazines drop, part sensors are set.</span><span data-l="ko" lang="ko">공작물 규칙 R1~R9를 고정 순서로 실행합니다. 부품의 기준점 추종, 패드의 해제와 흡착, 로드의 밀기, 벨트 이송, 매거진 낙하를 처리한 뒤 부품 센서 값을 설정합니다.</span><span class="src">twin-engine/src/work.rs · Rt::tick</span></span></li>
+        <li><span><span data-l="en">Lamps and tank levels follow their pins.</span><span data-l="ko" lang="ko">램프와 탱크 수위가 핀 값을 따릅니다.</span><span class="src">twin-engine/src/plant.rs · Plant::tick</span></span></li>
       </ol>
       <p class="note" data-l="en">The engine has no clock and no random number, and the order is fixed, so the same input always gives the same result.</p>
-      <p class="note" data-l="ko" lang="ko">엔진에는 시계도 난수도 없고 순서가 고정되어 있어서 입력이 같으면 결과도 늘 같습니다.</p>
+      <p class="note" data-l="ko" lang="ko">엔진은 시스템 시계와 난수를 쓰지 않고 처리 순서가 고정되어 있으므로 입력이 같으면 결과도 항상 같습니다(결정론적 실행).</p>
     </div>
 
     <div class="blk">
-      <h3><span data-l="en">How the skill leads the AI client</span><span data-l="ko" lang="ko">스킬이 AI 클라이언트를 이끄는 순서</span></h3>
+      <h3><span data-l="en">Skill procedure</span><span data-l="ko" lang="ko">스킬 절차</span></h3>
       <p class="sub" data-l="en">The steps of the bundled skill <code>skills/twin-modeling</code>.</p>
-      <p class="sub" data-l="ko" lang="ko">함께 들어 있는 스킬 <code>skills/twin-modeling</code>의 순서입니다.</p>
+      <p class="sub" data-l="ko" lang="ko">동봉된 스킬 <code>skills/twin-modeling</code>의 절차입니다.</p>
       <div class="steps">
         <div>
           <h4><span data-l="en">In the AI client</span><span data-l="ko" lang="ko">AI 클라이언트에서</span></h4>
           <ol>
-            <li><span><span data-l="en">Identify the machine.</span><span data-l="ko" lang="ko">기계를 알아봅니다.</span></span></li>
-            <li><span><span data-l="en">Find the working principle.</span><span data-l="ko" lang="ko">작동 원리를 찾습니다.</span></span></li>
-            <li><span><span data-l="en">Write the principle sheet (8 parts).</span><span data-l="ko" lang="ko">원리 시트(8개 항목)를 씁니다.</span></span></li>
+            <li><span><span data-l="en">Identify the machine.</span><span data-l="ko" lang="ko">기계를 식별합니다.</span></span></li>
+            <li><span><span data-l="en">Find the working principle.</span><span data-l="ko" lang="ko">동작 원리를 파악합니다.</span></span></li>
+            <li><span><span data-l="en">Write the principle sheet (8 parts).</span><span data-l="ko" lang="ko">원리 시트(8개 항목)를 작성합니다.</span></span></li>
             <li><span><span data-l="en">Map each part to kinds, presets or primitives.</span><span data-l="ko" lang="ko">각 부분을 종류, 프리셋, 기본 요소에 대응시킵니다.</span></span></li>
-            <li><span><span data-l="en">Write the twin model JSON. Signals are named pins.</span><span data-l="ko" lang="ko">트윈 모델 JSON을 씁니다. 신호는 이름 붙은 핀입니다.</span></span></li>
-            <li><span><span data-l="en">Check it yourself.</span><span data-l="ko" lang="ko">직접 검사합니다.</span></span></li>
+            <li><span><span data-l="en">Write the twin model JSON. Signals are named pins.</span><span data-l="ko" lang="ko">트윈 모델 JSON을 작성합니다. 신호는 이름이 붙은 핀으로 표현합니다.</span></span></li>
+            <li><span><span data-l="en">Check it yourself.</span><span data-l="ko" lang="ko">자체 검사를 수행합니다.</span></span></li>
           </ol>
         </div>
         <div>
           <h4><span data-l="en">With the server</span><span data-l="ko" lang="ko">서버와 함께</span></h4>
           <ol style="--start: 6">
-            <li><span><span data-l="en">Draft: send it with <code>model_draft</code> and read the <code>facts</code>.</span><span data-l="ko" lang="ko">초안: <code>model_draft</code>로 보내고 <code>facts</code>를 읽습니다.</span></span></li>
+            <li><span><span data-l="en">Draft: send it with <code>model_draft</code> and read the <code>facts</code>.</span><span data-l="ko" lang="ko">초안: <code>model_draft</code>로 전송하고 <code>facts</code>를 확인합니다.</span></span></li>
             <li><span><span data-l="en">Simulate with <code>model_sim</code>.</span><span data-l="ko" lang="ko"><code>model_sim</code>으로 시뮬레이션합니다.</span></span></li>
-            <li><span><span data-l="en">Draw with <code>model_render</code> and the 3D page.</span><span data-l="ko" lang="ko"><code>model_render</code>와 3D 화면으로 그립니다.</span></span></li>
+            <li><span><span data-l="en">Draw with <code>model_render</code> and the 3D page.</span><span data-l="ko" lang="ko"><code>model_render</code>와 3D 화면으로 표시합니다.</span></span></li>
             <li><span><span data-l="en">The person confirms the draft.</span><span data-l="ko" lang="ko">사람이 초안을 확정합니다.</span></span></li>
           </ol>
         </div>
@@ -543,17 +543,17 @@ pre code { font-size: inherit; }
     </div>
 
     <div class="blk" id="example">
-      <h3 id="h-ex"><span data-l="en">Example: from words to a model</span><span data-l="ko" lang="ko">예시: 말에서 모델까지</span></h3>
+      <h3 id="h-ex"><span data-l="en">Example: from words to a model</span><span data-l="ko" lang="ko">예시: 설명에서 모델까지</span></h3>
       <div class="ex">
         <blockquote class="words">
           <p lang="en">It is a pneumatic pick-and-place station on an aluminium base plate. Two 45&nbsp;mm profile posts carry a 45&nbsp;x&nbsp;90 cross beam. On the front of the beam a guided rodless cylinder moves the head 200&nbsp;mm in X; on its carriage a guided cylinder with a 100&nbsp;mm stroke lowers a vacuum pad. A small inline ejector and a vacuum switch sit on the carriage bracket. Parts (orange plastic housings, about 40&nbsp;x&nbsp;40&nbsp;x&nbsp;25) come in on a short belt conveyor and stop against an end stop, where a diffuse photo sensor sees them. The head picks a part and puts it into a nest on the right, which has an inductive sensor. All cylinders have two air tubes and a reed switch at each end; the valves sit on a terminal at the back of the plate. There is a tower light on the beam and a box with a start button and an emergency stop at the front. Make a twin model of one cycle.</p>
-          <p class="tr" data-l="ko" lang="ko">(알루미늄 베이스판 위의 공압 픽앤플레이스 스테이션입니다. 45&nbsp;mm 프로파일 기둥 두 개가 45&nbsp;x&nbsp;90 크로스빔을 받치고 빔 앞면의 가이드 로드리스 실린더가 헤드를 X로 200&nbsp;mm 옮깁니다. 캐리지에 붙은 행정 100&nbsp;mm 가이드 실린더가 흡착 패드를 내리고 캐리지 브래킷에는 소형 이젝터와 진공 스위치가 있습니다. 부품(주황색 플라스틱 하우징, 약 40&nbsp;x&nbsp;40&nbsp;x&nbsp;25)은 짧은 벨트 컨베이어로 들어와 엔드 스톱에 멈추고 확산형 광센서가 이를 봅니다. 헤드는 부품을 집어 오른쪽 지그에 놓고 지그에는 근접 센서가 있습니다. 실린더마다 에어 튜브가 두 개이고 양 끝에 리드 스위치가 달렸으며 밸브는 판 뒤쪽 매니폴드에 모여 있습니다. 빔 위에 타워 램프가, 앞쪽에 시작 버튼과 비상 정지가 든 박스가 있습니다. 한 사이클의 트윈 모델을 만들어 주세요.)</p>
-          <footer><span data-l="en">The words of the person</span><span data-l="ko" lang="ko">사람이 쓴 말</span></footer>
+          <p class="tr" data-l="ko" lang="ko">(알루미늄 베이스판 위의 공압 픽앤플레이스 스테이션입니다. 45&nbsp;mm 프로파일 기둥 두 개가 45&nbsp;x&nbsp;90 크로스빔을 받치고 빔 앞면의 가이드 로드리스 실린더가 헤드를 X로 200&nbsp;mm 옮깁니다. 캐리지에 붙은 행정 100&nbsp;mm 가이드 실린더가 흡착 패드를 내리고 캐리지 브래킷에는 소형 이젝터와 진공 스위치가 있습니다. 부품(주황색 플라스틱 하우징, 약 40&nbsp;x&nbsp;40&nbsp;x&nbsp;25)은 짧은 벨트 컨베이어로 들어와 엔드 스톱에 멈추고 확산형 광센서가 이를 감지합니다. 헤드는 부품을 집어 오른쪽 지그에 놓고 지그에는 근접 센서가 있습니다. 실린더마다 에어 튜브가 두 개이고 양 끝에 리드 스위치가 달렸으며 밸브는 판 뒤쪽 매니폴드에 모여 있습니다. 빔 위에 타워 램프가, 앞쪽에 시작 버튼과 비상 정지가 든 박스가 있습니다. 한 사이클의 트윈 모델을 만들어 주세요.)</p>
+          <footer><span data-l="en">User input</span><span data-l="ko" lang="ko">사용자 입력</span></footer>
         </blockquote>
         <div class="run">
-          <h4><span data-l="en">One cycle in <code>model_sim</code></span><span data-l="ko" lang="ko"><code>model_sim</code>의 한 사이클</span></h4>
-          <p class="sub" data-l="en">Main lines of <code>changes</code> and <code>part_log</code> from the run of the example. The run ends at 4200&nbsp;ms with no alarm.</p>
-          <p class="sub" data-l="ko" lang="ko">예시를 실행한 결과의 <code>changes</code>와 <code>part_log</code> 중 주요 줄입니다. 실행은 4200&nbsp;ms에 알람 없이 끝납니다.</p>
+          <h4><span data-l="en">One cycle in <code>model_sim</code></span><span data-l="ko" lang="ko"><code>model_sim</code> 1사이클 결과</span></h4>
+          <p class="sub" data-l="en">Main entries of <code>changes</code> and <code>part_log</code> from the run of the example. The run ends at 4200&nbsp;ms with no alarm.</p>
+          <p class="sub" data-l="ko" lang="ko">예시 실행 결과(<code>changes</code>, <code>part_log</code>)의 주요 항목입니다. 실행은 4200&nbsp;ms에 알람 없이 종료됩니다.</p>
           <table class="tl">
             <thead>
               <tr>
@@ -564,19 +564,19 @@ pre code { font-size: inherit; }
               </tr>
             </thead>
             <tbody>
-              <tr class="x"><td class="t">300</td><td><span class="pin x"><i class="lp"></i>pick_sen.output</span></td><td><span data-l="en">part at the end stop</span><span data-l="ko" lang="ko">부품이 엔드 스톱에 옴</span></td><td class="ax"><div class="axis"><i style="--t: 300"></i></div></td></tr>
-              <tr class="y"><td class="t">960</td><td><span class="pin y"><i class="lp"></i>pick</span></td><td><span data-l="en">pad takes part 1</span><span data-l="ko" lang="ko">패드가 부품 1을 집음</span></td><td class="ax"><div class="axis"><i style="--t: 960"></i></div></td></tr>
+              <tr class="x"><td class="t">300</td><td><span class="pin x"><i class="lp"></i>pick_sen.output</span></td><td><span data-l="en">part at the end stop</span><span data-l="ko" lang="ko">부품 엔드 스톱 도달</span></td><td class="ax"><div class="axis"><i style="--t: 300"></i></div></td></tr>
+              <tr class="y"><td class="t">960</td><td><span class="pin y"><i class="lp"></i>pick</span></td><td><span data-l="en">pad takes part 1</span><span data-l="ko" lang="ko">패드 부품 1 흡착</span></td><td class="ax"><div class="axis"><i style="--t: 960"></i></div></td></tr>
               <tr class="x"><td class="t">970</td><td><span class="pin x"><i class="lp"></i>vac_sw.output</span></td><td><span data-l="en">vacuum reached</span><span data-l="ko" lang="ko">진공 도달</span></td><td class="ax"><div class="axis"><i style="--t: 970"></i></div></td></tr>
-              <tr class="x"><td class="t">1380</td><td><span class="pin x"><i class="lp"></i>z_cyl.sensor_back</span></td><td><span data-l="en">pad up</span><span data-l="ko" lang="ko">패드가 올라옴</span></td><td class="ax"><div class="axis"><i style="--t: 1380"></i></div></td></tr>
-              <tr class="x"><td class="t">2090</td><td><span class="pin x"><i class="lp"></i>x_cyl.sensor_fwd</span></td><td><span data-l="en">over the nest</span><span data-l="ko" lang="ko">지그 위에 옴</span></td><td class="ax"><div class="axis"><i style="--t: 2090"></i></div></td></tr>
-              <tr class="x"><td class="t">2520</td><td><span class="pin x"><i class="lp"></i>nest_sen.output</span></td><td><span data-l="en">part in the nest</span><span data-l="ko" lang="ko">부품이 지그에 들어감</span></td><td class="ax"><div class="axis"><i style="--t: 2520"></i></div></td></tr>
-              <tr class="y"><td class="t">2600</td><td><span class="pin y"><i class="lp"></i>release</span></td><td><span data-l="en">part 1 left at <code>place</code></span><span data-l="ko" lang="ko">부품 1을 <code>place</code>에 놓음</span></td><td class="ax"><div class="axis"><i style="--t: 2600"></i></div></td></tr>
-              <tr class="x"><td class="t">3740</td><td><span class="pin x"><i class="lp"></i>x_cyl.sensor_back</span></td><td><span data-l="en">back over the conveyor</span><span data-l="ko" lang="ko">컨베이어 위로 돌아옴</span></td><td class="ax"><div class="axis"><i style="--t: 3740"></i></div></td></tr>
+              <tr class="x"><td class="t">1380</td><td><span class="pin x"><i class="lp"></i>z_cyl.sensor_back</span></td><td><span data-l="en">pad up</span><span data-l="ko" lang="ko">패드 상승 완료</span></td><td class="ax"><div class="axis"><i style="--t: 1380"></i></div></td></tr>
+              <tr class="x"><td class="t">2090</td><td><span class="pin x"><i class="lp"></i>x_cyl.sensor_fwd</span></td><td><span data-l="en">over the nest</span><span data-l="ko" lang="ko">지그 상부 도달</span></td><td class="ax"><div class="axis"><i style="--t: 2090"></i></div></td></tr>
+              <tr class="x"><td class="t">2520</td><td><span class="pin x"><i class="lp"></i>nest_sen.output</span></td><td><span data-l="en">part in the nest</span><span data-l="ko" lang="ko">부품 지그 안착</span></td><td class="ax"><div class="axis"><i style="--t: 2520"></i></div></td></tr>
+              <tr class="y"><td class="t">2600</td><td><span class="pin y"><i class="lp"></i>release</span></td><td><span data-l="en">part 1 left at <code>place</code></span><span data-l="ko" lang="ko">부품 1 <code>place</code>에 해제</span></td><td class="ax"><div class="axis"><i style="--t: 2600"></i></div></td></tr>
+              <tr class="x"><td class="t">3740</td><td><span class="pin x"><i class="lp"></i>x_cyl.sensor_back</span></td><td><span data-l="en">back over the conveyor</span><span data-l="ko" lang="ko">컨베이어 상부 복귀</span></td><td class="ax"><div class="axis"><i style="--t: 3740"></i></div></td></tr>
             </tbody>
           </table>
           <div class="legend">
-            <span><i class="lp" style="--k: var(--sensor)"></i><span data-l="en">sensor pin turns on</span><span data-l="ko" lang="ko">센서 핀이 켜짐</span></span>
-            <span><i class="lp" style="--k: var(--coil)"></i><span data-l="en">part event in <code>part_log</code></span><span data-l="ko" lang="ko"><code>part_log</code>의 부품 사건</span></span>
+            <span><i class="lp" style="--k: var(--sensor)"></i><span data-l="en">sensor pin ON</span><span data-l="ko" lang="ko">센서 핀 ON</span></span>
+            <span><i class="lp" style="--k: var(--coil)"></i><span data-l="en">part event in <code>part_log</code></span><span data-l="ko" lang="ko"><code>part_log</code>의 부품 이벤트</span></span>
           </div>
           <p class="more"><a href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/pick-and-place"><span data-l="en">Sheet, model and simulation input of this example</span><span data-l="ko" lang="ko">이 예시의 원리 시트, 모델, 시뮬레이션 입력</span></a></p>
         </div>
@@ -584,39 +584,39 @@ pre code { font-size: inherit; }
     </div>
 
     <div class="blk" id="photo">
-      <h3><span data-l="en">From a photo</span><span data-l="ko" lang="ko">사진으로 만들기</span></h3>
-      <p class="sub" data-l="en">A photo of the machine works in place of the words, with the same steps. The photo stays a file of the person; the model file does not hold it.</p>
-      <p class="sub" data-l="ko" lang="ko">말 대신 기계 사진을 줘도 같은 순서로 모델을 만듭니다. 사진은 사람의 파일로 남고 모델 파일에는 들어가지 않습니다.</p>
+      <h3><span data-l="en">Modelling from a photo</span><span data-l="ko" lang="ko">사진 기반 모델 작성</span></h3>
+      <p class="sub" data-l="en">A photo of the machine can replace the description, with the same procedure. The photo stays a file of the user; the model file does not contain it.</p>
+      <p class="sub" data-l="ko" lang="ko">글 대신 기계 사진으로도 같은 절차에 따라 모델을 작성합니다. 사진은 사용자 파일로 남고 모델 파일에는 포함되지 않습니다.</p>
       <ol class="seq">
-        <li><p data-l="en"><strong>The person gives</strong> a photo of the machine and, if they have it, one length measured with a tape between two things that the photo shows.</p><p data-l="ko" lang="ko"><strong>사람은</strong> 기계 사진과, 있으면 사진에 보이는 두 지점 사이를 줄자로 잰 길이 하나를 줍니다.</p></li>
-        <li><p data-l="en"><strong>The skill</strong> names the machine with a certainty word (<code>sure</code>, <code>likely</code>, <code>unsure</code>) and lists every actuator and sensor in the photo: two air tubes read as a double-acting cylinder, switches in the body slots as end sensors. It tags every number <code>guess</code>, <code>ref</code> (scaled from a known length in the photo), <code>measured</code>, <code>label</code> or <code>user</code>, and asks in one message for what the photo does not show.</p><p data-l="ko" lang="ko"><strong>스킬은</strong> 기계가 무엇인지 정해 확실한 정도(<code>sure</code>, <code>likely</code>, <code>unsure</code>)를 적고 사진에 보이는 구동기와 센서를 모두 적습니다. 에어 튜브 두 개는 복동 실린더로, 슬롯에 낀 스위치는 끝 센서로 읽습니다. 숫자마다 <code>guess</code>, <code>ref</code>(사진 속 아는 길이로 비례 계산), <code>measured</code>, <code>label</code>, <code>user</code> 가운데 하나를 붙이고 사진에 없는 것은 한 번에 묻습니다.</p></li>
-        <li><p data-l="en"><strong>The server</strong> returns <code>ask</code> with the draft: for each device, the sizes with no source or a <code>guess</code>, and one line for a measured reference size until the model's <code>refs</code> hold one.</p><p data-l="ko" lang="ko"><strong>서버는</strong> 초안의 답에 <code>ask</code>를 줍니다. 장치마다 근거가 없거나 <code>guess</code>인 치수를 모으고 모델의 <code>refs</code>에 잰 길이가 들어올 때까지 기준 치수 하나를 묻는 줄을 남깁니다.</p></li>
-        <li><p data-l="en"><strong>The check:</strong> the person confirms the draft on the 3D page, and <code>model_render</code> draws the model from the side of the photo to compare the two.</p><p data-l="ko" lang="ko"><strong>확인:</strong> 사람이 3D 화면에서 초안을 확정합니다. <code>model_render</code>로 사진과 같은 쪽에서 모델을 그려 사진과 나란히 비교합니다.</p></li>
+        <li><p data-l="en"><strong>The person gives</strong> a photo of the machine and, if they have it, one length measured with a tape between two things that the photo shows.</p><p data-l="ko" lang="ko"><strong>사용자:</strong> 기계 사진을 제공하고 가능하면 사진에 보이는 두 지점 사이의 실측 길이 하나를 함께 제공합니다.</p></li>
+        <li><p data-l="en"><strong>The skill</strong> names the machine with a certainty word (<code>sure</code>, <code>likely</code>, <code>unsure</code>) and lists every actuator and sensor in the photo: two air tubes read as a double-acting cylinder, switches in the body slots as end sensors. It tags every number <code>guess</code>, <code>ref</code> (scaled from a known length in the photo), <code>measured</code>, <code>label</code> or <code>user</code>, and asks in one message for what the photo does not show.</p><p data-l="ko" lang="ko"><strong>스킬:</strong> 기계를 식별해 확실성(<code>sure</code>, <code>likely</code>, <code>unsure</code>)을 기록하고 사진에 보이는 구동기와 센서를 모두 목록화합니다. 에어 튜브 2개는 복동 실린더로, 바디 슬롯의 스위치는 끝단 센서로 판독합니다. 모든 수치에 <code>guess</code>, <code>ref</code>(사진 속 기준 길이로 비례 산출), <code>measured</code>, <code>label</code>, <code>user</code> 중 하나를 표시하고 사진으로 확인할 수 없는 항목은 한 번에 질의합니다.</p></li>
+        <li><p data-l="en"><strong>The server</strong> returns <code>ask</code> with the draft: for each device, the sizes with no source or a <code>guess</code>, and one line for a measured reference size until the model's <code>refs</code> hold one.</p><p data-l="ko" lang="ko"><strong>서버:</strong> 초안 응답에 <code>ask</code>를 반환합니다. 근거가 없거나 <code>guess</code>인 치수를 장치별로 모으고 모델의 <code>refs</code>에 실측 길이가 들어올 때까지 기준 치수 1개를 요청하는 항목을 유지합니다.</p></li>
+        <li><p data-l="en"><strong>The check:</strong> the person confirms the draft on the 3D page, and <code>model_render</code> draws the model from the side of the photo to compare the two.</p><p data-l="ko" lang="ko"><strong>확인:</strong> 사용자가 3D 화면에서 초안을 확정하고 <code>model_render</code>로 사진과 같은 방향의 그림을 받아 사진과 대조합니다.</p></li>
       </ol>
 
       <h4 class="pex-h"><span data-l="en">Example: from one public photo to a model</span><span data-l="ko" lang="ko">예시: 공개 사진 한 장에서 모델까지</span></h4>
       <div class="pex">
         <figure><img src="assets/xyz-dispenser-photo.png" width="423" height="386" loading="lazy" alt="A three-axis cartesian robot on an aluminium profile frame, a peristaltic pump and two boxes of vials" data-alt-ko="알루미늄 프로파일 틀 위의 3축 직교 로봇, 연동 펌프, 바이알 상자 두 개">
-          <figcaption><span data-l="en">The photo that the person gives (cropped)</span><span data-l="ko" lang="ko">사람이 준 사진(잘라 냄)</span></figcaption></figure>
+          <figcaption><span data-l="en">Input photo from the user (cropped)</span><span data-l="ko" lang="ko">사용자가 제공한 사진(로봇 영역만 잘라 사용)</span></figcaption></figure>
         <figure><img src="assets/xyz-dispenser-render.png" width="328" height="283" loading="lazy" alt="The twin model of the same machine, drawn by model_render" data-alt-ko="같은 기계를 model_render로 그린 트윈 모델">
-          <figcaption><span data-l="en"><code>model_render</code>, <code>view: "iso"</code>, cropped to the model</span><span data-l="ko" lang="ko"><code>model_render</code>의 <code>view: "iso"</code> 그림(모델 부분만 잘라 냄)</span></figcaption></figure>
+          <figcaption><span data-l="en"><code>model_render</code>, <code>view: "iso"</code>, cropped to the model</span><span data-l="ko" lang="ko"><code>model_render</code> 결과(<code>view: "iso"</code>, 모델 영역만 잘라 사용)</span></figcaption></figure>
       </div>
       <p class="pex-cr" data-l="en">Photo: Matthew T. Wayland and Matthias Landgraf, Figure 3 of “A Cartesian Coordinate Robot for Dispensing Fruit Fly Food” (Journal of Open Hardware, 2018, DOI <a href="https://doi.org/10.5334/joh.9">10.5334/joh.9</a>), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, via <a href="https://commons.wikimedia.org/wiki/File:A_Cartesian_Coordinate_Robot_for_Dispensing_Fruit_Fly_Food_-_Figure_3_-_System_overview.png">Wikimedia Commons</a>. Cropped to the robot; the inset pictures and their arrows are removed. The model uses only this photo and the Commons description.</p>
-      <p class="pex-cr" data-l="ko" lang="ko">사진: Matthew T. Wayland, Matthias Landgraf, “A Cartesian Coordinate Robot for Dispensing Fruit Fly Food”의 Figure 3(Journal of Open Hardware, 2018, DOI <a href="https://doi.org/10.5334/joh.9">10.5334/joh.9</a>), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:A_Cartesian_Coordinate_Robot_for_Dispensing_Fruit_Fly_Food_-_Figure_3_-_System_overview.png">위키미디어 공용</a>. 로봇만 남기고 잘라 냈고(cropped) 삽입 그림과 그 화살표는 지웠습니다. 모델의 근거는 이 사진과 공용의 설명 글뿐입니다.</p>
+      <p class="pex-cr" data-l="ko" lang="ko">사진: Matthew T. Wayland, Matthias Landgraf, “A Cartesian Coordinate Robot for Dispensing Fruit Fly Food”의 Figure 3(Journal of Open Hardware, 2018, DOI <a href="https://doi.org/10.5334/joh.9">10.5334/joh.9</a>), <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:A_Cartesian_Coordinate_Robot_for_Dispensing_Fruit_Fly_Food_-_Figure_3_-_System_overview.png">위키미디어 공용</a>. 로봇 영역만 잘라 사용했으며(cropped) 삽입 그림과 화살표는 지웠습니다. 모델은 이 사진과 공용의 설명 글만을 근거로 작성했습니다.</p>
       <div class="pex">
         <div>
-          <h5><span data-l="en">What the skill read from the photo</span><span data-l="ko" lang="ko">스킬이 사진에서 읽은 것</span></h5>
+          <h5><span data-l="en">What the skill read from the photo</span><span data-l="ko" lang="ko">스킬의 사진 판독 결과</span></h5>
           <ul class="pex-l">
             <li data-l="en">A cartesian robot that fills vials with fly food; certainty <code>likely</code>.</li>
-            <li data-l="ko" lang="ko">바이알에 초파리 먹이를 채우는 직교 로봇입니다. 확실한 정도는 <code>likely</code>입니다.</li>
+            <li data-l="ko" lang="ko">바이알에 초파리 먹이를 분주하는 직교 로봇으로 식별했습니다(확실성 <code>likely</code>).</li>
             <li data-l="en">Reference part: the stepper motor on the z column, taken as a NEMA 17 (42.3 mm face), about 2.1 mm per pixel there. The 20 mm profiles, the 80 mm end rail and the 24 mm vials are scaled from it (<code>ref</code>); the long base is a <code>guess</code>.</li>
-            <li data-l="ko" lang="ko">기준 부품: Z 기둥 위 스테핑 모터를 NEMA 17(면 42.3 mm)로 가정해 그 깊이에서 약 2.1 mm/px로 잡았습니다. 20 mm 프로파일, 80 mm 끝 레일, 24 mm 바이알은 이 비율로 정했고(<code>ref</code>) 긴 베이스는 <code>guess</code>입니다.</li>
+            <li data-l="ko" lang="ko">기준 부품: Z 기둥 상단의 스테핑 모터를 NEMA 17(플랜지 42.3 mm)로 가정하고 해당 깊이에서 약 2.1 mm/px로 환산했습니다. 20 mm 프로파일, 80 mm 끝단 레일, 지름 24 mm 바이알은 이 비율로 산출했으며(<code>ref</code>) 긴 베이스는 <code>guess</code>로 두었습니다.</li>
             <li data-l="en">Three axes (gantry y, carriage x, moving z column) as <code>servo_axis</code> that follow a position word; 13 pins with <code>pump.run</code>.</li>
-            <li data-l="ko" lang="ko">축 셋(갠트리 y, 캐리지 x, 오르내리는 z 기둥)은 위치 명령을 따르는 <code>servo_axis</code>로 적었습니다. 핀은 <code>pump.run</code>을 넣어 13개입니다.</li>
+            <li data-l="ko" lang="ko">3축(갠트리 y, 캐리지 x, 승강 z 기둥)은 위치 지령을 따르는 <code>servo_axis</code>로 정의했습니다. 핀은 <code>pump.run</code>을 포함해 13개입니다.</li>
           </ul>
         </div>
         <div>
-          <h5><span data-l="en">The <code>model_draft</code> reply (0 warnings, excerpt)</span><span data-l="ko" lang="ko"><code>model_draft</code>의 답(경고 0개, 발췌)</span></h5>
+          <h5><span data-l="en">The <code>model_draft</code> reply (0 warnings, excerpt)</span><span data-l="ko" lang="ko"><code>model_draft</code> 응답(경고 0건, 발췌)</span></h5>
 <pre><code>"facts": {
   "basis_counts": {"guess": 34, "ref": 2},
   "devices": [{"id": "z_axis", "axis_word": "down",
@@ -629,7 +629,7 @@ pre code { font-size: inherit; }
            on the real rig"}
 ]</code></pre>
           <p class="pex-n" data-l="en"><code>ask</code> has 7 items. <code>model_sim</code> fills two vials (<code>"ran": "scene"</code>, no alarm, 6.4 s).</p>
-          <p class="pex-n" data-l="ko" lang="ko"><code>ask</code>는 7개입니다. <code>model_sim</code>은 바이알 두 개를 채우고 알람 없이 6.4 s에 끝납니다(<code>"ran": "scene"</code>).</p>
+          <p class="pex-n" data-l="ko" lang="ko"><code>ask</code>는 7건입니다. <code>model_sim</code>은 바이알 2개를 분주하고 알람 없이 6.4 s에 종료됩니다(<code>"ran": "scene"</code>).</p>
         </div>
       </div>
     </div>
@@ -638,17 +638,17 @@ pre code { font-size: inherit; }
 
 <section id="built" aria-labelledby="h-built">
   <div class="wrap">
-    <h2 id="h-built"><span data-l="en">How it is built</span><span data-l="ko" lang="ko">만들어진 방식</span></h2>
+    <h2 id="h-built"><span data-l="en">Architecture</span><span data-l="ko" lang="ko">구조</span></h2>
     <div class="built">
       <!-- 그림은 옆 목록과 같은 내용이라 읽기 도구에는 숨긴다 -->
       <svg class="dia" viewBox="0 0 340 452" aria-hidden="true">
         <rect class="b" x="60" y="1" width="220" height="44" rx="6"/>
         <text class="m" x="170" y="21" text-anchor="middle">skills/twin-modeling</text>
-        <text class="s" x="170" y="37" text-anchor="middle" data-l="en">the procedure</text><text class="s" x="170" y="37" text-anchor="middle" data-l="ko">절차 글</text>
+        <text class="s" x="170" y="37" text-anchor="middle" data-l="en">the procedure</text><text class="s" x="170" y="37" text-anchor="middle" data-l="ko">작성 절차</text>
         <path class="w" d="m170,45v20"/><path class="h" d="m165,63h10l-5 8z"/>
         <rect class="b" x="60" y="72" width="220" height="44" rx="6"/>
         <text class="t" x="170" y="92" text-anchor="middle" data-l="en">AI client</text><text class="t" x="170" y="92" text-anchor="middle" data-l="ko">AI 클라이언트</text>
-        <text class="s" x="170" y="108" text-anchor="middle" data-l="en">writes the model</text><text class="s" x="170" y="108" text-anchor="middle" data-l="ko">모델을 씀</text>
+        <text class="s" x="170" y="108" text-anchor="middle" data-l="en">writes the model</text><text class="s" x="170" y="108" text-anchor="middle" data-l="ko">모델 작성</text>
         <path class="w" d="m170,116v34"/><path class="h" d="m165,148h10l-5 8z"/>
         <text class="s" x="180" y="138" data-l="en">stdio · MCP · 5 tools</text><text class="s" x="180" y="138" data-l="ko">stdio · MCP · 도구 5개</text>
         <rect class="exe" x="1" y="157" width="338" height="196" rx="8"/>
@@ -667,16 +667,16 @@ pre code { font-size: inherit; }
         <text class="s" x="180" y="375">HTTP · 127.0.0.1</text>
         <rect class="b" x="60" y="394" width="220" height="56" rx="6"/>
         <text class="t" x="170" y="416" text-anchor="middle" data-l="en">Browser: 3D page</text><text class="t" x="170" y="416" text-anchor="middle" data-l="ko">브라우저: 3D 화면</text>
-        <text class="s" x="170" y="434" text-anchor="middle" data-l="en">drawn with three.js</text><text class="s" x="170" y="434" text-anchor="middle" data-l="ko">three.js로 그림</text>
+        <text class="s" x="170" y="434" text-anchor="middle" data-l="en">drawn with three.js</text><text class="s" x="170" y="434" text-anchor="middle" data-l="ko">three.js 렌더링</text>
       </svg>
       <ul class="facts">
-        <li><span class="k"><span data-l="en">Program</span><span data-l="ko" lang="ko">프로그램</span></span><span><span data-l="en">One executable, one process. The AI client starts it, and it ends when its input ends.</span><span data-l="ko" lang="ko">실행 파일 하나, 프로세스 하나입니다. AI 클라이언트가 시작하고 입력이 끝나면 함께 끝납니다.</span></span></li>
-        <li><span class="k">MCP</span><span><span data-l="en">A stdio server with five tools:</span><span data-l="ko" lang="ko">표준 입출력(stdio) 서버이고 도구는 다섯 개입니다.</span>
+        <li><span class="k"><span data-l="en">Program</span><span data-l="ko" lang="ko">프로그램</span></span><span><span data-l="en">One executable, one process. The AI client starts it, and it ends when its input ends.</span><span data-l="ko" lang="ko">실행 파일 1개, 프로세스 1개입니다. AI 클라이언트가 실행하고 표준 입력이 닫히면 종료됩니다.</span></span></li>
+        <li><span class="k">MCP</span><span><span data-l="en">A stdio server with five tools:</span><span data-l="ko" lang="ko">표준 입출력(stdio) 서버이며 도구는 5개입니다.</span>
           <ul class="tools" aria-label="Tools"><li>model_catalog</li><li>model_draft</li><li>model_get</li><li>model_sim</li><li>model_render</li></ul></span></li>
-        <li><span class="k"><span data-l="en">3D page</span><span data-l="ko" lang="ko">3D 화면</span></span><span><span data-l="en">Listens on <code>127.0.0.1</code> only and draws with three.js. The person confirms drafts there.</span><span data-l="ko" lang="ko"><code>127.0.0.1</code>에서만 듣고 three.js로 그립니다. 사람은 여기서 초안을 확정합니다.</span></span></li>
-        <li><span class="k"><span data-l="en">Language</span><span data-l="ko" lang="ko">언어</span></span><span><span data-l="en">Rust. The only dependency is <code>serde_json</code>.</span><span data-l="ko" lang="ko">Rust입니다. 외부 크레이트는 <code>serde_json</code> 하나뿐입니다.</span></span></li>
-        <li><span class="k"><span data-l="en">Crates</span><span data-l="ko" lang="ko">크레이트</span></span><span><span data-l="en"><code>twin-engine</code>: model and simulation. <code>twin-page</code>: store and page. <code>twin-modeling-mcp</code>: the server.</span><span data-l="ko" lang="ko"><code>twin-engine</code>: 모델과 시뮬레이션. <code>twin-page</code>: 저장소와 화면. <code>twin-modeling-mcp</code>: 서버.</span></span></li>
-        <li><span class="k"><span data-l="en">Skill</span><span data-l="ko" lang="ko">스킬</span></span><span><span data-l="en">The folder <code>skills/twin-modeling</code>. <code>model_catalog</code> returns the same text as <code>guide.modeling</code>.</span><span data-l="ko" lang="ko"><code>skills/twin-modeling</code> 폴더입니다. 같은 글을 <code>model_catalog</code>가 <code>guide.modeling</code>으로도 돌려줍니다.</span></span></li>
+        <li><span class="k"><span data-l="en">3D page</span><span data-l="ko" lang="ko">3D 화면</span></span><span><span data-l="en">Listens on <code>127.0.0.1</code> only and draws with three.js. The person confirms drafts there.</span><span data-l="ko" lang="ko"><code>127.0.0.1</code>에서만 접속을 받고 three.js로 렌더링합니다. 사용자는 이 화면에서 초안을 확정합니다.</span></span></li>
+        <li><span class="k"><span data-l="en">Language</span><span data-l="ko" lang="ko">언어</span></span><span><span data-l="en">Rust. The only dependency is <code>serde_json</code>.</span><span data-l="ko" lang="ko">Rust입니다. 외부 크레이트는 <code>serde_json</code> 1개뿐입니다.</span></span></li>
+        <li><span class="k"><span data-l="en">Crates</span><span data-l="ko" lang="ko">크레이트</span></span><span><span data-l="en"><code>twin-engine</code>: model and simulation. <code>twin-page</code>: store and page. <code>twin-modeling-mcp</code>: the server.</span><span data-l="ko" lang="ko"><code>twin-engine</code>은 모델과 시뮬레이션, <code>twin-page</code>는 저장소와 화면, <code>twin-modeling-mcp</code>는 서버를 담당합니다.</span></span></li>
+        <li><span class="k"><span data-l="en">Skill</span><span data-l="ko" lang="ko">스킬</span></span><span><span data-l="en">The folder <code>skills/twin-modeling</code>. <code>model_catalog</code> returns the same text as <code>guide.modeling</code>.</span><span data-l="ko" lang="ko"><code>skills/twin-modeling</code> 폴더입니다. <code>model_catalog</code>도 같은 글을 <code>guide.modeling</code>으로 반환합니다.</span></span></li>
         <li><span class="k"><span data-l="en">Cloud service</span><span data-l="ko" lang="ko">클라우드 서비스</span></span><span><span data-l="en">None</span><span data-l="ko" lang="ko">없음</span></span></li>
       </ul>
     </div>
@@ -689,9 +689,9 @@ pre code { font-size: inherit; }
     <ol class="inst">
       <li>
         <div>
-          <h3><span data-l="en">Get the server</span><span data-l="ko" lang="ko">서버 받기</span></h3>
+          <h3><span data-l="en">Get the server</span><span data-l="ko" lang="ko">서버 내려받기</span></h3>
           <p data-l="en">Download <code>twin-modeling-mcp.exe</code> (Windows x86-64) from the <a href="https://github.com/BlackBuddle/twin-modeling-mcp/releases/latest">latest release</a>, or build it from source:</p>
-          <p data-l="ko" lang="ko"><a href="https://github.com/BlackBuddle/twin-modeling-mcp/releases/latest">최신 릴리스</a>에서 <code>twin-modeling-mcp.exe</code>(Windows x86-64)를 받거나, 소스에서 빌드합니다.</p>
+          <p data-l="ko" lang="ko"><a href="https://github.com/BlackBuddle/twin-modeling-mcp/releases/latest">최신 릴리스</a>에서 <code>twin-modeling-mcp.exe</code>(Windows x86-64)를 내려받거나 소스에서 빌드합니다.</p>
           <pre><code>cargo build --release -p twin-modeling-mcp</code></pre>
         </div>
       </li>
@@ -720,11 +720,11 @@ pre code { font-size: inherit; }
   <div class="wrap">
     <h2 id="h-lim"><span data-l="en">Limits</span><span data-l="ko" lang="ko">한계</span></h2>
     <ul class="limits">
-      <li><span data-l="en">Kinematic model only: no physics, no collision, no inverse kinematics.</span><span data-l="ko" lang="ko">운동학 모델만 다룹니다. 물리, 충돌, 역운동학은 없습니다.</span></li>
-      <li><span data-l="en">A simulation pass is not a test on real equipment.</span><span data-l="ko" lang="ko">시뮬레이션을 통과해도 실제 장비에서 시험한 것은 아닙니다.</span></li>
-      <li><span data-l="en">Every number is a guess until someone measures it.</span><span data-l="ko" lang="ko">모든 숫자는 누가 재기 전까지 추정값입니다.</span></li>
-      <li><span data-l="en">The Windows x86-64 binary is the tested one. Linux and macOS build from source and are not tested.</span><span data-l="ko" lang="ko">시험한 것은 Windows x86-64 실행 파일입니다. Linux와 macOS는 소스에서 빌드하며 시험하지 않았습니다.</span></li>
-      <li><span data-l="en">The page has English and Korean only.</span><span data-l="ko" lang="ko">화면 글은 영어와 한국어만 있습니다.</span></li>
+      <li><span data-l="en">Kinematic model only: no dynamics, no collision, no inverse kinematics.</span><span data-l="ko" lang="ko">운동학 모델만 제공합니다. 동역학, 충돌, 역기구학은 계산하지 않습니다.</span></li>
+      <li><span data-l="en">A simulation pass does not replace a test on real equipment.</span><span data-l="ko" lang="ko">시뮬레이션 통과가 실제 장비 시험을 대신하지는 않습니다.</span></li>
+      <li><span data-l="en">Every number is an assumed value until it is measured.</span><span data-l="ko" lang="ko">모든 수치는 실측 전까지 가정값입니다.</span></li>
+      <li><span data-l="en">The Windows x86-64 binary is the tested one. Linux and macOS build from source and are not tested.</span><span data-l="ko" lang="ko">시험한 환경은 Windows x86-64 실행 파일입니다. Linux와 macOS는 소스 빌드는 가능하지만 시험하지 않았습니다.</span></li>
+      <li><span data-l="en">The page has English and Korean only.</span><span data-l="ko" lang="ko">화면 언어는 영어와 한국어만 지원합니다.</span></li>
     </ul>
   </div>
 </section>
@@ -736,8 +736,8 @@ pre code { font-size: inherit; }
     <h2><span data-l="en">Licence and credits</span><span data-l="ko" lang="ko">라이선스와 고지</span></h2>
     <p data-l="en"><code>twin-modeling-mcp</code> is licensed under AGPL-3.0-or-later. It uses three.js and meshoptimizer (MIT) and design values of <a href="https://github.com/wheresryan22/anatomy">Anatomy</a> (MIT); see <a href="https://github.com/BlackBuddle/twin-modeling-mcp/blob/main/THIRD_PARTY.md">THIRD_PARTY.md</a>.</p>
     <p data-l="ko" lang="ko"><code>twin-modeling-mcp</code>의 라이선스는 AGPL-3.0-or-later입니다. three.js와 meshoptimizer(MIT), <a href="https://github.com/wheresryan22/anatomy">Anatomy</a>의 디자인 값(MIT)을 씁니다. <a href="https://github.com/BlackBuddle/twin-modeling-mcp/blob/main/THIRD_PARTY.md">THIRD_PARTY.md</a>를 참고하세요.</p>
-    <p data-l="en">The pictures on this page are screenshots of the program's own 3D page.</p>
-    <p data-l="ko" lang="ko">이 페이지의 그림은 프로그램의 3D 화면을 찍은 것입니다.</p>
+    <p data-l="en">The pictures on this page are screenshots of the program's own 3D page, except the photo of the photo-based example (credited above).</p>
+    <p data-l="ko" lang="ko">이 페이지의 그림은 프로그램의 3D 화면을 캡처한 것입니다. 사진 기반 예시의 사진은 예외이며 출처는 위에 적었습니다.</p>
     <p data-l="en">News of the project: Threads <a href="https://www.threads.com/@kimkyuho_98">@kimkyuho_98</a>.</p>
     <p data-l="ko" lang="ko">프로젝트 소식은 Threads <a href="https://www.threads.com/@kimkyuho_98">@kimkyuho_98</a>에 올립니다.</p>
   </div>
@@ -777,10 +777,10 @@ pre code { font-size: inherit; }
   var go = document.getElementById('rpGo'), pick = document.getElementById('rpModel'), note = document.getElementById('rpNote');
   var poster = document.getElementById('rpPoster'), src = poster.parentNode.querySelector('source'), mod = null, busy = false;
   var NOTE = {
-    reduced: ['Your system asks for reduced motion, so the 3D replay stays off. The picture shows the model.', '시스템에서 동작 줄이기를 켜 두어 3D 재생은 꺼 둡니다. 그림으로 모델을 볼 수 있습니다.'],
-    gl: ['This browser cannot draw WebGL, so the picture stays.', '이 브라우저는 WebGL로 그리지 못해 그림만 보여 드립니다.'],
-    file: ['The 3D view works only when the page comes from a web server, not from a file on disk.', '3D 보기는 웹 서버에서 연 페이지에서만 됩니다. 내려받은 파일로 열면 되지 않습니다.'],
-    fail: ['The 3D view could not load. The picture stays.', '3D 보기를 불러오지 못해 그림을 그대로 둡니다.'],
+    reduced: ['Your system asks for reduced motion, so the 3D replay stays off. The picture shows the model.', '시스템의 동작 줄이기 설정이 켜져 있어 3D 재생을 사용하지 않습니다. 정지 그림으로 모델을 확인할 수 있습니다.'],
+    gl: ['This browser cannot draw WebGL, so the picture stays.', '이 브라우저는 WebGL을 지원하지 않아 정지 그림만 표시합니다.'],
+    file: ['The 3D view works only when the page comes from a web server, not from a file on disk.', '3D 보기는 웹 서버로 연 페이지에서만 동작합니다. 내려받은 파일을 직접 열면 동작하지 않습니다.'],
+    fail: ['The 3D view could not load. The picture stays.', '3D 보기를 불러오지 못해 정지 그림을 표시합니다.'],
     wait: ['Loading the 3D view…', '3D 보기를 불러오는 중입니다…']
   };
   function say(k) {
