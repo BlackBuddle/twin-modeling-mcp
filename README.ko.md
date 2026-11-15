@@ -1,5 +1,9 @@
 # twin-modeling-mcp
 
+![3D 화면에서 시뮬레이션 한 사이클을 재생하는 픽앤플레이스 예시](docs/assets/pick-and-place.gif)
+
+*로컬 3D 화면의 픽앤플레이스 예시: `model_sim` 한 사이클(4.2 s)을 1×로 재생한 모습입니다.*
+
 기계에 대한 설명이나 사진을 **트윈 모델**로 바꿔 주는 도구입니다. 트윈 모델은 기계를 프레임, 관절, 구동기, 센서,
 이름 붙은 신호(핀)로 적은 작은 JSON입니다. `twin-modeling-mcp`는 이 모델을 검사하고 시뮬레이션해서 브라우저의
 3D 화면에 그려 주는 로컬 MCP 서버입니다. PLC도 클라우드 서비스도 필요 없습니다.
@@ -99,6 +103,26 @@ claude mcp add twin-modeling -- <실행파일-경로>/twin-modeling-mcp --dir <�
 시뮬레이션은 일정한 속도로 움직이는 운동학 모델입니다. 물리 계산은 없고 시뮬레이션을 통과했다고 실제 장비에서
 시험한 것은 아닙니다.
 
+## 모델을 만드는 순서
+
+함께 들어 있는 스킬 `skills/twin-modeling`의 단계입니다.
+
+**AI 클라이언트에서**
+
+1. 기계를 알아봅니다.
+2. 작동 원리를 찾습니다.
+3. 원리 시트(8개 항목)를 씁니다.
+4. 각 부분을 종류, 프리셋, 기본 요소에 대응시킵니다.
+5. 트윈 모델 JSON을 씁니다. 신호는 핀이고 PLC 주소는 없습니다.
+6. 직접 검사합니다.
+
+**서버와 함께**
+
+7. 초안: `model_draft`로 보내고 `facts`를 읽습니다.
+8. `model_sim`으로 시뮬레이션합니다.
+9. `model_render`와 3D 화면으로 그립니다.
+10. 사람이 초안을 확정합니다.
+
 ## 예시: 말에서 모델까지
 
 아래 내용은 모두 `twin-modeling-mcp` 0.1.0이 실제로 낸 결과입니다. 파일은
@@ -178,18 +202,52 @@ claude mcp add twin-modeling -- <실행파일-경로>/twin-modeling-mcp --dir <�
 
 ![3D 화면의 픽앤플레이스 모델](examples/pick-and-place/picture.png)
 
-### 갤러리
+## 갤러리
 
 폴더마다 `sheet.md`, `model.json`, `sim.json`, 그림이 있습니다. 모든 모델은 이 서버로 초안을 만들고 확정하고
 시뮬레이션했습니다(`model_draft` 경고 없음, `model_sim` 알람 없음). 치수와 시간은 모두 설계 추정값입니다(각 시트의 7번 참고).
 
-| 모델 | 보여 주는 것 | 그림 |
-|---|---|---|
-| [`pick-and-place`](examples/pick-and-place/) | 갠트리형 스테이션: 로드리스 X 실린더, 가이드 Z 실린더, 흡착 패드, 광센서 달린 공급 컨베이어, 근접 센서 달린 지그, 밸브 매니폴드. 장치 14개. 960 ms에 집고 2600 ms에 놓음. | <img src="examples/pick-and-place/picture.png" width="240" alt="픽앤플레이스 스테이션"> |
-| [`ball-screw-axis`](examples/ball-screw-axis/) | 레일 두 줄 위의 서보 축: 모터, 커플링, 리드 10 mm 볼나사, 캐리지, 케이블 체인, 원점·리밋 스위치. 장치 5개. 목표 300, 150, 0 mm이고 `busy`는 1500, 2600, 3600 ms에 꺼짐. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="볼나사 축"> |
-| [`index-table`](examples/index-table/) | 기어드 모터가 달린 캠 인덱서 위 8스테이션 다이얼, 부품이 든 지그 8개, 기둥에 단 압입 실린더, 부품 센서. 장치 8개. `in_pos`는 640, 2340, 4040 ms에 켜지고 압입은 1050, 2750, 4450 ms에 내려감. | <img src="examples/index-table/picture.png" width="240" alt="인덱스 테이블"> |
-| [`robot-arm`](examples/robot-arm/) | 로봇 셀: 받침대 위 6축 로봇(프리셋 `robot_6r`), 흡착 툴, 지그 테이블, 배출 벨트, 펜스, 타워 램프. 장치 11개. 2900 ms에 집고 4950 ms에 벨트에 놓고 6400 ms에 원점 복귀. | <img src="examples/robot-arm/picture.png" width="240" alt="로봇 셀"> |
-| [`cam-lifter`](examples/cam-lifter/) | 롤러 종동절이 붙은 배 모양 캠(27점 승강 표), 가이드 승강판, 기어드 모터, 상승·하강·원점 스위치. 장치 4개. `up_sw`는 1540 ms부터 1670 ms까지 켜지고 한 바퀴는 3090 ms에 끝남. | <img src="examples/cam-lifter/picture.png" width="240" alt="캠 리프터"> |
+움직이는 그림은 모두 그 모델의 마지막 `model_sim` 실행을 3D 화면에서 1×로, 100 ms씩 걸으며 재생한 것입니다.
+
+### 공압 픽앤플레이스
+
+![픽앤플레이스 스테이션의 시뮬레이션 한 사이클](docs/assets/pick-and-place.gif)
+
+로드리스 X 실린더, 가이드 Z 실린더, 흡착 패드를 단 갠트리와 공급 컨베이어, 지그, 밸브 매니폴드. 장치 14개.  
+시뮬레이션: 집기 960 ms, 놓기 2600 ms, 복귀 3740 ms.  
+폴더: [`examples/pick-and-place`](examples/pick-and-place/)
+
+### 볼나사 서보 축
+
+![볼나사 서보 축의 시뮬레이션 한 사이클](docs/assets/ball-screw-axis.gif)
+
+서보 모터, 커플링, 리드 10 mm 볼나사, 레일 두 줄 위의 캐리지, 케이블 체인, 원점·리밋 스위치. 장치 5개.  
+시뮬레이션: 목표 300, 150, 0 mm, busy는 1500, 2600, 3600 ms에 꺼짐.  
+폴더: [`examples/ball-screw-axis`](examples/ball-screw-axis/)
+
+### 8스테이션 인덱스 테이블
+
+![8스테이션 인덱스 테이블의 시뮬레이션 한 사이클](docs/assets/index-table.gif)
+
+기어드 모터가 달린 캠 인덱서 위의 다이얼, 부품이 든 지그 8개, 기둥에 단 압입 실린더, 부품 센서. 장치 8개.  
+시뮬레이션: 인포지션 640, 2340, 4040 ms, 압입 1050, 2750, 4450 ms.  
+폴더: [`examples/index-table`](examples/index-table/)
+
+### 로봇 셀
+
+![로봇 셀의 시뮬레이션 한 사이클](docs/assets/robot-arm.gif)
+
+받침대 위 6축 로봇(프리셋 `robot_6r`), 흡착 툴, 지그 테이블, 배출 벨트, 펜스. 장치 11개.  
+시뮬레이션: 집기 2900 ms, 벨트에 놓기 4950 ms, 원점 6400 ms.  
+폴더: [`examples/robot-arm`](examples/robot-arm/)
+
+### 캠 리프터
+
+![캠 리프터의 시뮬레이션 한 사이클](docs/assets/cam-lifter.gif)
+
+롤러 종동절이 붙은 배 모양 캠(27점 승강 표), 가이드 승강판, 기어드 모터, 상승·하강·원점 스위치. 장치 4개.  
+시뮬레이션: 상승 스위치 1540~1670 ms, 3090 ms에 다시 원점.  
+폴더: [`examples/cam-lifter`](examples/cam-lifter/)
 
 ## 도구
 

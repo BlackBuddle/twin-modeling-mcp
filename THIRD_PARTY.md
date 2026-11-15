@@ -38,7 +38,8 @@ cd crates/twin-page/ui/vendor && find . -type f ! -name .gitattributes -exec sha
 ## Pictures
 
 The pictures in `examples/` and `docs/assets/` are screenshots of this program's own 3D page, made for this
-repository. No third-party image is used.
+repository. The animations in `docs/assets/*.gif` are frames of the same page, joined by a small script written for
+this repository. No third-party image is used.
 
 ## Design values (no code): Anatomy
 

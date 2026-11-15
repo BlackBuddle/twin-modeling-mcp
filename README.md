@@ -1,5 +1,9 @@
 # twin-modeling-mcp
 
+![The pick-and-place example plays one simulated cycle on the 3D page](docs/assets/pick-and-place.gif)
+
+*The pick-and-place example on the local 3D page: one `model_sim` cycle (4.2 s), played back at 1×.*
+
 Turn words or photos of a machine into a **twin model**: a small JSON description of the machine as frames, joints,
 drivers, sensors and named signals (pins). `twin-modeling-mcp` is a local MCP server that checks the model, simulates
 it, and draws it on a 3D page in your browser. It needs no PLC and no cloud service.
@@ -99,6 +103,26 @@ text wins (the skill compares its `Version:` line with `guide.modeling_version` 
 
 A simulation is a kinematic model with constant speeds. There is no physics. A pass is not a test on real equipment.
 
+## How a model is made
+
+The steps of the bundled skill `skills/twin-modeling`.
+
+**In the AI client**
+
+1. Identify the machine.
+2. Find the working principle.
+3. Write the principle sheet (8 parts).
+4. Map each part to kinds, presets or primitives.
+5. Write the twin model JSON. Signals are pins; there is no PLC address.
+6. Check it yourself.
+
+**With the server**
+
+7. Draft: send it with `model_draft` and read the `facts`.
+8. Simulate with `model_sim`.
+9. Draw with `model_render` and the 3D page.
+10. The person confirms the draft.
+
 ## Example: from words to a model
 
 All of this is the real output of `twin-modeling-mcp` 0.1.0. The files are in
@@ -171,19 +195,53 @@ The run ends at 4200 ms with no alarm.
 
 ![The pick-and-place model on the 3D page](examples/pick-and-place/picture.png)
 
-### Gallery
+## Gallery
 
 Each folder holds `sheet.md`, `model.json`, `sim.json` and the picture. Every model was drafted, confirmed and
 simulated with this server (`model_draft` with no warning, `model_sim` with no alarm). All sizes and times are design
 guesses (see part 7 of each sheet).
 
-| Model | What it shows | Picture |
-|---|---|---|
-| [`pick-and-place`](examples/pick-and-place/) | Gantry station: rodless X cylinder, guided Z cylinder, vacuum pad, infeed conveyor with a photo sensor, nest with a prox sensor, valve terminal. 14 devices. Pick at 960 ms, place at 2600 ms. | <img src="examples/pick-and-place/picture.png" width="240" alt="pick and place station"> |
-| [`ball-screw-axis`](examples/ball-screw-axis/) | Servo axis on two rails: motor, coupling, 10 mm lead screw, carriage, cable chain, home and limit switches. 5 devices. Targets 300, 150 and 0 mm; `busy` ends at 1500, 2600 and 3600 ms. | <img src="examples/ball-screw-axis/picture.png" width="240" alt="ball-screw axis"> |
-| [`index-table`](examples/index-table/) | Eight-station dial on a cam indexer with a geared motor, eight nests with parts, press cylinder on a column, part sensor. 8 devices. `in_pos` on at 640, 2340 and 4040 ms; press down at 1050, 2750 and 4450 ms. | <img src="examples/index-table/picture.png" width="240" alt="index table"> |
-| [`robot-arm`](examples/robot-arm/) | Robot cell: six-axis arm (preset `robot_6r`) on a pedestal, vacuum tool, fixture table, outfeed belt, fence, tower light. 11 devices. Pick at 2900 ms, place on the belt at 4950 ms, home at 6400 ms. | <img src="examples/robot-arm/picture.png" width="240" alt="robot cell"> |
-| [`cam-lifter`](examples/cam-lifter/) | Pear cam with a roller follower (a 27-point lift table), guided lift plate, geared motor, up, down and home switches. 4 devices. `up_sw` on from 1540 to 1670 ms; one turn ends at 3090 ms. | <img src="examples/cam-lifter/picture.png" width="240" alt="cam lifter"> |
+Each animation is the last `model_sim` run of that model, played on the 3D page at 1× and stepped every 100 ms.
+
+### Pneumatic pick and place
+
+![Pick-and-place station: one simulated cycle](docs/assets/pick-and-place.gif)
+
+Gantry with a rodless X cylinder, a guided Z cylinder and a vacuum pad; infeed conveyor, nest, valve terminal. 14 devices.  
+Sim: pick 960 ms, place 2600 ms, back 3740 ms.  
+Folder: [`examples/pick-and-place`](examples/pick-and-place/)
+
+### Ball-screw servo axis
+
+![Ball-screw servo axis: one simulated cycle](docs/assets/ball-screw-axis.gif)
+
+Servo motor, coupling, ball screw with 10 mm lead, carriage on two rails, cable chain, home and limit switches. 5 devices.  
+Sim: targets 300, 150, 0 mm; busy ends at 1500, 2600, 3600 ms.  
+Folder: [`examples/ball-screw-axis`](examples/ball-screw-axis/)
+
+### Eight-station index table
+
+![Eight-station index table: one simulated cycle](docs/assets/index-table.gif)
+
+Dial on a cam indexer with a geared motor, eight nests with parts, press cylinder on a column, part sensor. 8 devices.  
+Sim: in-position at 640, 2340, 4040 ms; press down at 1050, 2750, 4450 ms.  
+Folder: [`examples/index-table`](examples/index-table/)
+
+### Robot cell
+
+![Robot cell: one simulated cycle](docs/assets/robot-arm.gif)
+
+Six-axis arm (preset `robot_6r`) on a pedestal, vacuum tool, fixture table, outfeed belt, fence. 11 devices.  
+Sim: pick 2900 ms, place on the belt 4950 ms, home 6400 ms.  
+Folder: [`examples/robot-arm`](examples/robot-arm/)
+
+### Cam lifter
+
+![Cam lifter: one simulated cycle](docs/assets/cam-lifter.gif)
+
+Pear cam with a roller follower (27-point lift table), guided lift plate, geared motor, up, down and home switches. 4 devices.  
+Sim: up switch 1540 to 1670 ms, home again at 3090 ms.  
+Folder: [`examples/cam-lifter`](examples/cam-lifter/)
 
 ## The tools
 

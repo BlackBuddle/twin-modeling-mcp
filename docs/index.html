@@ -40,6 +40,7 @@ a:hover { text-decoration-thickness: 2px; }
 code, .mono { font-family: var(--mono); font-size: 0.9em; font-variant-numeric: tabular-nums; }
 p code, li code, td code, figcaption code { padding: 0 4px; border: 1px solid var(--line); border-radius: 4px; background: var(--s3); white-space: nowrap; }
 img { display: block; max-width: 100%; height: auto; }
+picture { display: block; }
 .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gut); }
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 12px; top: 12px; z-index: 9; padding: 8px 12px; background: var(--panel); border: 1px solid var(--ink); border-radius: 6px; }
@@ -227,8 +228,8 @@ pre code { font-size: inherit; }
         </ul>
       </div>
       <figure class="shot">
-        <img src="assets/pick-and-place.png" width="1280" height="720" data-alt-ko="3D 화면에 그린 공압 픽앤플레이스 모델" alt="The pick-and-place model drawn on the 3D page">
-        <figcaption><span data-l="en">The pick-and-place example on the local 3D page</span><span data-l="ko" lang="ko">로컬 3D 화면에 그린 픽앤플레이스 예시</span></figcaption>
+        <picture><source srcset="assets/pick-and-place.png" media="(prefers-reduced-motion: reduce)"><img src="assets/pick-and-place.gif" width="640" height="360" loading="lazy" data-alt-ko="3D 화면에서 시뮬레이션 한 사이클을 재생하는 공압 픽앤플레이스 모델" alt="The pick-and-place model playing one simulated cycle on the 3D page"></picture>
+        <figcaption><span data-l="en">The pick-and-place example on the local 3D page: one <code>model_sim</code> cycle (4.2&nbsp;s) played at 1×</span><span data-l="ko" lang="ko">로컬 3D 화면의 픽앤플레이스 예시: <code>model_sim</code> 한 사이클(4.2&nbsp;s)을 1×로 재생</span></figcaption>
       </figure>
     </div>
   </div>
@@ -315,7 +316,7 @@ pre code { font-size: inherit; }
     <ul class="cards">
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/pick-and-place">
-          <div class="pic"><img src="assets/pick-and-place.png" width="1280" height="720" alt="Pneumatic pick-and-place station on the 3D page" data-alt-ko="3D 화면의 공압 픽앤플레이스 스테이션"></div>
+          <div class="pic"><picture><source srcset="assets/pick-and-place.png" media="(prefers-reduced-motion: reduce)"><img src="assets/pick-and-place.gif" width="640" height="360" loading="lazy" alt="Pneumatic pick-and-place station: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 공압 픽앤플레이스 스테이션: 시뮬레이션 한 사이클"></picture></div>
           <div class="body">
             <h3><span data-l="en">Pneumatic pick and place</span><span data-l="ko" lang="ko">공압 픽앤플레이스</span></h3>
             <p data-l="en">Gantry with a rodless X cylinder, a guided Z cylinder and a vacuum pad; infeed conveyor, nest, valve terminal. 14 devices.</p>
@@ -328,7 +329,7 @@ pre code { font-size: inherit; }
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/ball-screw-axis">
-          <div class="pic"><img src="assets/ball-screw-axis.png" width="1280" height="720" alt="Ball-screw servo axis on the 3D page" data-alt-ko="3D 화면의 볼나사 서보 축"></div>
+          <div class="pic"><picture><source srcset="assets/ball-screw-axis.png" media="(prefers-reduced-motion: reduce)"><img src="assets/ball-screw-axis.gif" width="640" height="360" loading="lazy" alt="Ball-screw servo axis: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 볼나사 서보 축: 시뮬레이션 한 사이클"></picture></div>
           <div class="body">
             <h3><span data-l="en">Ball-screw servo axis</span><span data-l="ko" lang="ko">볼나사 서보 축</span></h3>
             <p data-l="en">Servo motor, coupling, ball screw with 10 mm lead, carriage on two rails, cable chain, home and limit switches. 5 devices.</p>
@@ -341,7 +342,7 @@ pre code { font-size: inherit; }
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/index-table">
-          <div class="pic"><img src="assets/index-table.png" width="1280" height="720" alt="Eight-station index table on the 3D page" data-alt-ko="3D 화면의 8스테이션 인덱스 테이블"></div>
+          <div class="pic"><picture><source srcset="assets/index-table.png" media="(prefers-reduced-motion: reduce)"><img src="assets/index-table.gif" width="640" height="360" loading="lazy" alt="Eight-station index table: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 8스테이션 인덱스 테이블: 시뮬레이션 한 사이클"></picture></div>
           <div class="body">
             <h3><span data-l="en">Eight-station index table</span><span data-l="ko" lang="ko">8스테이션 인덱스 테이블</span></h3>
             <p data-l="en">Dial on a cam indexer with a geared motor, eight nests with parts, press cylinder on a column, part sensor. 8 devices.</p>
@@ -354,7 +355,7 @@ pre code { font-size: inherit; }
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/robot-arm">
-          <div class="pic"><img src="assets/robot-arm.png" width="1280" height="720" alt="Robot cell with a six-axis arm on the 3D page" data-alt-ko="3D 화면의 6축 로봇 셀"></div>
+          <div class="pic"><picture><source srcset="assets/robot-arm.png" media="(prefers-reduced-motion: reduce)"><img src="assets/robot-arm.gif" width="640" height="360" loading="lazy" alt="Robot cell with a six-axis arm: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 6축 로봇 셀: 시뮬레이션 한 사이클"></picture></div>
           <div class="body">
             <h3><span data-l="en">Robot cell</span><span data-l="ko" lang="ko">로봇 셀</span></h3>
             <p data-l="en">Six-axis arm (preset <code>robot_6r</code>) on a pedestal, vacuum tool, fixture table, outfeed belt, fence. 11 devices.</p>
@@ -367,7 +368,7 @@ pre code { font-size: inherit; }
       </li>
       <li>
         <a class="card" href="https://github.com/BlackBuddle/twin-modeling-mcp/tree/main/examples/cam-lifter">
-          <div class="pic"><img src="assets/cam-lifter.png" width="1280" height="720" alt="Cam lifter on the 3D page" data-alt-ko="3D 화면의 캠 리프터"></div>
+          <div class="pic"><picture><source srcset="assets/cam-lifter.png" media="(prefers-reduced-motion: reduce)"><img src="assets/cam-lifter.gif" width="640" height="360" loading="lazy" alt="Cam lifter: one simulated cycle on the 3D page" data-alt-ko="3D 화면의 캠 리프터: 시뮬레이션 한 사이클"></picture></div>
           <div class="body">
             <h3><span data-l="en">Cam lifter</span><span data-l="ko" lang="ko">캠 리프터</span></h3>
             <p data-l="en">Pear cam with a roller follower (27-point lift table), guided lift plate, geared motor, up, down and home switches. 4 devices.</p>
