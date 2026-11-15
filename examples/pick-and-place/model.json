@@ -1,0 +1,71 @@
+{
+  "schema": 2,
+  "name": "pneumatic pick and place",
+  "devices": [
+    {
+      "id": "stand",
+      "kind": "solid",
+      "label": "Stand",
+      "mount": "floor",
+      "pose": {"pos": [-260, 0, 0], "rot": [0, 0, 0]},
+      "shape": [
+        {"t": "box", "size": [160, 20, 160], "pos": [0, 10, 0]},
+        {"t": "box", "size": [60, 310, 60], "pos": [0, 175, 0]}
+      ],
+      "basis": {"pose": "guess", "shape": "guess"}
+    },
+    {
+      "id": "x_cyl",
+      "kind": "cylinder_double",
+      "label": "X cylinder",
+      "mount": "floor",
+      "pose": {"pos": [-110, 330, 0], "rot": [0, 0, 0]},
+      "params": {"bore_mm": 25, "stroke_mm": 200, "valve": "5/2-double"},
+      "timing": {"lag_ms": 30, "fwd_ms": 500, "back_ms": 450},
+      "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "body", "items": [
+          {"t": "box", "size": [275, 35, 35], "pos": [0, 17.5, 0], "tone": "blue"},
+          {"t": "box", "size": [20, 41, 41], "pos": [-127.5, 17.5, 0], "tone": "dark"},
+          {"t": "box", "size": [20, 41, 41], "pos": [127.5, 17.5, 0], "tone": "dark"}]},
+        {"name": "rod", "frame": "out", "items": [
+          {"t": "cyl", "d": 10, "len": 250, "axis": "x", "pos": [-125, 0, 0], "tone": "metal"},
+          {"t": "box", "size": [16, 30, 30], "pos": [-8, 0, 0], "tone": "dark"}]}
+      ]}
+    },
+    {
+      "id": "z_cyl",
+      "kind": "cylinder_double",
+      "label": "Z cylinder",
+      "on": "x_cyl.out",
+      "mount": "surface",
+      "pose": {"pos": [40, 0, 0], "rot": [0, 0, -90]},
+      "params": {"bore_mm": 16, "stroke_mm": 100, "valve": "5/2-double"},
+      "timing": {"lag_ms": 30, "fwd_ms": 300, "back_ms": 280},
+      "basis": {"bore_mm": "guess", "stroke_mm": "user", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "body", "items": [
+          {"t": "box", "size": [148, 22.4, 22.4], "pos": [0, 11.2, 0], "tone": "blue"},
+          {"t": "box", "size": [14, 28, 28], "pos": [-67, 11.2, 0], "tone": "dark"},
+          {"t": "box", "size": [14, 28, 28], "pos": [67, 11.2, 0], "tone": "dark"}]},
+        {"name": "rod", "frame": "out", "items": [
+          {"t": "cyl", "d": 6.4, "len": 132, "axis": "x", "pos": [-66, 0, 0], "tone": "metal"}]}
+      ]}
+    },
+    {
+      "id": "pad",
+      "kind": "vacuum_pad",
+      "label": "Suction cup",
+      "on": "z_cyl.out",
+      "mount": "surface",
+      "pose": {"pos": [40, 0, 0], "rot": [0, 0, 90]},
+      "params": {"reach_mm": 40},
+      "basis": {"reach_mm": "guess", "pose": "guess"},
+      "skin": {"groups": [
+        {"name": "cup", "items": [
+          {"t": "cyl", "d": 8, "len": 28, "axis": "y", "pos": [0, 26, 0], "tone": "metal"},
+          {"t": "cyl", "d": 34, "d2": 14, "len": 12, "axis": "y", "pos": [0, 6, 0], "tone": "black"}]}
+      ]}
+    }
+  ]
+}

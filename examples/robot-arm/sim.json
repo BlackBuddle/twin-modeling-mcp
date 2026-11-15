@@ -1,0 +1,16 @@
+{
+  "name": "robot-arm",
+  "events": [
+    {"t_ms": 0, "pin": "robot.prog", "value": 2},
+    {"t_ms": 100, "pin": "robot.start", "value": 1},
+    {"t_ms": 200, "pin": "robot.start", "value": 0},
+    {"t_ms": 1500, "pin": "robot.prog", "value": 3},
+    {"t_ms": 1600, "pin": "robot.start", "value": 1},
+    {"t_ms": 1700, "pin": "robot.start", "value": 0},
+    {"t_ms": 3300, "pin": "robot.prog", "value": 1},
+    {"t_ms": 3400, "pin": "robot.start", "value": 1},
+    {"t_ms": 3500, "pin": "robot.start", "value": 0}
+  ],
+  "watch": ["robot.busy", "robot.done"],
+  "total_ms": 5200
+}

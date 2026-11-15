@@ -1,0 +1,21 @@
+{
+  "name": "pick-and-place",
+  "events": [
+    {"t_ms": 0, "pin": "z_cyl.coil_fwd", "value": 1},
+    {"t_ms": 500, "pin": "pad.coil", "value": 1},
+    {"t_ms": 700, "pin": "z_cyl.coil_fwd", "value": 0},
+    {"t_ms": 700, "pin": "z_cyl.coil_back", "value": 1},
+    {"t_ms": 1100, "pin": "z_cyl.coil_back", "value": 0},
+    {"t_ms": 1100, "pin": "x_cyl.coil_fwd", "value": 1},
+    {"t_ms": 1700, "pin": "x_cyl.coil_fwd", "value": 0},
+    {"t_ms": 1700, "pin": "z_cyl.coil_fwd", "value": 1},
+    {"t_ms": 2100, "pin": "pad.coil", "value": 0},
+    {"t_ms": 2300, "pin": "z_cyl.coil_fwd", "value": 0},
+    {"t_ms": 2300, "pin": "z_cyl.coil_back", "value": 1},
+    {"t_ms": 2700, "pin": "z_cyl.coil_back", "value": 0},
+    {"t_ms": 2700, "pin": "x_cyl.coil_back", "value": 1},
+    {"t_ms": 3300, "pin": "x_cyl.coil_back", "value": 0}
+  ],
+  "watch": ["x_cyl.sensor_back", "x_cyl.sensor_fwd", "z_cyl.sensor_back", "z_cyl.sensor_fwd", "pad.coil"],
+  "total_ms": 3500
+}

@@ -1,0 +1,13 @@
+{
+  "name": "index-table",
+  "events": [
+    {"t_ms": 100, "pin": "table.run", "value": 1},
+    {"t_ms": 200, "pin": "table.run", "value": 0},
+    {"t_ms": 1000, "pin": "table.run", "value": 1},
+    {"t_ms": 1100, "pin": "table.run", "value": 0},
+    {"t_ms": 1900, "pin": "table.run", "value": 1},
+    {"t_ms": 2000, "pin": "table.run", "value": 0}
+  ],
+  "watch": ["table.home", "table.in_pos"],
+  "total_ms": 2800
+}

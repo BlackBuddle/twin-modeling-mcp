@@ -1,0 +1,36 @@
+{
+  "schema": 2,
+  "name": "eight-station index table",
+  "devices": [
+    {
+      "id": "table",
+      "kind": "index_table",
+      "label": "Index table",
+      "mount": "floor",
+      "params": {"stations": 8},
+      "basis": {"stations": "user"},
+      "mech": {
+        "preset": "index_table",
+        "args": {"move_ms": 600, "lag_ms": 50, "start_deg": 0, "window_deg": 1},
+        "basis": {"move_ms": "guess", "lag_ms": "guess"}
+      },
+      "skin": {"groups": [
+        {"name": "base", "items": [
+          {"t": "cyl", "d": 380, "len": 140, "axis": "y", "pos": [0, 70, 0], "tone": "dark"},
+          {"t": "box", "size": [420, 10, 420], "pos": [0, 5, 0], "tone": "metal"}]},
+        {"name": "plate", "frame": "table", "items": [
+          {"t": "cyl", "d": 360, "len": 16, "axis": "y", "pos": [0, 8, 0], "tone": "metal"},
+          {"t": "cyl", "d": 80, "len": 30, "axis": "y", "pos": [0, 15, 0], "tone": "dark"},
+          {"t": "box", "size": [50, 12, 50], "pos": [140, 22, 0], "tone": "orange"},
+          {"t": "box", "size": [50, 12, 50], "pos": [99, 22, 99], "tone": "orange"},
+          {"t": "box", "size": [50, 12, 50], "pos": [0, 22, 140], "tone": "orange"},
+          {"t": "box", "size": [50, 12, 50], "pos": [-99, 22, 99], "tone": "orange"},
+          {"t": "box", "size": [50, 12, 50], "pos": [-140, 22, 0], "tone": "orange"},
+          {"t": "box", "size": [50, 12, 50], "pos": [-99, 22, -99], "tone": "orange"},
+          {"t": "box", "size": [50, 12, 50], "pos": [0, 22, -140], "tone": "orange"},
+          {"t": "box", "size": [50, 12, 50], "pos": [99, 22, -99], "tone": "orange"},
+          {"t": "box", "size": [16, 14, 16], "pos": [172, 23, 0], "tone": "white"}]}
+      ]}
+    }
+  ]
+}

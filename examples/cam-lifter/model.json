@@ -1,0 +1,21 @@
+{"schema": 2, "name": "cam lifter", "devices": [
+ {"id": "cam", "kind": "machine", "mount": "floor",
+  "signals": [
+   {"name": "run", "dir": "out", "type": "bit"}, {"name": "cam_home", "dir": "in", "type": "bit"},
+   {"name": "up_sw", "dir": "in", "type": "bit"}, {"name": "down_sw", "dir": "in", "type": "bit"}],
+  "mech": {
+   "joints": [
+    {"name": "shaft", "type": "revolute", "on": "base", "pos": [0, 100, 0], "axis": "z", "wrap": true},
+    {"name": "lift", "type": "prismatic", "on": "base", "pos": [0, 160, 0], "axis": "y", "min": 0, "max": 40}],
+   "drivers": [{"type": "coils", "joint": "shaft", "fwd": "run", "valve": "none", "speed": 100}],
+   "couplings": [{"type": "table", "from": "shaft", "to": "lift", "period": 360,
+    "points": [[0, 0], [60, 0], [150, 40], [210, 40], [300, 0], [360, 0]]}],
+   "sensors": [
+    {"type": "window", "joint": "shaft", "at": 0, "window": 1.5, "out": "cam_home"},
+    {"type": "window", "joint": "lift", "at": 40, "window": 1, "out": "up_sw"},
+    {"type": "window", "joint": "lift", "at": 0, "window": 1, "out": "down_sw"}],
+   "basis": {"points": "guess", "speed": "guess"}},
+  "skin": {"groups": [
+   {"name": "frame", "items": [{"t": "box", "size": [20, 200, 60], "pos": [-90, 100, 0], "tone": "metal"}]},
+   {"name": "disc", "frame": "shaft", "items": [{"t": "cyl", "d": 100, "len": 20, "axis": "z", "pos": [0, 0, 0], "tone": "dark"}]},
+   {"name": "plate", "frame": "lift", "items": [{"t": "box", "size": [120, 10, 60], "pos": [0, 5, 0], "tone": "orange"}]}]}}]}

@@ -1,0 +1,56 @@
+{
+  "schema": 2,
+  "name": "six-axis robot arm",
+  "devices": [
+    {
+      "id": "robot",
+      "kind": "robot_arm",
+      "label": "Robot arm",
+      "mount": "floor",
+      "signals": [
+        {"name": "start", "dir": "out", "type": "bit"},
+        {"name": "prog", "dir": "out", "type": "word"},
+        {"name": "busy", "dir": "in", "type": "bit"},
+        {"name": "done", "dir": "in", "type": "bit"}
+      ],
+      "mech": {
+        "preset": "robot_6r",
+        "args": {
+          "base_h_mm": 300, "upper_mm": 400, "fore_mm": 400, "wrist_mm": 100,
+          "programs": [
+            {"no": 1, "segments": [{"ms": 1500, "to": [0, 0, 0, 0, 0, 0]}]},
+            {"no": 2, "segments": [{"ms": 1200, "to": [0, 60, -100, 0, 40, 0]}]},
+            {"no": 3, "segments": [{"ms": 1500, "to": [90, 60, -100, 0, 40, 0]}]}
+          ]
+        },
+        "basis": {"base_h_mm": "guess", "upper_mm": "guess", "fore_mm": "guess", "wrist_mm": "guess", "programs": "guess"}
+      },
+      "skin": {"groups": [
+        {"name": "base", "items": [{"t": "cyl", "d": 260, "len": 80, "axis": "y", "pos": [0, 40, 0], "tone": "dark"}]},
+        {"name": "column", "frame": "j1", "items": [{"t": "cyl", "d": 180, "len": 220, "axis": "y", "pos": [0, 190, 0], "tone": "orange"}]},
+        {"name": "upper_arm", "frame": "j2", "items": [
+          {"t": "cyl", "d": 140, "len": 160, "axis": "z", "pos": [0, 0, 0], "tone": "dark"},
+          {"t": "box", "size": [90, 400, 90], "pos": [0, 200, 0], "tone": "orange"}]},
+        {"name": "forearm", "frame": "j3", "items": [
+          {"t": "cyl", "d": 110, "len": 130, "axis": "z", "pos": [0, 0, 0], "tone": "dark"},
+          {"t": "box", "size": [70, 400, 70], "pos": [0, 200, 0], "tone": "orange"}]},
+        {"name": "wrist", "frame": "j5", "items": [
+          {"t": "cyl", "d": 64, "len": 80, "axis": "z", "pos": [0, 0, 0], "tone": "dark"},
+          {"t": "box", "size": [50, 100, 50], "pos": [0, 50, 0], "tone": "orange"}]},
+        {"name": "flange", "frame": "j6", "items": [{"t": "cyl", "d": 50, "len": 16, "axis": "y", "pos": [0, -8, 0], "tone": "metal"}]}
+      ]}
+    },
+    {
+      "id": "tool",
+      "kind": "solid",
+      "label": "Suction tool",
+      "on": "robot.flange",
+      "mount": "surface",
+      "shape": [
+        {"t": "cyl", "d": 40, "len": 40, "axis": "y", "pos": [0, 20, 0]},
+        {"t": "cyl", "d": 24, "len": 30, "axis": "y", "pos": [0, 55, 0]}
+      ],
+      "basis": {"shape": "guess"}
+    }
+  ]
+}

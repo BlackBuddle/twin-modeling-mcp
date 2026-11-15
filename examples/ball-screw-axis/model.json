@@ -1,0 +1,38 @@
+{
+  "schema": 2,
+  "name": "ball-screw servo axis",
+  "devices": [
+    {
+      "id": "screw",
+      "kind": "servo_axis",
+      "label": "Ball-screw axis",
+      "mount": "floor",
+      "params": {"stroke_mm": 300, "home_mm": 0, "home_at": "-x", "addr_grows": "away", "lead_mm": 16},
+      "basis": {"stroke_mm": "guess", "lead_mm": "label"},
+      "signals": [
+        {"name": "servo_on", "dir": "out", "type": "bit"},
+        {"name": "target", "dir": "out", "type": "word"},
+        {"name": "busy", "dir": "in", "type": "bit"},
+        {"name": "home_sw", "dir": "in", "type": "bit"}
+      ],
+      "mech": {
+        "preset": "servo_screw",
+        "args": {"word": "target", "per_mm": 10, "speed_mm_s": 100},
+        "sensors": [{"type": "window", "joint": "carriage", "at": 0, "window": 1.5, "out": "home_sw"}],
+        "basis": {"speed_mm_s": "guess", "per_mm": "guess"}
+      },
+      "skin": {"groups": [
+        {"name": "body", "items": [
+          {"t": "box", "size": [500, 60, 80], "pos": [0, 30, 0], "tone": "metal"},
+          {"t": "box", "size": [480, 6, 24], "pos": [0, 63, 0], "tone": "dark"}]},
+        {"name": "carriage", "frame": "carriage", "items": [
+          {"t": "box", "size": [80, 20, 80], "pos": [0, -10, 0], "tone": "orange"},
+          {"t": "box", "size": [100, 8, 100], "pos": [0, 4, 0], "tone": "white"}]},
+        {"name": "motor", "frame": "motor", "items": [
+          {"t": "cyl", "d": 30, "len": 30, "axis": "y", "pos": [0, -15, 0], "tone": "metal"},
+          {"t": "cyl", "d": 56, "len": 90, "axis": "y", "pos": [0, 45, 0], "tone": "dark"},
+          {"t": "box", "size": [8, 80, 8], "pos": [24, 45, 0], "tone": "white"}]}
+      ]}
+    }
+  ]
+}
