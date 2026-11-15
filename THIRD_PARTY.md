@@ -35,6 +35,20 @@ Check the SHA-256 values:
 cd crates/twin-page/ui/vendor && find . -type f ! -name .gitattributes -exec sha256sum {} \; | sort -k2
 ```
 
+## Copies in `docs/` (intro page 3D replay)
+
+The intro page `docs/index.html` (GitHub Pages) plays recorded cycles in 3D. GitHub Pages serves only `docs/`, so it holds
+copies of these files. Each copied JS file has one added first line that names its original and says to copy it again when
+the original changes; the rest of each file is the same as the original. `LICENSE` is copied with no change.
+
+| File in `docs/` | Original (in `crates/twin-page/ui/`) | Version | License |
+|---|---|---|---|
+| `vendor/three/three.module.js`, `vendor/three/three.core.js`, `vendor/three/LICENSE` | `vendor/three/` | three.js r187 (npm 0.187.0) | MIT |
+| `vendor/three/controls/OrbitControls.js`, `vendor/three/controls/TransformControls.js` | `vendor/three/controls/` | three.js r187 | MIT |
+| `vendor/twin-scene.js`, `vendor/twin-core.js` | `twin-scene.js`, `twin-core.js` | this project (copied at commit `eec4cb4`) | this project's licence |
+
+The data in `docs/replay/*.json` comes from this program's own page simulation of the models in `examples/`.
+
 ## Pictures
 
 The pictures in `examples/` and `docs/assets/` are screenshots of this program's own 3D page, made for this

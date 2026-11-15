@@ -7,6 +7,10 @@
 <title>twin-modeling-mcp</title>
 <meta name="description" content="Turn words or photos of a machine into a twin model you can check, simulate and draw.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231b1f24'/%3E%3Cpath fill='%23fff' d='M8 28h12V12h8v40h-8V36H8zM36 12h8v16h12v8H44v16h-8z'/%3E%3Crect x='28' y='20' width='8' height='24' fill='%2330a46c'/%3E%3C/svg%3E">
+<!-- 3D 재생기의 모듈 이름. 지도만 두고 아무것도 받지 않는다: 코드는 "3D로 보기"를 누를 때 받는다 -->
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/", "/vendor/twin-scene.js": "./vendor/twin-scene.js" } }
+</script>
 <style>
 /* twin-modeling-mcp 소개 페이지. 모양은 제품 화면 twin-model.html(시안 B)의 토큰과 조작을 따른다. 외부 글꼴·스크립트·그림 없음 */
 :root {
@@ -17,6 +21,15 @@
   --mono: ui-monospace, "SF Mono", Consolas, "D2Coding", monospace;
   --wrap: 1120px; --gut: 16px;
   color-scheme: light dark;
+  /* 3D 재생기의 렌더러가 읽는 값 (twin-model.html과 같다. 그림은 밝은 종이 위에만 그리므로 어두운 테마 값이 없다) */
+  --a-paper: #fbfbfa; --a-top: #ffffff; --a-s3: #f4f4f1; --a-hi: #26262a; --a-mid: #8a8a8f; --a-lo: #b4b4b8; --a-faint: #d4d4d6; --a-lit: #000000;
+  --a-halo: #8a8a80; --a-halo-op: 0.32; --a-stop: #f1b8ba;
+  --alarm: #e5484d; --exhaust: #c2410c; --motion: #26262a; --lamp-g: #30a46c; --lamp-a: #b37a00;
+  --sk-metal: #cdd0d5; --sk-black: #303136; --sk-dark: #5a5d65; --sk-white: #ffffff;
+  --sk-orange: #dc9259; --sk-green: #77b08a; --sk-red: #d27873; --sk-blue: #7697cc; --sk-yellow: #dcc264;
+  --sk-clear: #a9cfdc; --sk-clear-op: 0.3; --sk-mark: #ffb020;
+  --sk-line: #3d3d43; --sk-line-inv: #b9bcc3; --sk-line-clear: #5f8391; --sk-line-mark: #8a5a00;
+  --sk-lamp-off: #4a4c52; --sk-belt-mark: #7d8088;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -100,6 +113,47 @@ p { margin: 0; }
 @media (min-width: 640px) { .cards { grid-template-columns: 1fr 1fr; } }
 /* 넓은 화면: 위 줄 셋, 아래 줄 둘(넓게). 빈 칸 없이 */
 @media (min-width: 1000px) { .cards { grid-template-columns: repeat(6, 1fr); } .cards > li { grid-column: span 2; } .cards > li:nth-child(n+4) { grid-column: span 3; } }
+
+/* 3D 재생기: 그림 칸은 갤러리 그림처럼 어느 테마에서나 밝은 종이다. 조작은 .btn 문법, 손가락 크기 44 px */
+.rp { margin-top: 20px; }
+.rp-view { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: #fbfbfa;
+  --panel: #fbfbfa; --ink: #18181a; --muted: #57575a; --bad: #cf222e; color: var(--ink); color-scheme: light; }
+@media (max-width: 639px) { .rp-view { aspect-ratio: 4 / 3; } }
+.rp-view picture, .rp-view img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.rp-view canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; touch-action: none; }
+.rp-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 12px; }
+.rp-pick { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+.rp select { min-height: 44px; padding: 0 10px; border: 1px solid var(--muted); border-radius: 6px; background: var(--panel); color: var(--ink); font: 14px/1 var(--mono); }
+.rp-ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rp [hidden] { display: none !important; }
+.btn.ic { width: 44px; padding: 0; }
+.btn svg.fill { fill: currentColor; stroke: none; }
+.rp-time { min-width: 9.5em; color: var(--muted); font-size: 14px; }
+.rp-note { margin-top: 10px; color: var(--muted); font-size: 14px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* 렌더러가 그림 위에 얹는 것 (crates/twin-page/ui/twin-model.html의 같은 규칙, 그림 칸 안으로 한정) */
+.rp-view .tags { position: absolute; inset: 0; pointer-events: none; }
+.rp-view .strip { position: absolute; left: 0; top: 0; display: flex; flex-wrap: wrap; gap: 2px 8px; max-width: calc(100% - 16px); padding: 2px 7px; background: rgba(251, 251, 250, 0.94); border: 1px solid #d4d4d6; border-radius: 4px; font: 600 12px/17px var(--mono); white-space: nowrap; }
+.rp-view .strip.hide { display: none; }
+.rp-view .sl { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); }
+.rp-view .sl.on { color: var(--ink); font-weight: 700; }
+.rp-view .sl .lp { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--k) 75%, var(--ink)); background: transparent; flex: none; }
+.rp-view .sl.on .lp { background: var(--k); }
+.rp-view .sl.na .lp { border-style: dotted; border-color: #8a8a8f; }
+.rp-view .sl.x { --k: #30a46c; } .rp-view .sl.y { --k: #3e63dd; } .rp-view .sl.m { --k: #b37a00; } .rp-view .sl.d { --k: #8a8a8f; }
+.rp-view .strip.mini .sl span { display: none; }
+.rp-view .strip .ax { flex-basis: 100%; font: 600 12px/17px var(--font); }
+.rp-view .atag { position: absolute; left: 0; top: 0; padding: 1px 7px; background: var(--panel); border: 1.5px solid var(--bad); border-radius: 4px; color: var(--bad); font: 700 12px/17px var(--font); white-space: nowrap; }
+.rp-view .brk { position: absolute; left: 0; top: 0; pointer-events: none; --c: var(--ink); --t: 2px; --l: 14px;
+  background: linear-gradient(var(--c), var(--c)) left top / var(--l) var(--t), linear-gradient(var(--c), var(--c)) left top / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) right top / var(--l) var(--t), linear-gradient(var(--c), var(--c)) right top / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) left bottom / var(--l) var(--t), linear-gradient(var(--c), var(--c)) left bottom / var(--t) var(--l),
+    linear-gradient(var(--c), var(--c)) right bottom / var(--l) var(--t), linear-gradient(var(--c), var(--c)) right bottom / var(--t) var(--l);
+  background-repeat: no-repeat; }
+.rp-view .brk.hov { --c: var(--muted); --t: 1.5px; --l: 10px; }
+.rp-view .ltag, .rp-view .wtag, .rp-view .pname { position: absolute; left: 0; top: 0; padding: 0 6px; background: var(--panel); border: 1px solid #8a8a8f; border-radius: 4px; font: 600 12px/17px var(--mono); white-space: nowrap; pointer-events: none; }
+.rp-view .wtag[hidden], .rp-view .pname[hidden] { display: none; }
+.rp-view .lring { position: absolute; left: 0; top: 0; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 1.5px solid var(--ink); border-radius: 50%; }
 
 /* 카탈로그의 종류: 무리마다 제목 한 줄, 이름 칩 */
 .kinds { display: grid; gap: 0 32px; margin: 20px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
@@ -322,6 +376,41 @@ pre code { font-size: inherit; }
         </a>
       </li>
     </ul>
+
+    <div class="blk" id="replay">
+      <h3><span data-l="en">Replay a cycle in 3D</span><span data-l="ko" lang="ko">3D로 한 사이클 돌려 보기</span></h3>
+      <p class="sub" data-l="en">One recorded simulation cycle, drawn by the same renderer as the program's 3D page. Drag to turn the view; pinch or scroll to zoom. The code and the data load only when you press the button.</p>
+      <p class="sub" data-l="ko" lang="ko">기록해 둔 시뮬레이션 한 사이클을 프로그램의 3D 화면과 같은 렌더러로 그립니다. 끌면 시점이 돌아가고 두 손가락이나 휠로 확대합니다. 코드와 자료는 버튼을 눌러야 받습니다.</p>
+      <div class="rp">
+        <div class="rp-view" id="rpView">
+          <picture><source srcset="assets/pick-and-place.png" media="(prefers-reduced-motion: reduce)"><img id="rpPoster" src="assets/pick-and-place.gif" width="640" height="360" loading="lazy" alt="Preview of the chosen example" data-alt-ko="고른 예제의 미리 보기"></picture>
+        </div>
+        <div class="rp-bar">
+          <label class="rp-pick"><span data-l="en">Example</span><span data-l="ko" lang="ko">예제</span>
+            <select id="rpModel">
+              <option>pick-and-place</option><option>ball-screw-axis</option><option>index-table</option><option>robot-arm</option><option>cam-lifter</option>
+            </select>
+          </label>
+          <button type="button" class="btn primary" id="rpGo"><span data-l="en">View in 3D</span><span data-l="ko" lang="ko">3D로 보기</span></button>
+          <div class="rp-ctl" id="rpCtl" hidden>
+            <button type="button" class="btn ic" id="rpPlay" aria-pressed="false">
+              <svg class="fill" viewBox="0 0 24 24" aria-hidden="true" id="rpIcPlay"><path d="M7 4v16l13-8z"/></svg>
+              <svg class="fill" viewBox="0 0 24 24" aria-hidden="true" id="rpIcPause" hidden><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+              <span class="vh"><span data-l="en" id="rpPlayEn">Play</span><span data-l="ko" lang="ko" id="rpPlayKo">재생</span></span>
+            </button>
+            <button type="button" class="btn ic" id="rpRestart">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg>
+              <span class="vh"><span data-l="en">Restart</span><span data-l="ko" lang="ko">처음부터</span></span>
+            </button>
+            <label class="rp-speed"><span class="vh"><span data-l="en">Speed</span><span data-l="ko" lang="ko">속도</span></span>
+              <select id="rpSpeed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+            </label>
+            <output class="rp-time mono" id="rpTime"><span data-l="en" id="rpTimeEn">0.0 of 0.0 s</span><span data-l="ko" lang="ko" id="rpTimeKo">0.0초 중 0.0초</span></output>
+          </div>
+        </div>
+        <p class="rp-note" id="rpNote" role="status" hidden></p>
+      </div>
+    </div>
 
     <div class="blk">
       <h3><span data-l="en">Machine kinds in the catalog</span><span data-l="ko" lang="ko">카탈로그의 기계 종류</span></h3>
@@ -603,6 +692,40 @@ pre code { font-size: inherit; }
       var l = b.getAttribute('data-set'); apply(l);
       try { localStorage.setItem(KEY, l); } catch (e) {}
     });
+  });
+})();
+// 3D 재생기의 문: 누르기 전에는 아무것도 받지 않는다. 동작 줄이기, WebGL 없음, file:// 에서는 그림을 두고 짧은 글만 보인다
+(function () {
+  var go = document.getElementById('rpGo'), pick = document.getElementById('rpModel'), note = document.getElementById('rpNote');
+  var poster = document.getElementById('rpPoster'), src = poster.parentNode.querySelector('source'), mod = null, busy = false;
+  var NOTE = {
+    reduced: ['Your system asks for reduced motion, so the 3D replay stays off. The picture shows the model.', '시스템에서 동작 줄이기를 켜 두어 3D 재생은 꺼 둡니다. 그림으로 모델을 볼 수 있습니다.'],
+    gl: ['This browser cannot draw WebGL, so the picture stays.', '이 브라우저는 WebGL로 그리지 못해 그림만 보여 드립니다.'],
+    file: ['The 3D view works only when the page comes from a web server, not from a file on disk.', '3D 보기는 웹 서버에서 연 페이지에서만 됩니다. 내려받은 파일로 열면 되지 않습니다.'],
+    fail: ['The 3D view could not load. The picture stays.', '3D 보기를 불러오지 못해 그림을 그대로 둡니다.'],
+    wait: ['Loading the 3D view…', '3D 보기를 불러오는 중입니다…']
+  };
+  function say(k) {
+    note.textContent = '';
+    if (!k) { note.hidden = true; return; }
+    ['en', 'ko'].forEach(function (l, i) { var s = document.createElement('span'); s.setAttribute('data-l', l); if (l === 'ko') s.lang = 'ko'; s.textContent = NOTE[k][i]; note.appendChild(s); });
+    note.hidden = false;
+  }
+  function gl() { try { var c = document.createElement('canvas'), g = c.getContext('webgl2') || c.getContext('webgl'); var x = g && g.getExtension('WEBGL_lose_context'); if (x) x.loseContext(); return !!g; } catch (e) { return false; } }
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { go.hidden = true; say('reduced'); }
+  pick.addEventListener('change', function () {
+    var n = pick.value;
+    if (!mod) { src.srcset = 'assets/' + n + '.png'; poster.src = 'assets/' + n + '.gif'; return; }
+    mod.open(n).catch(function () { say('fail'); });
+  });
+  go.addEventListener('click', function () {
+    if (busy) return;
+    if (location.protocol === 'file:') return say('file');
+    if (!gl()) return say('gl');
+    busy = true; say('wait');
+    import('./js/replay.js').then(function (m) { mod = m; return m.open(pick.value); }).then(function () {
+      go.hidden = true; document.getElementById('rpCtl').hidden = false; say('');
+    }).catch(function () { mod = null; poster.parentNode.hidden = false; say('fail'); }).then(function () { busy = false; });
   });
 })();
 </script>
