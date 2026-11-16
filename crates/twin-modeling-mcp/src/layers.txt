@@ -5,6 +5,7 @@
 # A back edge that exists today is listed in layers-allow.txt; that list can only get shorter.
 sim 2 the model run for model_sim and the page simulation (pins, no program)
 serve 2 the HTTP listener, the token and the shared state of the server
+print 2 the extension print (cargo feature print): OpenSCAD text for model_print
 tools 3 the five MCP tools
 rpc 4 the stdio JSON-RPC loop
 main 5 program root: arguments and start

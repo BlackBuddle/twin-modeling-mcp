@@ -1,6 +1,8 @@
 //! `twin-modeling-mcp` (reusable-parts 3.1d-2, 설계 46의 3절): 트윈 모델을 검사하고 시뮬레이션하고 그리는 서버. 표준 입출력의 MCP 서버와 127.0.0.1의 3D 화면이 한 프로세스에 있다.
 //! PLC 코드가 없다(시험 `twin_crates_hold_no_plc_code`). 상주 프로세스가 아니다: 클라이언트가 시작하고 표준 입력이 끝나면 끝난다.
 
+#[cfg(feature = "print")]
+mod print;
 mod rpc;
 mod serve;
 mod sim;

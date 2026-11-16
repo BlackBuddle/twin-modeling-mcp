@@ -9,3 +9,7 @@ description = "Twin model server: a stdio MCP server and a localhost 3D page tha
 serde_json = "1"
 twin-engine = { path = "../twin-engine" }
 twin-page = { path = "../twin-page" }
+
+[features]
+# Extension: the sixth tool model_print (OpenSCAD text for 3D printing). Off by default.
+print = []

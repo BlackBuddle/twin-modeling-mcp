@@ -57,7 +57,9 @@ fn tools_list_has_the_five_tools_in_order_and_stays_below_its_limit() {
     let r = rpc_lines(&c, &[json!({"jsonrpc": "2.0", "id": 2, "method": "tools/list"}), json!({"jsonrpc": "2.0", "id": 3, "method": "nope"}), json!({"jsonrpc": "2.0", "method": "notifications/initialized"})]);
     assert_eq!(r.len(), 2, "a notification gets no reply");
     let names: Vec<&str> = r[0]["result"]["tools"].as_array().unwrap().iter().map(|t| t["name"].as_str().unwrap()).collect();
-    assert_eq!(names, ["model_catalog", "model_draft", "model_get", "model_sim", "model_render"]);
+    // 확장 `print`로 빌드하면 여섯째 도구가 끝에 붙는다(한도는 같다)
+    let extra: &[&str] = if cfg!(feature = "print") { &["model_print"] } else { &[] };
+    assert_eq!(names, [&["model_catalog", "model_draft", "model_get", "model_sim", "model_render"], extra].concat());
     let bytes = r[0].to_string().len();
     println!("tools/list reply: {bytes} bytes");
     assert!(bytes <= 5000, "{bytes}");

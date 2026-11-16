@@ -75,7 +75,8 @@ pub fn catalog() -> Value {
 }
 
 pub fn definitions() -> Vec<Value> {
-    vec![
+    #[allow(unused_mut)]
+    let mut v = vec![
         json!({"name": "model_catalog", "description": "Read-only. Returns the device kinds, presets, frames, tones and the modeling guide (guide.modeling) for a twin model. Call it first.", "inputSchema": {"type": "object", "properties": {}, "additionalProperties": false}}),
         json!({"name": "model_draft", "description": "Checks a twin model (a scene of schema 2 with pins and no PLC address) and saves it as a draft; the person confirms it on the page. sheet: the principle sheet text, saved beside the model. Returns facts, pins, ask, notes.", "inputSchema": {"type": "object", "properties": {
             "name": {"type": "string", "description": "1 to 32 of A-Z a-z 0-9 - _"}, "model": {"type": "object"}, "sheet": {"type": "string", "description": "at most 65536 bytes"}
@@ -88,7 +89,11 @@ pub fn definitions() -> Vec<Value> {
         json!({"name": "model_render", "description": "Read-only. Asks the open 3D page to draw the model; returns the camera, boxes and a JPEG. Needs the page open (model_draft gives its address).", "inputSchema": {"type": "object", "properties": {
             "name": {"type": "string"}, "view": {"type": "string", "enum": ["iso", "front", "back", "left", "right", "top"]}
         }, "required": ["name"], "additionalProperties": false}}),
-    ]
+    ];
+    // 확장 `print`: 이 feature로 빌드할 때만 여섯째 도구가 있다
+    #[cfg(feature = "print")]
+    v.push(crate::print::definition());
+    v
 }
 
 pub fn is_tool(name: &str) -> bool {
@@ -318,6 +323,12 @@ pub fn call(ctx: &Ctx, name: &str, args: &Value, stop: &dyn Fn() -> bool) -> Res
         "model_get" => get(ctx, args),
         "model_sim" => sim(ctx, args),
         "model_render" => render(ctx, args, stop),
+        #[cfg(feature = "print")]
+        "model_print" => {
+            check_args(args, &["name", "parts"])?;
+            need(ctx, name_arg(args)?)?;
+            crate::print::model_print(&ctx.store, args)
+        }
         _ => Err("unknown tool".into()),
     }
 }

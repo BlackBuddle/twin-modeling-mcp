@@ -454,6 +454,23 @@ claude mcp add twin-modeling -- <실행파일-경로>/twin-modeling-mcp --dir <�
 | `model_sim` | 읽기 | 핀에 이벤트를 넣어 모델을 돌립니다. `changes`, `joints`, `positions`를 돌려줍니다. |
 | `model_render` | 읽기 | 열려 있는 화면에 시점(`iso`, `front`, `back`, `left`, `right`, `top`)을 주고 그리게 해서 카메라, 박스, JPEG를 돌려줍니다. 화면이 열려 있어야 합니다. |
 
+### 확장: 3D 프린터용 내보내기 (`print`)
+
+기본 빌드에는 없습니다. `--features print`를 붙여 빌드하면 여섯째 도구 `model_print`가 생깁니다.
+
+```
+cargo build --release -p twin-modeling-mcp --features print
+```
+
+| 도구 | 읽기·쓰기 | 용도 |
+|---|---|---|
+| `model_print` | 읽기 | 외형 그룹 하나를 부품 하나로 보고 인자 `cut`으로 준 구멍과 홈을 뺀 OpenSCAD 글을 돌려줍니다. |
+
+- 서버는 파일을 쓰지 않고 STL도 만들지 않습니다. 돌려받은 글을 `.scad`로 저장한 뒤
+  [OpenSCAD](https://openscad.org/)로 STL을 만드세요.
+- 트윈 모델 형식은 바뀌지 않습니다. 구멍은 `model_print`의 인자에만 있습니다.
+- 벽 두께, 오버행, 공차, 강도는 검사하지 않습니다. 출력물은 직접 맞춰 봐야 합니다.
+
 ## 안전
 
 - 화면과 API는 `127.0.0.1`에서만 듣습니다. 요청마다 `Host` 헤더와 토큰을 검사하고, 쓰기 요청은 `Origin` 헤더도

@@ -450,6 +450,23 @@ A simulation is a kinematic model with constant speeds. There is no physics. A p
 | `model_sim` | read | Run the model with events on pins. Returns `changes`, `joints`, `positions`. |
 | `model_render` | read | Ask the open page to draw the model from a view (`iso`, `front`, `back`, `left`, `right`, `top`); returns the camera, boxes and a JPEG. Needs the page open. |
 
+### Extension: export for 3D printing (`print`)
+
+Not in the default build. Build with `--features print` to get a sixth tool, `model_print`.
+
+```
+cargo build --release -p twin-modeling-mcp --features print
+```
+
+| Tool | Reads or writes | Purpose |
+|---|---|---|
+| `model_print` | read | Takes one skin group as one part, removes the holes and slots given in the argument `cut`, and returns OpenSCAD text. |
+
+- The server writes no file and makes no STL. Save the text as a `.scad` file and convert it with
+  [OpenSCAD](https://openscad.org/).
+- The twin model format does not change. The holes are only in the arguments of `model_print`.
+- Wall thickness, overhang, clearance and strength are not checked. Fit the printed parts yourself.
+
 ## Safety notes
 
 - The page and its API listen on `127.0.0.1` only. Every request is checked for the `Host` header, a token and (for
