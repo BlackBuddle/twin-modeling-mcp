@@ -38,7 +38,8 @@ A model-writing AI client (for example Claude) designs the model with the help o
 never designs anything: it only checks, simulates, stores and draws what the client sends.
 
 - One executable, one process. The MCP server talks over stdio; the 3D page listens on `127.0.0.1` only.
-- Five tools: `model_catalog`, `model_draft`, `model_get`, `model_sim`, `model_render`.
+- Five tools: `model_catalog`, `model_draft`, `model_get`, `model_sim`, `model_render`. A build with the optional
+  feature `print` adds `model_print` for 3D printing ([extension](#extension-export-for-3d-printing-print)).
 - The only dependency of the Rust code is `serde_json`.
 - Licence: AGPL-3.0-or-later.
 
@@ -334,6 +335,7 @@ belts and the lead, whether the gantry has a second upright at the back, and mor
 
 - **One executable, one process.** The AI client starts it; it ends when its standard input ends.
 - **A stdio MCP server** with five tools: `model_catalog`, `model_draft`, `model_get`, `model_sim`, `model_render`.
+  A build with the optional feature `print` has a sixth tool, `model_print`.
 - **A local 3D page** on `127.0.0.1` only, drawn with three.js. The person confirms drafts there.
 - **Rust**, with `serde_json` as the only dependency.
 - **Three crates**: `twin-engine` (model and simulation, no OS call), `twin-page` (model store and page),
@@ -342,7 +344,7 @@ belts and the lead, whether the gantry has a second upright at the back, and mor
 
 ```
 skills/twin-modeling  ->  AI client
-                             |  stdio, MCP, 5 tools
+                             |  stdio, MCP, 5 tools (6 with print)
           +------------------v------------------+
           | twin-modeling-mcp.exe               |
           |   twin-modeling-mcp   the server    |
@@ -358,7 +360,7 @@ skills/twin-modeling  ->  AI client
 | Piece | What it does |
 |---|---|
 | `skills/twin-modeling/` | A skill (a written procedure) that tells an AI client how to go from words or photos to a principle sheet and a twin model. Two worked examples are inside `SKILL.md`. |
-| `twin-modeling-mcp` | The server: 5 tools plus the local 3D page (English and Korean). |
+| `twin-modeling-mcp` | The server: 5 tools (6 with the feature `print`) plus the local 3D page (English and Korean). |
 | `crates/twin-engine` | The model format, its checks, the machine engine (joints, couplings, drivers), workpieces and the plant. No OS call. |
 | `crates/twin-page` | The page files, the model store and the page routes. |
 | `examples/` | Six models made with the skill and this server (one of them from a public photo), each with its principle sheet, simulation input and picture (see "Example" above). |
@@ -376,6 +378,9 @@ To build it yourself (Rust stable):
 ```
 cargo build --release -p twin-modeling-mcp
 ```
+
+For the 3D-print export tool, add `--features print` ([extension](#extension-export-for-3d-printing-print)). The
+default build does not have this tool.
 
 The executable is `target/release/twin-modeling-mcp` (`.exe` on Windows). Linux and macOS build from source and are
 **not tested**.

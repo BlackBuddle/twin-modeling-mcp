@@ -38,7 +38,8 @@
 보낸 모델을 검사하고 시뮬레이션하고 저장하고 그릴 뿐입니다.
 
 - 실행 파일 하나, 프로세스 하나입니다. MCP 서버는 표준 입출력으로 말하고, 3D 화면은 `127.0.0.1`에서만 듣습니다.
-- 도구는 다섯 개입니다: `model_catalog`, `model_draft`, `model_get`, `model_sim`, `model_render`.
+- 도구는 다섯 개입니다: `model_catalog`, `model_draft`, `model_get`, `model_sim`, `model_render`. 선택 기능
+  `print`로 빌드하면 3D 프린터용 도구 `model_print`가 더해집니다([확장](#확장-3d-프린터용-내보내기-print)).
 - Rust 코드가 쓰는 외부 크레이트는 `serde_json` 하나입니다.
 - 라이선스는 AGPL-3.0-or-later입니다.
 
@@ -337,7 +338,7 @@ Figure 3(Journal of Open Hardware 2(1), 2018, DOI [10.5334/joh.9](https://doi.or
 
 - **실행 파일 하나, 프로세스 하나.** AI 클라이언트가 시작하고, 표준 입력이 끝나면 함께 끝납니다.
 - **표준 입출력 MCP 서버**이고 도구는 다섯 개입니다: `model_catalog`, `model_draft`, `model_get`, `model_sim`,
-  `model_render`.
+  `model_render`. 선택 기능 `print`로 빌드하면 여섯째 도구 `model_print`가 생깁니다.
 - **로컬 3D 화면**은 `127.0.0.1`에서만 듣고 three.js로 그립니다. 사람은 여기서 초안을 확정합니다.
 - **Rust**로 썼고 외부 크레이트는 `serde_json` 하나뿐입니다.
 - **크레이트 세 개**: `twin-engine`(모델과 시뮬레이션, OS 호출 없음), `twin-page`(모델 저장소와 화면),
@@ -346,7 +347,7 @@ Figure 3(Journal of Open Hardware 2(1), 2018, DOI [10.5334/joh.9](https://doi.or
 
 ```
 skills/twin-modeling  ->  AI client
-                             |  stdio, MCP, 5 tools
+                             |  stdio, MCP, 5 tools (6 with print)
           +------------------v------------------+
           | twin-modeling-mcp.exe               |
           |   twin-modeling-mcp   the server    |
@@ -362,7 +363,7 @@ skills/twin-modeling  ->  AI client
 | 구성 | 하는 일 |
 |---|---|
 | `skills/twin-modeling/` | 설명이나 사진에서 원리 시트와 트윈 모델까지 가는 순서를 AI 클라이언트에게 알려 주는 스킬(작성된 절차)입니다. 예시 두 개가 `SKILL.md` 안에 있습니다. |
-| `twin-modeling-mcp` | 서버입니다. 도구 5개와 로컬 3D 화면(영어·한국어)을 제공합니다. |
+| `twin-modeling-mcp` | 서버입니다. 도구 5개(`print`로 빌드하면 6개)와 로컬 3D 화면(영어·한국어)을 제공합니다. |
 | `crates/twin-engine` | 모델 형식과 검사, 기계 엔진(관절, 연동, 구동기), 공작물, 플랜트가 있습니다. OS 호출은 없습니다. |
 | `crates/twin-page` | 화면 파일, 모델 저장소, 화면 경로가 있습니다. |
 | `examples/` | 스킬과 이 서버로 만든 모델 6개입니다(그중 하나는 공개 사진으로 만들었습니다). 모델마다 원리 시트, 시뮬레이션 입력, 그림이 있습니다(위 "예시" 참고). |
@@ -380,6 +381,9 @@ skills/twin-modeling  ->  AI client
 ```
 cargo build --release -p twin-modeling-mcp
 ```
+
+3D 프린터용 내보내기 도구까지 쓰려면 `--features print`를 붙여 빌드하세요([확장](#확장-3d-프린터용-내보내기-print)).
+기본 빌드에는 이 도구가 없습니다.
 
 실행 파일은 `target/release/twin-modeling-mcp`입니다(Windows는 `.exe`). Linux와 macOS는 소스에서 빌드하는데,
 **시험하지 않았습니다**.
